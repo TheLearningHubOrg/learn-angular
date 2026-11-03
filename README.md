@@ -19665,8 +19665,7 @@ The layers only help if imports go strictly downward (`app > pages > widgets > f
 
 ### 28.4 Flagship Blueprint 1: AI-Agent Enabled Angular WebMCP Workspace
 ```typescript
-import { Component, inject, signal } from '@angular/core';
-import { declareExperimentalWebMcpTool } from '@angular/core/ai';
+import { Component, declareExperimentalWebMcpTool, inject } from '@angular/core';
 import { OrganizationStore } from './store/organization.store';
 
 @Component({
@@ -19700,29 +19699,33 @@ import { OrganizationStore } from './store/organization.store';
 export class AiWorkspaceComponent {
   store = inject(OrganizationStore);
 
-  // Expose WebMCP Tool to connected LLM agents
-  readonly rolePromotionTool = declareExperimentalWebMcpTool({
-    name: 'promoteMemberRole',
-    description: 'Promotes an organization team member to ADMIN or OWNER',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        memberId: { type: 'string' },
-        targetRole: { type: 'string', enum: ['ADMIN', 'OWNER'] },
+  constructor() {
+    // Registered for as long as this component lives (needs an injection context).
+    // Returns Promise<void>, not a handle: unregistration happens on destroy.
+    declareExperimentalWebMcpTool({
+      name: 'promoteMemberRole',
+      description: 'Promotes an organization team member to ADMIN or OWNER',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          memberId: { type: 'string' },
+          targetRole: { type: 'string', enum: ['ADMIN', 'OWNER'] },
+        },
+        required: ['memberId', 'targetRole'],
       },
-      required: ['memberId', 'targetRole'],
-    },
-    handler: async ({ memberId, targetRole }) => {
-      console.log(`[WebMCP Tool Called by AI]: Promoting ${memberId} to ${targetRole}`);
-      // Mutate signal store directly in response to AI agent instructions!
-      return { success: true, updatedRole: targetRole };
-    }
-  });
+      annotations: { consequentialHint: true },
+      execute: async ({ memberId, targetRole }) => {
+        // Go through the same service call the UI uses, so the server enforces permissions
+        await this.store.promote(memberId, targetRole);
+        return `Promoted ${memberId} to ${targetRole}`;
+      },
+    });
+  }
 }
 ```
 
 > [!WARNING]
-> WebMCP and `declareExperimentalWebMcpTool` are experimental. A tool exposed to an agent runs with the user's session, so treat each tool like a public API endpoint: validate input against the schema, enforce the same permission on the server that the UI enforces, ask the human to confirm destructive or privileged actions (such as a role promotion), and write an audit entry for every call. Keep the handler thin and have it call the same application service the UI uses, so the integration can be replaced without touching business logic. [Section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) lists the requirements, trade-offs and failure modes for this blueprint.
+> WebMCP and `declareExperimentalWebMcpTool` are experimental. A tool exposed to an agent runs with the user's session, so treat each tool like a public API endpoint: validate input against the schema, enforce the same permission on the server that the UI enforces, ask the human to confirm destructive or privileged actions (such as a role promotion), and write an audit entry for every call. Keep `execute` thin and have it call the same application service the UI uses, so the integration can be replaced without touching business logic. [Section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) lists the requirements, trade-offs and failure modes for this blueprint.
 
 ---
 
