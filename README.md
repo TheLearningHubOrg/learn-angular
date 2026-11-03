@@ -434,7 +434,6 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
     - Naming Conventions
     - Error Handling
     - Performance
-    - Accessibility
     - Security
     - Code Organization
     - [Accessibility](#accessibility)
@@ -4236,7 +4235,7 @@ Angular components can define their own CSS styles directly in the component met
 
 #### Change Detection
 
-Angular checks component state changes to update the view. By default, it uses the `Default` change detection strategy, checking the entire tree. For performance optimization, components can use `ChangeDetectionStrategy.OnPush`.
+Angular checks component state changes to update the view. Since v22, a component without a `changeDetection` setting uses `ChangeDetectionStrategy.OnPush`: it is checked only when one of its inputs changes, a signal it reads changes, an event fires in its template, or it is marked dirty. `ChangeDetectionStrategy.Eager` opts a component back into being checked on every pass; the old name, `ChangeDetectionStrategy.Default`, is deprecated. [Section 21](#21-angular-v22-change-detection-architecture--zoneless-traversal) explains the v22 model and [40.4](#404-change-detection-profiling-from-it-is-slow-to-a-specific-binding) shows how to profile it.
 
 #### Dynamic Components
 
@@ -19968,6 +19967,8 @@ Switch `compilationMode` to `"partial"` to see what a library build ships.
 
 With `strictTemplates: true` (the default for new projects), the compiler checks your templates by **writing TypeScript code that mirrors them** and handing that code to `tsc`. Each generated function is called a **type-check block (TCB)**. TCBs are never emitted into your bundle; they exist only in the compiler's in-memory program, and diagnostics are mapped back to template positions.
 
+This section is about how the check works. The individual strictness flags and extended diagnostics are listed in [30.11](#3011-template-type-checking--extended-diagnostics), and [42.8](#428-turning-on-strict-templates-in-a-legacy-app) is a step-by-step recipe for turning `strictTemplates` on in an older app.
+
 For this component:
 
 ```typescript
@@ -20368,7 +20369,7 @@ window.addEventListener('pagehide', () => appRef.destroy(), { once: true });
 
 ### 29.7 Initializers in Depth: `provideAppInitializer()`, `provideEnvironmentInitializer()`, `providePlatformInitializer()`
 
-Angular has one initializer helper per injector layer. The three tokens they replace (`APP_INITIALIZER`, `ENVIRONMENT_INITIALIZER`, `PLATFORM_INITIALIZER`) have been deprecated since v19; new code should use the functions.
+Angular has one initializer helper per injector layer. The three tokens they replace (`APP_INITIALIZER`, `ENVIRONMENT_INITIALIZER`, `PLATFORM_INITIALIZER`) have been deprecated since v19; new code should use the functions. This section compares the three at bootstrap; [32.5](#325-provideenvironmentinitializer-eager-work-when-an-injector-is-created) goes deeper into `provideEnvironmentInitializer()` for lazy routes and feature scopes.
 
 | Helper | Runs when | Can be async? | Typical use |
 | :--- | :--- | :--- | :--- |
@@ -20471,7 +20472,7 @@ bootstrapApplication(App, appConfig, { platformRef });
 
 ### 29.8 `EnvironmentInjector` vs `ElementInjector`
 
-Angular resolves dependencies through **two separate trees**, and understanding them removes most "why did I get a second instance?" questions.
+Angular resolves dependencies through **two separate trees**, and understanding them removes most "why did I get a second instance?" questions. The DI Masterclass builds on this: [32.3](#323-creating-injectors-yourself-createenvironmentinjector-injectorcreate-and-destroy) covers creating injectors yourself, [32.7](#327-provider-precedence-providers-vs-viewproviders-host-boundaries-and-override-order) provider precedence, and [32.11](#3211-di-scopes-and-memory-injector-lifetimes-and-leaks) injector lifetimes and leaks.
 
 | | Environment injectors | Element (node) injectors |
 | :--- | :--- | :--- |
@@ -20816,7 +20817,7 @@ Deployment steps (`ng deploy` uses a `deploy` target), code generation that runs
 
 ### 29.11 Library Development and Publishing
 
-The library basics (generation, `public-api.ts`, secondary entry points) are covered in section [27.2](#272-angular-package--library-development-ng-packagr--apf). This part covers what happens after `ng build my-lib`.
+The library basics (generation, `public-api.ts`, secondary entry points) are covered in section [27.2](#272-angular-package--library-development-ng-packagr--apf). This part covers what happens after `ng build my-lib`. For the packaging and release details, see [42.12](#4212-apf-packaging-in-practice-entry-points-exports-and-validation) (entry points, `exports`, validation) and [42.13](#4213-publishing-to-npm-and-private-registries) (registries and CI publishing).
 
 #### Partial compilation and the linker
 
@@ -20891,8 +20892,8 @@ Each secondary entry point gets its own key in `exports` (`"./charts"`) and its 
 
 #### Versioning policy
 
-- Follow semver strictly. Widening or narrowing the Angular peer range is a **major** release for your consumers.
-- Align your major cadence with Angular's (a new library major shortly after each Angular major) so consumers can upgrade both together.
+- Follow semver strictly. Dropping a supported Angular major (narrowing the peer range) is a **major** release; adding support for a new Angular major without dropping the old one is not.
+- Align your major cadence with Angular's (a new library major shortly after each Angular major) so consumers can upgrade both together. [42.11](#4211-semantic-versioning-for-angular-libraries) has a full table of what counts as breaking for an Angular library.
 - Deprecate with `/** @deprecated Use X instead. */` for at least one major before removing.
 - Ship automated migrations with `ng update` by adding `"ng-update": { "migrations": "./migrations.json" }` to the library's package.json (see the Angular Schematics section).
 
