@@ -12,7 +12,7 @@
 **An exhaustive, production-grade masterclass from absolute zero to staff-level Angular platform architecture.**  
 Master standalone applications, modern Signals reactivity, `@defer` incremental hydration, hierarchical dependency injection, functional router guards, reactive forms, and zoneless performance.
 
-[Getting Started](#-getting-started) • [Standalone Components](#2-stage-2-standalone-components-templates--modern-control-flow) • [Signals & Reactivity](#3-stage-3-modern-signals-reactivity--state-management) • [Dependency Injection](#4-stage-4-hierarchical-dependency-injection--routing) • [Forms & HTTP](#5-stage-5-enterprise-reactive-forms--http-client) • [SSR & Performance](#6-stage-6-server-side-rendering-ssr-deferrable-views--performance) • [Interview Prep](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet)
+[Getting Started](#1-stage-1-absolute-beginner-foundations--standalone-architecture) • [Standalone Components](#2-stage-2-standalone-components-templates--modern-control-flow) • [Signals & Reactivity](#3-stage-3-modern-signals-reactivity--state-management) • [Dependency Injection](#4-stage-4-hierarchical-dependency-injection--routing) • [Forms & HTTP](#5-stage-5-enterprise-reactive-forms--http-client) • [SSR & Performance](#6-stage-6-server-side-rendering-ssr-deferrable-views--performance) • [Interview Prep](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet)
 
 <br/>
 
@@ -33,524 +33,477 @@ flowchart LR
     S3 --> S4["Stage 4: DI & Routing"]
     S4 --> S5["Stage 5: Reactive Forms & HTTP"]
     S5 --> S6["Stage 6: SSR, @defer & Perf"]
-    S6 --> S7["Stage 7: Staff Architect Handbook"]
+    S6 --> ADV["Advanced masterclasses: sections 20 to 28"]
+    ADV --> S7["Stage 7: Staff Architect Handbook"]
 ```
 
-| Stage | Focus Domain | Core Concepts & Engineering Outcomes |
-| :--- | :--- | :--- |
-| **Stage 1** | **Absolute Beginner Foundations** | Standalone bootstrapping (`bootstrapApplication`), application configuration, TypeScript 5 essentials. |
-| **Stage 2** | **Components & Modern Control Flow** | Standalone components, `@if`, `@for (track)`, `@switch`, template bindings, content projection. |
-| **Stage 3** | **Modern Signals Reactivity** | Fine-grained reactivity (`signal`, `computed`, `effect`), `input()`/`output()`, RxJS `toSignal()`, zoneless change detection. |
-| **Stage 4** | **Hierarchical DI & Routing** | Tree-shakeable providers, `inject()` function, functional route guards (`canActivateFn`), resolvers, lazy loading. |
-| **Stage 5** | **Reactive Forms & HTTP Engine** | Strongly-typed `FormGroup`, async validators, functional interceptors (`HttpInterceptorFn`), retry strategies. |
-| **Stage 6** | **SSR, @defer & Enterprise Performance** | Event replay, incremental DOM hydration, `@defer` trigger conditions (`on viewport`, `on idle`), OnPush profiling. |
-| **Stage 7** | **Staff Architect Interview Handbook** | Zone.js patching vs Zoneless microtasks, Module Federation, 40+ staff-level interview Q&As, cheat sheet. |
+| Stage | Focus Domain | Core Concepts & Engineering Outcomes | Chapters | Deep dives (advanced masterclasses) |
+| :--- | :--- | :--- | :--- | :--- |
+| [**Stage 1**](#1-stage-1-absolute-beginner-foundations--standalone-architecture) | **Absolute Beginner Foundations** | Standalone bootstrapping (`bootstrapApplication`), application configuration, TypeScript essentials, CLI and workspace setup. | [1.1 Architecture & Philosophy](#11-architecture--philosophy)<br/>[1.2 TypeScript Essentials](#12-typescript-essentials) | [20. Angular v20 → v21 → v22 Platform Updates & Migration Masterclass](#20-angular-v20--v21--v22-platform-updates--migration-masterclass) |
+| [**Stage 2**](#2-stage-2-standalone-components-templates--modern-control-flow) | **Components & Modern Control Flow** | Standalone components, templates and bindings, directives, `@if`, `@for (track)`, `@switch`, content projection, pipes, queries. | [2.1 Standalone Components Deep Dive](#21-standalone-components-deep-dive)<br/>[2.2 Templates](#22-templates)<br/>[2.3 Directives](#23-directives)<br/>[2.4 Modern Control Flow](#24-modern-control-flow)<br/>[2.5 Content Projection](#25-content-projection)<br/>[2.6 Pipes](#26-pipes)<br/>[2.7 Queries](#27-queries) | [24. Angular Aria (@angular/aria) & WebMCP / Angular AI](#24-angular-aria-angulararia--webmcp--angular-ai) |
+| [**Stage 3**](#3-stage-3-modern-signals-reactivity--state-management) | **Modern Signals Reactivity** | Fine-grained reactivity (`signal`, `computed`, `effect`), `input()`/`output()`, RxJS interop (`toSignal()`), state management, zoneless change detection. | [3.1 Signals Internals & Reactive Primitives](#31-signals-internals--reactive-primitives)<br/>[3.2 State Management](#32-state-management) | [21. Angular v22 Change Detection Architecture & Zoneless Traversal](#21-angular-v22-change-detection-architecture--zoneless-traversal)<br/>[23. Resource API & httpResource() Deep Dive](#23-resource-api--httpresource-deep-dive) |
+| [**Stage 4**](#4-stage-4-hierarchical-dependency-injection--routing) | **Hierarchical DI & Routing** | Tree-shakeable providers, `inject()`, `EnvironmentInjector`, functional guards (`CanActivateFn`) and resolvers, lazy loading. | [4.1 Dependency Injection Architecture](#41-dependency-injection-architecture)<br/>[4.2 Functional APIs](#42-functional-apis)<br/>[4.3 Routing](#43-routing) | [25. Route-Level Rendering, Modern Router, View Transitions & Native CSS Animations](#25-route-level-rendering-modern-router-view-transitions--native-css-animations) |
+| [**Stage 5**](#5-stage-5-enterprise-reactive-forms--http-client) | **Reactive Forms & HTTP Engine** | Strongly-typed `FormGroup`, Signal Forms, async validators, `HttpClient` with functional interceptors (`HttpInterceptorFn`), RxJS operators. | [5.1 Reactive Forms Architecture](#51-reactive-forms-architecture)<br/>[5.2 HTTP](#52-http)<br/>[5.3 RxJS](#53-rxjs) | [22. Signal Forms Complete Masterclass](#22-signal-forms-complete-masterclass)<br/>[26. Modern HTTP Engine, Advanced DI, SSR Hydration & @defer Deep Dive](#26-modern-http-engine-advanced-di-ssr-hydration--defer-deep-dive) |
+| [**Stage 6**](#6-stage-6-server-side-rendering-ssr-deferrable-views--performance) | **SSR, @defer & Enterprise Performance** | Hydration and event replay, `@defer` triggers, rendering, animations, i18n, security, performance, testing, Material/CDK, PWA, deployment, best practices and design patterns. | [6.1 Server-Side Rendering & Hydration](#61-server-side-rendering--hydration)<br/>[6.2 Rendering](#62-rendering)<br/>[6.3 Animations](#63-animations)<br/>[6.4 Internationalization (i18n)](#64-internationalization-i18n)<br/>[6.5 Security](#65-security)<br/>[6.6 Performance](#66-performance)<br/>[6.7 Testing](#67-testing)<br/>[6.8 Angular Material](#68-angular-material)<br/>[6.9 Angular CDK](#69-angular-cdk)<br/>[6.10 Progressive Web Apps (PWA)](#610-progressive-web-apps-pwa)<br/>[6.11 Deployment](#611-deployment)<br/>[6.12 Best Practices](#612-best-practices)<br/>[6.13 Design Patterns](#613-design-patterns) | [27. Vitest Testing, Library Development, Compiler Internals & Web Workers](#27-vitest-testing-library-development-compiler-internals--web-workers)<br/>[28. Advanced Security, Accessibility, Enterprise State & Flagship Blueprints](#28-advanced-security-accessibility-enterprise-state--flagship-blueprints) |
+| [**Stage 7**](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet) | **Staff Architect Interview Handbook** | Staff-level interview Q&As, scenario questions and architecture trade-offs; read after the masterclasses that deepen Stages 1 to 6. | [7.1 40 Core Staff Architect Technical Interview Q&As](#71-40-core-staff-architect-technical-interview-qas) |  |
+
+The numbered sections from 20 to 28 form the **advanced masterclass track**. They sit after Stage 6 and before the Stage 7 interview handbook, and each one deepens the stage listed in the table above. Work through a stage first, then read its deep dives, or come back to them once all six stages are done.
 
 ---
 
----
+## Table of Contents
 
-## 20. Angular v20 → v21 → v22 Platform Updates & Migration Masterclass
+**Start here**
 
-### 20.1 Platform Evolution: From v20 to v22
-The Angular platform underwent a foundational modernization cycle across versions 20, 21, and 22, completing the transition from Zone.js-dependent class architectures to a fine-grained, signal-driven, zoneless-ready, and AI-enabled web framework:
+- [🗺️ 7-Stage Pedagogical Roadmap](#️-7-stage-pedagogical-roadmap)
 
-```mermaid
-timeline
-    title Angular Modernization Roadmap (v20 - v22)
-    section Angular v20 (Nov 2024)
-      Route-Level Render Modes (RenderMode.Server / Prerender / Client) : Hybrid Rendering Stable
-      Experimental Signal Forms : Signal-driven form primitives
-      LinkedSignal & Resource API : Fine-grained async primitives
-    section Angular v21 (May 2025)
-      Vitest Default Test Runner : Stable ng test with Vitest
-      Standalone Migration Complete : Legacy NgModule fully deprecated
-      provideAppInitializer Stable : Legacy APP_INITIALIZER replaced
-    section Angular v22 (Active)
-      OnPush as Default Strategy : Default strategy deprecated in favor of Eager
-      httpResource() Stable : First-class reactive HTTP resource primitive
-      Experimental WebMCP : AI-agent tool integration for Claude & Gemini
-      @angular/aria Primitives : Headless WAI-ARIA 1.2 components
-```
+**Part I: Core stages (Stages 1 to 6)**
 
----
+- [1. Stage 1: Absolute Beginner Foundations & Standalone Architecture](#1-stage-1-absolute-beginner-foundations--standalone-architecture)
+  - [1.1 Architecture & Philosophy](#11-architecture--philosophy)
+    - What is Angular?
+    - Features
+    - Architecture
+    - Angular CLI
+    - Project Structure
+    - Workspace Configuration
+    - Standalone Applications
+    - Angular Version History
+    - Migration Guide
+    - Bootstrapping
+    - Application Configuration
+    - Environment Providers
+    - Version Compatibility
+  - [1.2 TypeScript Essentials](#12-typescript-essentials)
+    - TypeScript Basics
+    - Types
+    - Interfaces
+    - Enums
+    - Generics
+    - Decorators
+    - Modules
+    - Utility Types
+    - Type Assertions
+    - Type Narrowing
+    - Type Aliases
+    - Literal Types
+    - Conditional Types
+    - Mapped Types
+- [2. Stage 2: Standalone Components, Templates & Modern Control Flow](#2-stage-2-standalone-components-templates--modern-control-flow)
+  - [2.1 Standalone Components Deep Dive](#21-standalone-components-deep-dive)
+    - Components
+    - Standalone Components
+    - Component Lifecycle
+    - Lifecycle Hooks
+    - Component Communication
+    - Inputs
+    - Outputs
+    - Model Inputs
+    - Signal Inputs
+    - Signal Outputs
+    - Component Styles
+    - View Encapsulation
+    - Change Detection
+    - Dynamic Components
+    - Dynamic Template Rendering
+    - Host Elements
+    - Host Bindings
+    - Host Listeners
+    - Content vs View DOM
+    - Component Inheritance
+    - Component Composition
+  - [2.2 Templates](#22-templates)
+    - Data Binding
+    - Interpolation
+    - Property Binding
+    - Attribute Binding
+    - Class Binding
+    - Style Binding
+    - Event Binding
+    - Two-way Binding
+    - Template Reference Variables
+    - Template Statements
+    - Template Expressions
+    - Pipes in Templates
+    - ng-template
+    - ng-container
+    - ngTemplateOutlet
+    - Template Context
+    - Safe Navigation Operator
+    - Nullish Coalescing
+    - Non-null Assertion
+    - Template Variables
+    - Track Expressions
+  - [2.3 Directives](#23-directives)
+    - Directives
+    - Attribute Directives
+    - Structural Directives
+    - Built-in Directives
+    - Custom Directives
+    - Directive Composition API (hostDirectives)
+  - [2.4 Modern Control Flow](#24-modern-control-flow)
+    - @if
+    - @else
+    - @for
+    - @empty
+    - @switch
+    - @case
+    - @default
+    - @let
+    - @defer
+    - Prefetching
+    - Loading Placeholder
+    - Error Placeholder
+    - Track Expressions
+    - Context Variables
+  - [2.5 Content Projection](#25-content-projection)
+    - ng-content
+    - Multi-slot Projection
+    - Conditional Projection
+  - [2.6 Pipes](#26-pipes)
+    - Built-in Pipes
+    - Custom Pipes
+    - Pure vs Impure Pipes
+    - Async Pipe
+  - [2.7 Queries](#27-queries)
+    - viewChild()
+    - viewChildren()
+    - contentChild()
+    - contentChildren()
+- [3. Stage 3: Modern Signals Reactivity & State Management](#3-stage-3-modern-signals-reactivity--state-management)
+  - [3.1 Signals Internals & Reactive Primitives](#31-signals-internals--reactive-primitives)
+    - Signals Introduction
+    - signal()
+    - Writable Signals
+    - computed()
+    - effect()
+    - Signal Equality
+    - untracked()
+    - Signal Inputs
+    - Signal Outputs
+    - Model Inputs
+    - linkedSignal()
+    - resource()
+    - httpResource()
+    - Signal Queries
+    - Signal Store
+    - toSignal()
+    - toObservable()
+    - Signal Best Practices
+    - Signals vs RxJS
+  - [3.2 State Management](#32-state-management)
+    - Signals
+    - Signal Store
+    - NgRx
+    - Component Store
+    - NGXS
+    - Akita
+    - Elf
+    - RxState
+    - State Management Patterns
+- [4. Stage 4: Hierarchical Dependency Injection & Routing](#4-stage-4-hierarchical-dependency-injection--routing)
+  - [4.1 Dependency Injection Architecture](#41-dependency-injection-architecture)
+    - Dependency Injection
+    - Providers
+    - Provider Types
+    - Class Providers
+    - Factory Providers
+    - Existing Providers
+    - Value Providers
+    - Multi Providers
+    - Injection Tokens
+    - inject()
+    - DestroyRef
+    - EnvironmentInjector
+    - Hierarchical DI
+    - Optional
+    - Self
+    - SkipSelf
+    - Host
+    - forwardRef()
+  - [4.2 Functional APIs](#42-functional-apis)
+    - Functional Queries
+    - Functional Guards
+    - Functional Resolvers
+    - Functional Interceptors
+    - Functional Providers
+  - [4.3 Routing](#43-routing)
+    - Router
+    - Route Configuration
+    - RouterOutlet
+    - RouterLink
+    - RouterLinkActive
+    - Nested Routes
+    - Lazy Loading
+    - loadComponent()
+    - loadChildren()
+    - Route Parameters
+    - Query Parameters
+    - Route Data
+    - Redirect Routes
+    - Wildcard Routes
+    - Route Guards
+    - CanActivate
+    - CanActivateChild
+    - CanDeactivate
+    - CanMatch
+    - Functional Guards
+    - Resolvers
+    - Title Strategy
+    - Route Reuse Strategy
+    - Preloading Strategies
+    - Scroll Restoration
+    - Navigation Extras
+    - Route Animations
+    - Component Input Binding
+    - Router Events
+- [5. Stage 5: Enterprise Reactive Forms & HTTP Client](#5-stage-5-enterprise-reactive-forms--http-client)
+  - [5.1 Reactive Forms Architecture](#51-reactive-forms-architecture)
+    - Template-driven Forms
+    - Reactive Forms
+    - FormControl
+    - FormGroup
+    - FormArray
+    - FormBuilder
+    - NonNullableFormBuilder
+    - FormRecord
+    - Typed Reactive Forms
+    - ControlValueAccessor (CVA)
+    - Signal Forms
+    - Cross-field Validation
+    - Custom Validators
+    - Async Validators
+    - Dynamic Forms
+    - Form Reset
+    - Error Handling
+    - Update Strategies
+  - [5.2 HTTP](#52-http)
+    - HttpClient
+    - provideHttpClient()
+    - HTTP Methods
+    - Headers
+    - Params
+    - HttpContext
+    - Interceptors
+    - Functional Interceptors
+    - Error Handling
+    - Retry Strategies
+    - Caching
+    - Polling
+    - File Upload
+    - File Download
+    - Progress Events
+    - Request Cancellation
+  - [5.3 RxJS](#53-rxjs)
+    - Observables
+    - Observers
+    - Subjects
+    - BehaviorSubject
+    - ReplaySubject
+    - AsyncSubject
+    - Cold vs Hot Observables
+    - Creation Operators
+    - Transformation Operators
+    - Filtering Operators
+    - Combination Operators
+    - Higher-order Mapping Operators
+    - Error Handling Operators
+    - Utility Operators
+    - Multicasting
+    - Subscription Management
+    - takeUntilDestroyed()
+    - Schedulers
+    - Best Practices
+- [6. Stage 6: Server-Side Rendering (SSR), Deferrable Views & Performance](#6-stage-6-server-side-rendering-ssr-deferrable-views--performance)
+  - [6.1 Server-Side Rendering & Hydration](#61-server-side-rendering--hydration)
+    - SSR Introduction
+    - CSR vs SSR vs SSG
+    - provideServerRendering()
+    - provideClientHydration()
+    - Incremental Hydration
+    - Event Replay
+    - TransferState
+    - HTTP Transfer Cache
+    - Hybrid Rendering
+    - Rendering Strategies
+  - [6.2 Rendering](#62-rendering)
+    - afterNextRender()
+    - afterRenderEffect()
+    - Rendering Pipeline
+    - Change Detection Strategies
+    - provideZoneChangeDetection()
+    - Zoneless Angular
+    - Pending Tasks
+  - [6.3 Animations](#63-animations)
+    - Angular Animations
+    - Transitions
+    - States
+    - Route Animations
+  - [6.4 Internationalization (i18n)](#64-internationalization-i18n)
+    - i18n
+    - Localization
+    - ICU Messages
+    - Lazy-loaded Translations
+  - [6.5 Security](#65-security)
+    - XSS Protection
+    - Sanitization
+    - DomSanitizer
+    - CSP
+    - Trusted Types
+    - CSRF
+    - CORS
+    - Authentication
+    - Authorization
+    - JWT
+    - OAuth
+  - [6.6 Performance](#66-performance)
+    - Lazy Loading
+    - Deferred Loading
+    - Image Optimization
+    - NgOptimizedImage
+    - Change Detection Optimization
+    - Signals Performance
+    - Bundle Optimization
+    - Tree Shaking
+    - Bundle Analysis
+    - Memory Leak Prevention
+  - [6.7 Testing](#67-testing)
+    - Unit Testing
+    - Component Testing
+    - Service Testing
+    - HTTP Testing
+    - Router Testing
+    - Signals Testing
+    - TestBed
+    - FakeAsync
+    - Mocking
+    - Component Harnesses
+    - Jest
+    - Cypress
+    - Playwright
+    - Vitest
+  - [6.8 Angular Material](#68-angular-material)
+    - Installation
+    - Theming
+    - Material 3
+    - Design Tokens
+    - Typography
+    - Dark Mode
+    - Components
+    - CDK Overview
+  - [6.9 Angular CDK](#69-angular-cdk)
+    - Overlay
+    - Portal
+    - Drag & Drop
+    - Clipboard
+    - Virtual Scroll
+    - Scrolling
+    - Accessibility
+    - Focus Monitor
+    - Focus Trap
+    - Text Field
+  - [6.10 Progressive Web Apps (PWA)](#610-progressive-web-apps-pwa)
+    - Service Workers
+    - Offline Support
+    - Web App Manifest
+    - Push Notifications
+    - Background Sync
+  - [6.11 Deployment](#611-deployment)
+    - Production Build
+    - Environment Configuration
+    - Docker
+    - Docker Compose
+    - Nginx
+    - Firebase
+    - Vercel
+    - Netlify
+    - GitHub Pages
+    - AWS
+    - Azure
+    - CI/CD
+    - GitHub Actions
+  - [6.12 Best Practices](#612-best-practices)
+    - Folder Structure
+    - Coding Standards
+    - Naming Conventions
+    - Error Handling
+    - Performance
+    - Accessibility
+    - Security
+    - Code Organization
+    - [Accessibility](#accessibility)
+      - ARIA
+      - Keyboard Navigation
+      - Screen Readers
+      - Focus Management
+      - Color Contrast
+  - [6.13 Design Patterns](#613-design-patterns)
+    - Smart vs Presentational Components
+    - Container Pattern
+    - Facade Pattern
+    - Repository Pattern
+    - Dependency Injection Pattern
+    - Feature-based Architecture
+    - Clean Architecture
 
-### 20.2 Official Compatibility Matrix (Angular v20 – v22)
+**Part II: Advanced masterclasses (sections 20 to 28)**
 
-| Angular Version | Release Date | Node.js Supported Ranges | TypeScript Supported | RxJS Supported | Default Change Detection | Primary Test Runner |
-|---|---|---|---|---|---|---|
-| **Angular v20** | November 2024 | `^18.19.0 \|\| ^20.9.0 \|\| ^22.0.0` | `~5.5.0 \|\| ~5.6.0` | `^7.8.0` | `Default` (Zone.js) | Karma / Vitest (Exp) |
-| **Angular v21** | May 2025 | `^20.11.0 \|\| ^22.0.0` | `~5.6.0 \|\| ~5.7.0` | `^7.8.0` | `Default` / Zoneless Opt-in | **Vitest** (Stable) |
-| **Angular v22** | November 2025 / Active | `^20.18.0 \|\| ^22.11.0 \|\| ^24.0.0` | `~5.7.0 \|\| ~5.8.0 \|\| ~5.9.0` | `^7.8.0 \|\| ^8.0.0` | **`OnPush`** (Default) | **Vitest** (Primary) |
+- [20. Angular v20 → v21 → v22 Platform Updates & Migration Masterclass](#20-angular-v20--v21--v22-platform-updates--migration-masterclass)
+  - [20.1 Platform Evolution: From v20 to v22](#201-platform-evolution-from-v20-to-v22)
+  - [20.2 Official Compatibility Matrix (Angular v20 – v22)](#202-official-compatibility-matrix-angular-v20--v22)
+  - [20.3 Migration Guide: v20 → v21 → v22 Automated CLI Recipes](#203-migration-guide-v20--v21--v22-automated-cli-recipes)
+  - [20.4 Deprecations & Breaking Changes Catalog (v20 – v22)](#204-deprecations--breaking-changes-catalog-v20--v22)
+- [21. Angular v22 Change Detection Architecture & Zoneless Traversal](#21-angular-v22-change-detection-architecture--zoneless-traversal)
+  - [21.1 OnPush as Default & The Deprecation of ChangeDetectionStrategy.Default](#211-onpush-as-default--the-deprecation-of-changedetectionstrategydefault)
+  - [21.2 Signal-Driven Traversal & Subtree Skipping in Zoneless Applications](#212-signal-driven-traversal--subtree-skipping-in-zoneless-applications)
+  - [21.3 markForCheck(), detectChanges(), and ApplicationRef.tick() in v22](#213-markforcheck-detectchanges-and-applicationreftick-in-v22)
+  - [21.4 Change Detection Triggers Comparison](#214-change-detection-triggers-comparison)
+- [22. Signal Forms Complete Masterclass](#22-signal-forms-complete-masterclass)
+  - [22.1 Signal Forms Core Architecture (form(), FieldTree, FormField)](#221-signal-forms-core-architecture-form-fieldtree-formfield)
+  - [22.2 Field Reactive State Signals Matrix](#222-field-reactive-state-signals-matrix)
+  - [22.3 Cross-Field Validation & Custom Validators](#223-cross-field-validation--custom-validators)
+  - [22.4 Migration Guide: Reactive Forms (FormGroup) → Signal Forms (form())](#224-migration-guide-reactive-forms-formgroup--signal-forms-form)
+- [23. Resource API & httpResource() Deep Dive](#23-resource-api--httpresource-deep-dive)
+  - [23.1 The resource() API Lifecycle](#231-the-resource-api-lifecycle)
+  - [23.2 httpResource() Stable in Angular v22](#232-httpresource-stable-in-angular-v22)
+  - [23.3 Specialized Response Formats & SSR TransferState Caching](#233-specialized-response-formats--ssr-transferstate-caching)
+- [24. Angular Aria (@angular/aria) & WebMCP / Angular AI](#24-angular-aria-angulararia--webmcp--angular-ai)
+  - [24.1 Angular Aria (@angular/aria) Headless Primitives](#241-angular-aria-angulararia-headless-primitives)
+  - [24.2 WebMCP: AI-Agent Integration with Angular Applications](#242-webmcp-ai-agent-integration-with-angular-applications)
+- [25. Route-Level Rendering, Modern Router, View Transitions & Native CSS Animations](#25-route-level-rendering-modern-router-view-transitions--native-css-animations)
+  - [25.1 Server Routing & Route-Level Rendering (RenderMode)](#251-server-routing--route-level-rendering-rendermode)
+  - [25.2 Modern Angular Router: withViewTransitions(), UrlTree & Navigation Handlers](#252-modern-angular-router-withviewtransitions-urltree--navigation-handlers)
+  - [25.3 Native CSS Morphing Transitions (view-transition-name)](#253-native-css-morphing-transitions-view-transition-name)
+  - [25.4 Modern Angular Animations: animate.enter & animate.leave](#254-modern-angular-animations-animateenter--animateleave)
+- [26. Modern HTTP Engine, Advanced DI, SSR Hydration & @defer Deep Dive](#26-modern-http-engine-advanced-di-ssr-hydration--defer-deep-dive)
+  - [26.1 Modern HTTP Engine: withFetch(), Streaming & Resilient Token Refresh](#261-modern-http-engine-withfetch-streaming--resilient-token-refresh)
+  - [26.2 Advanced Dependency Injection: provideAppInitializer() & runInInjectionContext](#262-advanced-dependency-injection-provideappinitializer--runininjectioncontext)
+  - [26.3 @defer Multi-Trigger Architecture & Prefetch Optimization](#263-defer-multi-trigger-architecture--prefetch-optimization)
+  - [26.4 Modern Templates: @let Declarations & Loop Context Variables](#264-modern-templates-let-declarations--loop-context-variables)
+  - [26.5 Rendering Lifecycle Hooks: DOM Read/Write Separation](#265-rendering-lifecycle-hooks-dom-readwrite-separation)
+- [27. Vitest Testing, Library Development, Compiler Internals & Web Workers](#27-vitest-testing-library-development-compiler-internals--web-workers)
+  - [27.1 Vitest as Primary Test Runner in Angular](#271-vitest-as-primary-test-runner-in-angular)
+  - [27.2 Angular Package & Library Development (ng-packagr & APF)](#272-angular-package--library-development-ng-packagr--apf)
+  - [27.3 Angular Compiler Architecture & Extended Diagnostics](#273-angular-compiler-architecture--extended-diagnostics)
+  - [27.4 Web Workers with Signals & Transferable Objects](#274-web-workers-with-signals--transferable-objects)
+- [28. Advanced Security, Accessibility, Enterprise State & Flagship Blueprints](#28-advanced-security-accessibility-enterprise-state--flagship-blueprints)
+  - [28.1 Advanced Security: Dynamic CSP Nonces, Trusted Types & SRI](#281-advanced-security-dynamic-csp-nonces-trusted-types--sri)
+  - [28.2 Enterprise State Management with NgRx SignalStore](#282-enterprise-state-management-with-ngrx-signalstore)
+  - [28.3 Enterprise Architecture: Feature-Sliced Design (FSD) in Angular](#283-enterprise-architecture-feature-sliced-design-fsd-in-angular)
+  - [28.4 Flagship Blueprint 1: AI-Agent Enabled Angular WebMCP Workspace](#284-flagship-blueprint-1-ai-agent-enabled-angular-webmcp-workspace)
+  - [28.5 Flagship Blueprint 2: Signal Forms Multi-Step Enterprise Stepper](#285-flagship-blueprint-2-signal-forms-multi-step-enterprise-stepper)
+  - [28.6 Flagship Blueprint 3: Real-Time High-Throughput Trading Orderbook (Web Worker + Signals)](#286-flagship-blueprint-3-real-time-high-throughput-trading-orderbook-web-worker--signals)
 
----
+**Part III: Interview handbook (Stage 7)**
 
-### 20.3 Migration Guide: v20 → v21 → v22 Automated CLI Recipes
+- [7. Stage 7: Staff Angular Architect Interview Handbook & Cheatsheet](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet)
+  - [7.1 40 Core Staff Architect Technical Interview Q&As](#71-40-core-staff-architect-technical-interview-qas)
+    - Angular Interview Questions
+    - Signals Interview Questions
+    - RxJS Interview Questions
+    - Scenario-based Questions
 
-#### Step 1: Upgrading to Angular v21
-```bash
-# Update core framework packages, CLI, and Angular Material to v21
-ng update @angular/core@21 @angular/cli@21 @angular/material@21
-
-# Migrate automated unit test runner from Karma to Vitest
-ng update @angular/core@21 --migrate-only karma-to-vitest
-
-# Migrate legacy APP_INITIALIZER providers to provideAppInitializer()
-ng update @angular/core@21 --migrate-only app-initializer
-```
-
-#### Step 2: Upgrading to Angular v22
-```bash
-# Update core framework packages and CLI to v22
-ng update @angular/core@22 @angular/cli@22 @angular/material@22
-
-# Automated migration: Flip component change detection strategy to OnPush
-ng update @angular/core@22 --migrate-only change-detection-onpush
-
-# Automated migration: Migrate stable httpResource primitives
-ng update @angular/core@22 --migrate-only http-resource-stable
-```
-
----
-
-### 20.4 Deprecations & Breaking Changes Catalog (v20 – v22)
-
-| Version | Deprecated API | Replacement API | Breaking Change Details |
-|---|---|---|---|
-| **v22** | `ChangeDetectionStrategy.Default` | `ChangeDetectionStrategy.Eager` or `OnPush` | `Default` is formally deprecated. Components without explicit strategy now default to **`OnPush`**. |
-| **v22** | `@angular/animations` DSL triggers | Native CSS `@keyframes` & `animate.enter` / `animate.leave` | Browser View Transitions and native CSS transitions are the primary animation engine. |
-| **v21** | Karma & Jasmine test runners | **Vitest** (`@angular/build:unit-test`) | Karma is removed from new CLI projects; Vitest is the primary runner. |
-| **v21** | `APP_INITIALIZER` injection token | `provideAppInitializer()` | Class-based multi-providers replaced with functional initializer callbacks. |
-| **v20** | `NgModule` application bootstrapping | `bootstrapApplication(RootComponent, appConfig)` | Standalone APIs are the sole recommended architecture. |
-
-
-
-## 📋 Table of Contents
-
-- [Introduction](#introduction)
-  - What is Angular?
-  - Features
-  - Architecture
-  - Angular CLI
-  - Project Structure
-  - Workspace Configuration
-  - Standalone Applications
-  - Angular Version History
-  - Migration Guide
-  - Bootstrapping
-  - Application Configuration
-  - Environment Providers
-  - Version Compatibility
-
-- [TypeScript Essentials](#typescript-essentials)
-  - TypeScript Basics
-  - Types
-  - Interfaces
-  - Enums
-  - Generics
-  - Decorators
-  - Modules
-  - Utility Types
-  - Type Assertions
-  - Type Narrowing
-  - Type Aliases
-  - Literal Types
-  - Conditional Types
-  - Mapped Types
-
-- [Components](#components)
-  - Components
-  - Standalone Components
-  - Component Lifecycle
-  - Lifecycle Hooks
-  - Component Communication
-  - Inputs
-  - Outputs
-  - Model Inputs
-  - Signal Inputs
-  - Signal Outputs
-  - Component Styles
-  - View Encapsulation
-  - Change Detection
-  - Dynamic Components
-  - Dynamic Template Rendering
-  - Host Elements
-  - Host Bindings
-  - Host Listeners
-  - Content vs View DOM
-  - Component Inheritance
-  - Component Composition
-
-- [Templates](#templates)
-  - Data Binding
-  - Interpolation
-  - Property Binding
-  - Attribute Binding
-  - Class Binding
-  - Style Binding
-  - Event Binding
-  - Two-way Binding
-  - Template Reference Variables
-  - Template Statements
-  - Template Expressions
-  - Pipes in Templates
-  - ng-template
-  - ng-container
-  - ngTemplateOutlet
-  - Template Context
-  - Safe Navigation Operator
-  - Nullish Coalescing
-  - Non-null Assertion
-  - Template Variables
-  - Track Expressions
-
-- [Directives](#directives)
-  - Directives
-  - Attribute Directives
-  - Structural Directives
-  - Built-in Directives
-  - Custom Directives
-  - Directive Composition API (hostDirectives)
-
-- [Modern Control Flow](#modern-control-flow)
-  - @if
-  - @else
-  - @for
-  - @empty
-  - @switch
-  - @case
-  - @default
-  - @let
-  - @defer
-  - Prefetching
-  - Loading Placeholder
-  - Error Placeholder
-  - Track Expressions
-  - Context Variables
-
-- [Signals](#signals)
-  - Signals Introduction
-  - signal()
-  - Writable Signals
-  - computed()
-  - effect()
-  - Signal Equality
-  - untracked()
-  - Signal Inputs
-  - Signal Outputs
-  - Model Inputs
-  - linkedSignal()
-  - resource()
-  - httpResource()
-  - Signal Queries
-  - Signal Store
-  - toSignal()
-  - toObservable()
-  - Signal Best Practices
-  - Signals vs RxJS
-
-- [Dependency Injection](#dependency-injection)
-  - Dependency Injection
-  - Providers
-  - Provider Types
-  - Class Providers
-  - Factory Providers
-  - Existing Providers
-  - Value Providers
-  - Multi Providers
-  - Injection Tokens
-  - inject()
-  - DestroyRef
-  - EnvironmentInjector
-  - Hierarchical DI
-  - Optional
-  - Self
-  - SkipSelf
-  - Host
-  - forwardRef()
-
-- [Functional APIs](#functional-apis)
-  - Functional Queries
-  - Functional Guards
-  - Functional Resolvers
-  - Functional Interceptors
-  - Functional Providers
-
-- [Routing](#routing)
-  - Router
-  - Route Configuration
-  - RouterOutlet
-  - RouterLink
-  - RouterLinkActive
-  - Nested Routes
-  - Lazy Loading
-  - loadComponent()
-  - loadChildren()
-  - Route Parameters
-  - Query Parameters
-  - Route Data
-  - Redirect Routes
-  - Wildcard Routes
-  - Route Guards
-  - CanActivate
-  - CanActivateChild
-  - CanDeactivate
-  - CanMatch
-  - Functional Guards
-  - Resolvers
-  - Title Strategy
-  - Route Reuse Strategy
-  - Preloading Strategies
-  - Scroll Restoration
-  - Navigation Extras
-  - Route Animations
-  - Component Input Binding
-  - Router Events
-
-- [Forms](#forms)
-  - Template-driven Forms
-  - Reactive Forms
-  - FormControl
-  - FormGroup
-  - FormArray
-  - FormBuilder
-  - NonNullableFormBuilder
-  - FormRecord
-  - Typed Reactive Forms
-  - ControlValueAccessor (CVA)
-  - Signal Forms
-  - Cross-field Validation
-  - Custom Validators
-  - Async Validators
-  - Dynamic Forms
-  - Form Reset
-  - Error Handling
-  - Update Strategies
-
-- [HTTP](#http)
-  - HttpClient
-  - provideHttpClient()
-  - HTTP Methods
-  - Headers
-  - Params
-  - HttpContext
-  - Interceptors
-  - Functional Interceptors
-  - Error Handling
-  - Retry Strategies
-  - Caching
-  - Polling
-  - File Upload
-  - File Download
-  - Progress Events
-  - Request Cancellation
-
-- [RxJS](#rxjs)
-  - Observables
-  - Observers
-  - Subjects
-  - BehaviorSubject
-  - ReplaySubject
-  - AsyncSubject
-  - Cold vs Hot Observables
-  - Creation Operators
-  - Transformation Operators
-  - Filtering Operators
-  - Combination Operators
-  - Higher-order Mapping Operators
-  - Error Handling Operators
-  - Utility Operators
-  - Multicasting
-  - Subscription Management
-  - takeUntilDestroyed()
-  - Schedulers
-  - Best Practices
-
-- [Rendering](#rendering)
-  - afterNextRender()
-  - afterRenderEffect()
-  - Rendering Pipeline
-  - Change Detection Strategies
-  - provideZoneChangeDetection()
-  - Zoneless Angular
-  - Pending Tasks
-
-- [Server-Side Rendering (SSR)](#server-side-rendering-ssr)
-  - SSR Introduction
-  - CSR vs SSR vs SSG
-  - provideServerRendering()
-  - provideClientHydration()
-  - Incremental Hydration
-  - Event Replay
-  - TransferState
-  - HTTP Transfer Cache
-  - Hybrid Rendering
-  - Rendering Strategies
-
-- [Content Projection](#content-projection)
-  - ng-content
-  - Multi-slot Projection
-  - Conditional Projection
-
-- [Pipes](#pipes)
-  - Built-in Pipes
-  - Custom Pipes
-  - Pure vs Impure Pipes
-  - Async Pipe
-
-- [Queries](#queries)
-  - viewChild()
-  - viewChildren()
-  - contentChild()
-  - contentChildren()
-
-- [Animations](#animations)
-  - Angular Animations
-  - Transitions
-  - States
-  - Route Animations
-
-- [Internationalization (i18n)](#internationalization-i18n)
-  - i18n
-  - Localization
-  - ICU Messages
-  - Lazy-loaded Translations
-
-- [Security](#security)
-  - XSS Protection
-  - Sanitization
-  - DomSanitizer
-  - CSP
-  - Trusted Types
-  - CSRF
-  - CORS
-  - Authentication
-  - Authorization
-  - JWT
-  - OAuth
-
-- [Performance](#performance)
-  - Lazy Loading
-  - Deferred Loading
-  - Image Optimization
-  - NgOptimizedImage
-  - Change Detection Optimization
-  - Signals Performance
-  - Bundle Optimization
-  - Tree Shaking
-  - Bundle Analysis
-  - Memory Leak Prevention
-
-- [Testing](#testing)
-  - Unit Testing
-  - Component Testing
-  - Service Testing
-  - HTTP Testing
-  - Router Testing
-  - Signals Testing
-  - TestBed
-  - FakeAsync
-  - Mocking
-  - Component Harnesses
-  - Jest
-  - Cypress
-  - Playwright
-  - Vitest
-
-- [State Management](#state-management)
-  - Signals
-  - Signal Store
-  - NgRx
-  - Component Store
-  - NGXS
-  - Akita
-  - Elf
-  - RxState
-  - State Management Patterns
-
-- [Angular Material](#angular-material)
-  - Installation
-  - Theming
-  - Material 3
-  - Design Tokens
-  - Typography
-  - Dark Mode
-  - Components
-  - CDK Overview
-
-- [Angular CDK](#angular-cdk)
-  - Overlay
-  - Portal
-  - Drag & Drop
-  - Clipboard
-  - Virtual Scroll
-  - Scrolling
-  - Accessibility
-  - Focus Monitor
-  - Focus Trap
-  - Text Field
-
-- [Progressive Web Apps (PWA)](#progressive-web-apps-pwa)
-  - Service Workers
-  - Offline Support
-  - Web App Manifest
-  - Push Notifications
-  - Background Sync
-
-- [Deployment](#deployment)
-  - Production Build
-  - Environment Configuration
-  - Docker
-  - Docker Compose
-  - Nginx
-  - Firebase
-  - Vercel
-  - Netlify
-  - GitHub Pages
-  - AWS
-  - Azure
-  - CI/CD
-  - GitHub Actions
-
-- [Accessibility](#accessibility)
-  - ARIA
-  - Keyboard Navigation
-  - Screen Readers
-  - Focus Management
-  - Color Contrast
-
-- [Best Practices](#best-practices)
-  - Folder Structure
-  - Coding Standards
-  - Naming Conventions
-  - Error Handling
-  - Performance
-  - Accessibility
-  - Security
-  - Code Organization
-
-- [Design Patterns](#design-patterns)
-  - Smart vs Presentational Components
-  - Container Pattern
-  - Facade Pattern
-  - Repository Pattern
-  - Dependency Injection Pattern
-  - Feature-based Architecture
-  - Clean Architecture
-
-- [Developer Tooling](#developer-tooling)
-  - Angular DevTools
-  - ESLint
-  - Prettier
-  - Husky
-  - Commitlint
-  - VS Code Extensions
-
-- [Interview Questions](#interview-questions)
-  - Angular Interview Questions
-  - Signals Interview Questions
-  - RxJS Interview Questions
-  - Scenario-based Questions
+**Appendices**
 
 - [Example Projects](#example-projects)
   - Todo App
@@ -566,7 +519,6 @@ ng update @angular/core@22 --migrate-only http-resource-stable
   - Kanban Board
   - Blog CMS
   - Expense Tracker
-
 - [Cheat Sheets](#cheat-sheets)
   - Angular CLI Commands
   - Signals Cheat Sheet
@@ -580,7 +532,6 @@ ng update @angular/core@22 --migrate-only http-resource-stable
   - Control Flow Cheat Sheet
   - Angular Material Cheat Sheet
   - Change Detection Cheat Sheet
-
 - [Resources](#resources)
   - Official Documentation
   - Angular Roadmap
@@ -592,6 +543,21 @@ ng update @angular/core@22 --migrate-only http-resource-stable
   - GitHub Repositories
   - Newsletters
   - Podcasts
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Connect with me](#connect-with-me)
+- [Support](#support)
+
+**Developer tooling**
+
+- Developer Tooling (no dedicated chapter yet)
+  - Angular DevTools
+  - ESLint
+  - Prettier
+  - Husky
+  - Commitlint
+  - VS Code Extensions
 
 ## 1. Stage 1: Absolute Beginner Foundations & Standalone Architecture
 
@@ -605,7 +571,7 @@ flowchart TD
     RootComp --> ChildComps["Child Standalone Components (Direct Imports)"]
 ```
 
-### Line-by-Line Code Breakdown: Standalone Bootstrapping (`src/main.ts` & `src/app/app.config.ts`)
+#### Line-by-Line Code Breakdown: Standalone Bootstrapping (`src/main.ts` & `src/app/app.config.ts`)
 
 ```typescript
 // app.config.ts
@@ -641,11 +607,11 @@ bootstrapApplication(AppComponent, appConfig)
 | `bootstrapApplication(AppComponent, appConfig)` | **Platform Bootstrapper** | Mounts the root standalone component directly to the DOM host element without declaring an intermediate `NgModule`. |
 
 
-### What is Angular?
+#### What is Angular?
 
 **Angular** is a popular open-source framework by Google for building single-page and dynamic web applications. It offers tools and libraries for components, services, forms, routing, and HTTP client, all built with TypeScript. Angular is known for its performance, scalability, and developer productivity.
 
-#### Features
+##### Features
 
 - **Component-Based Architecture**: Reusable, self-contained units of code that define the UI and behavior of a part of the application.
 - **Two-Way Data Binding**: Automatic synchronization of data between the model and the view.
@@ -660,7 +626,7 @@ bootstrapApplication(AppComponent, appConfig)
 - **SEO Friendly**: Tools for server-side rendering, pre-rendering, and meta tags to improve search engine visibility.
 - **Community Support**: Large, active community providing support and sharing knowledge.
 
-#### Difference between AngularJS vs Angular
+##### Difference between AngularJS vs Angular
 
 | AngularJS                                | Angular                                         |
 | ---------------------------------------- | ----------------------------------------------- |
@@ -674,7 +640,7 @@ bootstrapApplication(AppComponent, appConfig)
 
 [Back to top⤴️](#table-of-contents)
 
-#### Angular vs React
+##### Angular vs React
 
 - **Angular**: A full-fledged framework by Google for building web applications. It includes features like two-way data binding, routing, forms, and HTTP client. Ideal for large, complex applications needing a complete solution.
 
@@ -688,7 +654,7 @@ bootstrapApplication(AppComponent, appConfig)
 
 [Back to top⤴️](#table-of-contents)
 
-#### Architecture
+##### Architecture
 
 Angular is built on a set of core design concepts that govern how applications are structured and how data flows. The fundamental building blocks of an Angular application include:
 
@@ -717,7 +683,7 @@ Angular is built on a set of core design concepts that govern how applications a
 
 [Back to top⤴️](#table-of-contents)
 
-#### Angular CLI
+##### Angular CLI
 
 The **Angular CLI** (Command Line Interface) is a powerful command-line tool used to initialize, develop, scaffold, maintain, and test Angular applications directly from a terminal. It automates essential workflows such as:
 
@@ -731,7 +697,7 @@ For a complete list of commands and configurations, refer to the [CLI Commands](
 
 [Back to top⤴️](#table-of-contents)
 
-#### Project Structure
+##### Project Structure
 
 A standard Angular project created with the CLI has a structured folder layout. Below are the key files and directories:
 
@@ -749,7 +715,7 @@ A standard Angular project created with the CLI has a structured folder layout. 
 
 [Back to top⤴️](#table-of-contents)
 
-#### Workspace Configuration
+##### Workspace Configuration
 
 An Angular workspace is configured using the `angular.json` file at the root of the project. This file defines the workspace-wide configuration as well as project-specific settings for build, serve, and test commands.
 
@@ -767,7 +733,7 @@ Key configuration blocks in `angular.json`:
 
 [Back to top⤴️](#table-of-contents)
 
-#### Standalone Applications
+##### Standalone Applications
 
 Starting with Angular v17, **Standalone Components, Directives, and Pipes** are the default format for building Angular applications. This approach removes the need for `NgModules` (like `app.module.ts`), simplifying the learning curve and reducing boilerplate.
 
@@ -781,7 +747,7 @@ For more details on building and using standalone features, refer to the [Standa
 
 [Back to top⤴️](#table-of-contents)
 
-#### Angular Version History
+##### Angular Version History
 
 Angular has evolved significantly over recent releases. Key highlights from recent major versions include:
 
@@ -796,7 +762,7 @@ For dependency compatibilities (TypeScript, Node.js, RxJS) across versions, refe
 
 [Back to top⤴️](#table-of-contents)
 
-#### Migration Guide
+##### Migration Guide
 
 Keeping your Angular applications updated is simplified by the framework's built-in migration tools. The official recommendation is to update one major version at a time.
 
@@ -810,11 +776,11 @@ Key tools and processes for Angular migration:
 
 [Back to top⤴️](#table-of-contents)
 
-#### Bootstrapping
+##### Bootstrapping
 
 Bootstrapping is the process that initializes and starts the Angular application. Angular supports two bootstrapping methods:
 
-##### 1. Standalone Bootstrapping (Modern - Angular v17+)
+###### 1. Standalone Bootstrapping (Modern - Angular v17+)
 Bootstrapping is done using the `bootstrapApplication` function from `@angular/platform-browser`. It loads a standalone component as the root of the application, bypassing the need for an NgModule.
 
 `main.ts`:
@@ -827,7 +793,7 @@ bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));
 ```
 
-##### 2. NgModule Bootstrapping (Legacy)
+###### 2. NgModule Bootstrapping (Legacy)
 Bootstrapping is done using the `platformBrowserDynamic` function to compile and launch a root module (usually `AppModule`).
 
 `main.ts`:
@@ -841,7 +807,7 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 
 [Back to top⤴️](#table-of-contents)
 
-#### Application Configuration
+##### Application Configuration
 
 In standalone applications, global configuration is set up using the `ApplicationConfig` object, typically defined in `app.config.ts`. It contains providers that configure router, HTTP clients, animations, and other framework features.
 
@@ -864,7 +830,7 @@ export const appConfig: ApplicationConfig = {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Environment Providers
+##### Environment Providers
 
 **Environment Providers** are dependency injection providers that are configured at the application level (in the application's root injector). They are available globally throughout the entire application.
 
@@ -875,7 +841,7 @@ Environment providers are typically registered inside `appConfig.providers` duri
 
 [Back to top⤴️](#table-of-contents)
 
-#### Version Compatibility
+##### Version Compatibility
 
 To ensure stability, your workspace dependencies (Node.js, TypeScript, and RxJS) must align with your installed version of Angular.
 
@@ -890,19 +856,19 @@ To ensure stability, your workspace dependencies (Node.js, TypeScript, and RxJS)
 
 [Back to top⤴️](#table-of-contents)
 
-### Roadmap
+#### Roadmap
 
 [Angular Roadmap](https://roadmap.sh/angular)
 
-### Configuration
+#### Configuration
 
-#### Prerequisites
+##### Prerequisites
 
 - Node.js
 - NPM
 - Angular CLI
 
-#### Installation
+##### Installation
 
 Install the Angular CLI globally:
 
@@ -1051,21 +1017,21 @@ Project structure(Version 17 and later):
 
 [Back to top⤴️](#table-of-contents)
 
-## TypeScript Essentials
+### 1.2 TypeScript Essentials
 
-### TypeScript Basics
+#### TypeScript Basics
 
 TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. It adds static typing, classes, and interfaces to the language, helping developers catch errors early during development.
 
-### Types
+#### Types
 
 TypeScript supports basic types such as `string`, `number`, `boolean`, `array`, `tuple`, `enum`, `any`, `void`, `null`, `undefined`, `never`, and `unknown`.
 
-### TypeScript Essentials
+#### TypeScript Essentials
 
 Angular is built with TypeScript, and a solid understanding of TypeScript is essential for building Angular applications. This section covers the fundamental TypeScript features used in Angular development.
 
-#### Interfaces
+##### Interfaces
 
 In TypeScript, an **Interface** is a virtual structure that defines the contract or shape that an object must adhere to. Interfaces exist solely for type-checking at compile time and are completely compiled away in the resulting JavaScript.
 
@@ -1101,7 +1067,7 @@ export class UserProfileComponent {
 }
 ```
 
-#### Enums
+##### Enums
 
 **Enums** (Enumerations) allow you to define a set of named constants. Using enums makes it easier to document intent and handle a set of distinct, related values. TypeScript supports both **numeric** and **string-based** enums.
 
@@ -1134,7 +1100,7 @@ export class UserBadgeComponent {
 }
 ```
 
-#### Generics
+##### Generics
 
 **Generics** provide a way to create reusable code components that can work with a variety of types rather than a single type. This allows you to write type-safe code that adapts to different data models.
 
@@ -1161,7 +1127,7 @@ const response: ApiResponse<User> = {
 };
 ```
 
-#### Utility Types
+##### Utility Types
 
 TypeScript provides several global **Utility Types** to facilitate common type transformations. These utilities help construct new types based on existing ones.
 
@@ -1197,7 +1163,7 @@ Common utility types used in Angular applications:
   // state.theme = 'light'; // Error: Cannot assign to 'theme' because it is a read-only property
   ```
 
-#### Type Assertions
+##### Type Assertions
 
 Sometimes you will have information about the type of a value that TypeScript can't know. In these situations, you can use a **Type Assertion** to specify a more precise type.
 
@@ -1223,7 +1189,7 @@ onInput(event: Event) {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Type Narrowing
+##### Type Narrowing
 
 **Type Narrowing** is the process of moving from a less precise type to a more precise type. TypeScript analyzes runtime control flow to narrow types.
 
@@ -1267,7 +1233,7 @@ Common methods of type narrowing:
 
 [Back to top⤴️](#table-of-contents)
 
-#### Type Aliases
+##### Type Aliases
 
 A **Type Alias** creates a new name for a type. Type aliases can represent primitives, unions, tuples, and any other types.
 
@@ -1277,7 +1243,7 @@ type Coordinate = [number, number];
 type Callback = (data: string) => void;
 ```
 
-##### Type Aliases vs Interfaces
+###### Type Aliases vs Interfaces
 
 | Feature | Interface | Type Alias |
 | :--- | :--- | :--- |
@@ -1288,7 +1254,7 @@ type Callback = (data: string) => void;
 
 [Back to top⤴️](#table-of-contents)
 
-#### Literal Types
+##### Literal Types
 
 **Literal Types** allow you to specify exact values that a string, number, or boolean must have. They are extremely powerful when combined into union types.
 
@@ -1319,7 +1285,7 @@ export class ButtonComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Conditional Types
+##### Conditional Types
 
 **Conditional Types** help select types based on a relation expressed as a condition (similar to ternary operators in JavaScript).
 
@@ -1340,7 +1306,7 @@ type CacheValue<T> = T extends Promise<infer U> ? U : T;
 
 [Back to top⤴️](#table-of-contents)
 
-#### Mapped Types
+##### Mapped Types
 
 **Mapped Types** allow you to create new types based on the properties of an existing type. They use the `keyof` operator to iterate over keys of another type.
 
@@ -1358,7 +1324,7 @@ type OptionsFlags<Type> = {
 type AppFeatures = OptionsFlags<FeatureFlags>;
 ```
 
-##### Mapping Modifiers
+###### Mapping Modifiers
 You can use `+` or `-` prefixes to add or remove modifiers like `readonly` and `?`:
 ```typescript
 // Removes 'readonly' attributes from a type's properties
@@ -1374,7 +1340,7 @@ type Concrete<Type> = {
 
 [Back to top⤴️](#table-of-contents)
 
-### Decorators
+#### Decorators
 
 Decorators are design patterns used to isolate the modification or decoration of a class without modifying the source code.
 
@@ -1393,7 +1359,7 @@ There are several built-in decorators in Angular, including:
 - **@ViewChild**
 - **@ViewChildren**
 
-#### Component
+##### Component
 
 The `@Component` decorator is used to define a new component in Angular.
 
@@ -1429,7 +1395,7 @@ import { AppComponent } from "./app.component";
 export class AppModule {}
 ```
 
-#### Directive
+##### Directive
 
 The `@Directive` decorator is used to define a new directive in Angular.
 
@@ -1473,7 +1439,7 @@ import { CustomDirective } from "./custom.directive";
 export class AppModule {}
 ```
 
-#### Injectable
+##### Injectable
 
 The `@Injectable` decorator is used to define a new service in Angular.
 
@@ -1518,7 +1484,7 @@ import { AppComponent } from "./app.component";
 export class AppModule {}
 ```
 
-#### Pipe
+##### Pipe
 
 The `@Pipe` decorator is used to define a new pipe in Angular.
 
@@ -1550,7 +1516,7 @@ import { CustomPipe } from "./custom.pipe";
 export class AppModule {}
 ```
 
-#### NgModule
+##### NgModule
 
 The `@NgModule` decorator is used to define a new module in Angular.
 
@@ -1580,7 +1546,7 @@ import { AppComponent } from "./app.component";
 export class AppModule {}
 ```
 
-#### Input
+##### Input
 
 The `@Input` decorator is used to pass data from a parent component to a child component.
 
@@ -1647,7 +1613,7 @@ import { ParentComponent } from "./parent/parent.component";
 export class AppModule {}
 ```
 
-#### Output
+##### Output
 
 The `@Output` decorator is used to pass data from a child component to a parent component.
 
@@ -1704,7 +1670,7 @@ export class ParentComponent implements OnInit {
 <app-parent></app-parent>
 ```
 
-#### HostListener
+##### HostListener
 
 The `@HostListener` decorator is used to listen for events on the host element of a directive or component.
 
@@ -1729,7 +1695,7 @@ export class AppComponent {
 }
 ```
 
-#### contentChild & contentChildren
+##### contentChild & contentChildren
 
 The `@ContentChild` and `@ContentChildren` decorators are used to query for content children in the component's view.
 
@@ -1774,7 +1740,7 @@ export class ParentComponent implements OnInit {
 <app-parent></app-parent>
 ```
 
-#### viewChild & viewChildren
+##### viewChild & viewChildren
 
 The `@ViewChild` and `@ViewChildren` decorators are used to query for view children in the component's view.
 
@@ -1813,15 +1779,15 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Modules
+#### Modules
 
 TypeScript uses ES6 module syntax. Files are modules, and variables/functions/classes are shared using `export` and `import` keywords.
 
-### TypeScript
+#### TypeScript
 
 **TypeScript** is JavaScript with syntax for types. TypeScript is a superset of JavaScript. It is developed and maintained by Microsoft.
 
-### Imports
+#### Imports
 
 Angular Core
 
@@ -2031,11 +1997,11 @@ flowchart TD
 
 ### 2.1 Standalone Components Deep Dive
 
-### Components
+#### Components
 
 Component is the main building block of an Angular Application. It is a TypeScript class that interacts with the HTML template and provides the data and logic to the view.
 
-#### Three main building blocks
+##### Three main building blocks
 
 There are three main building blocks of an Angular component:
 
@@ -2049,7 +2015,7 @@ There are three main building blocks of an Angular component:
 
 **MetaData** - Metadata Provides additional information about the component to the Angular.
 
-#### Component metadata properties
+##### Component metadata properties
 
 There are several properties that can be defined in the component metadata:
 
@@ -2096,9 +2062,9 @@ template: "<h1>My Component</h1>";
 templateUrl: "./app.component.html";
 ```
 
-### Component Creation
+#### Component Creation
 
-#### Using Angular CLI
+##### Using Angular CLI
 
 ```bash
 ng generate component [component-name]
@@ -2108,7 +2074,7 @@ ng generate component [component-name]
 ng g c [component-name]
 ```
 
-#### Manual Creation
+##### Manual Creation
 
 **Step 1** - Create a new folder for the component inside the `src/app` folder.
 
@@ -2218,7 +2184,7 @@ ng serve
 ng serve --open
 ```
 
-#### Example
+##### Example
 
 **Creating the component files (Version 16 and earlier)** -
 
@@ -2440,7 +2406,7 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Scope
+#### Scope
 
 In Angular, the scope of a variable determines where it can be accessed:
 
@@ -2448,7 +2414,7 @@ In Angular, the scope of a variable determines where it can be accessed:
 - **Local Scope**: Accessible only within a specific function or block.
 - **Component Scope**: Accessible within a component and its child components.
 
-#### Global Scope
+##### Global Scope
 
 Accessible from anywhere in the application; defined outside any function or block.
 
@@ -2488,7 +2454,7 @@ export class AppComponent {
 <h1>{{ title }}</h1>
 ```
 
-#### Local Scope
+##### Local Scope
 
 Accessible only within the function or block where defined.
 
@@ -2529,7 +2495,7 @@ export class AppComponent {
 <button (click)="testFunction()">Test Function</button>
 ```
 
-#### Component Scope
+##### Component Scope
 
 Accessible within the component and its children.
 
@@ -2556,11 +2522,11 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### View Encapsulation
+#### View Encapsulation
 
 Controls how styles are applied to components. By default, Angular uses Emulated View Encapsulation, scoping styles to the component.
 
-#### Emulated View Encapsulation
+##### Emulated View Encapsulation
 
 Default mode in Angular, emulating shadow DOM to scope styles to the component.
 
@@ -2580,7 +2546,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-xfz4uk?file=src%2Fmain.ts)
 
-#### Shadow DOM View Encapsulation
+##### Shadow DOM View Encapsulation
 
 Uses native shadow DOM to encapsulate styles within the component, preventing them from affecting other components.
 
@@ -2600,7 +2566,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-cc1rfn?file=src%2Fmain.ts)
 
-#### None View Encapsulation
+##### None View Encapsulation
 
 Disables encapsulation; styles can affect other components.
 
@@ -2622,11 +2588,11 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Component Communication
+#### Component Communication
 
 Passing data between Angular components using Input/Output decorators, EventEmitter, and services.
 
-#### Inputs
+##### Inputs
 
 The `@Input()` decorator allows a parent component to pass data to a child component.
 
@@ -2654,7 +2620,7 @@ export class ChildComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Outputs
+##### Outputs
 
 The `@Output()` decorator allows a child component to emit custom events to send data back to a parent component. It relies on the `EventEmitter` class.
 
@@ -2709,7 +2675,7 @@ export class ParentComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Model Inputs
+##### Model Inputs
 
 Introduced in Angular v17.2, **Model Inputs** (using the `model()` API) define a special kind of input that supports **two-way data binding**. Unlike normal inputs, model inputs return a writable signal, allowing the child component to write new values that propagate back to the parent.
 
@@ -2740,7 +2706,7 @@ Parent binding:
 
 [Back to top⤴️](#table-of-contents)
 
-#### Signal Inputs
+##### Signal Inputs
 
 Introduced in Angular v17.1, **Signal Inputs** are a modern, reactive alternative to the `@Input()` decorator. Instead of using class properties, inputs are declared using the `input()` function, which returns a read-only signal.
 
@@ -2769,7 +2735,7 @@ export class UserComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Signal Outputs
+##### Signal Outputs
 
 Introduced in Angular v17.3, **Signal Outputs** (using the `output()` API) are a modern functional replacement for the `@Output()` decorator. They return an `OutputEmitterRef` instead of an `EventEmitter` and offer simpler structure and cleaner API alignment with Signals.
 
@@ -2794,7 +2760,7 @@ export class ChildBtnComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Siblings to Siblings Communication
+#### Siblings to Siblings Communication
 
 **Using Services** - Services are a way to share data and functionality between components in Angular. You can create a service that holds the data and methods that need to be shared between components.
 
@@ -2994,7 +2960,7 @@ export class Sibling2Component {
 
 [Back to top⤴️](#table-of-contents)
 
-### Host Elements
+#### Host Elements
 
 In Angular, the element that encloses a component's template is called the **Host Element**. For example, if you define a component with the selector `app-user`, then the `<app-user>` tag in the parent template is the host element.
 
@@ -3006,13 +2972,13 @@ Angular allows components to style, configure, and interact with their host elem
 
 [Back to top⤴️](#table-of-contents)
 
-### Host Bindings
+#### Host Bindings
 
 **Host Bindings** allow you to associate properties (like classes, styles, attributes, or properties) of the host element with properties in your component class. When a component property changes, Angular automatically updates the host element.
 
 In modern Angular (v17+), the recommended approach is to define host bindings using the **`host` metadata property** in the `@Component` decorator. The older `@HostBinding()` decorator is still supported but generally discouraged for new code.
 
-#### 1. Using the `host` Metadata Property (Recommended)
+##### 1. Using the `host` Metadata Property (Recommended)
 
 You can specify bindings inside a `host` configuration object within the `@Component` decorator:
 
@@ -3034,7 +3000,7 @@ export class CardComponent {
 }
 ```
 
-#### 2. Using the `@HostBinding` Decorator (Legacy)
+##### 2. Using the `@HostBinding` Decorator (Legacy)
 
 Alternatively, you can decorate individual properties inside the component class:
 
@@ -3052,13 +3018,13 @@ export class LegacyCardComponent {
 }
 ```
 
-### Host Listeners
+#### Host Listeners
 
 **Host Listeners** allow a component to listen to and handle DOM events triggered directly on its host element (or globally on the `window` or `document`).
 
 In modern Angular (v17+), the recommended approach is to define host listeners using the **`host` metadata property** in the `@Component` decorator. The older `@HostListener()` decorator is still supported but generally discouraged for new code.
 
-#### 1. Using the `host` Metadata Property (Recommended)
+##### 1. Using the `host` Metadata Property (Recommended)
 
 You can define event listeners inside the `host` configuration object within the `@Component` decorator:
 
@@ -3084,7 +3050,7 @@ export class ClickTrackerComponent {
 }
 ```
 
-#### 2. Using the `@HostListener` Decorator (Legacy)
+##### 2. Using the `@HostListener` Decorator (Legacy)
 
 Alternatively, you can decorate individual class methods inside the component class:
 
@@ -3110,14 +3076,14 @@ export class LegacyClickTrackerComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Content vs View DOM
+#### Content vs View DOM
 
 Angular components manage two separate DOM trees:
 
 - **View DOM**: The internal DOM nodes defined inside the component's own HTML template.
 - **Content DOM**: The external DOM nodes projected into the component from a parent component using content projection (`<ng-content>`).
 
-#### Querying the DOM
+##### Querying the DOM
 Angular provides decorators and signal queries to access these elements:
 - **`viewChild` / `@ViewChild`**: Queries an element or child component from the **View DOM**.
 - **`contentChild` / `@ContentChild`**: Queries an element or child component projected into the **Content DOM**.
@@ -3151,7 +3117,7 @@ export class CardComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Component Inheritance
+#### Component Inheritance
 
 Angular components support standard TypeScript class inheritance. This is useful for sharing common logic, properties, and methods across multiple components.
 
@@ -3190,7 +3156,7 @@ export class SubmitButtonComponent extends BaseButton {
 
 [Back to top⤴️](#table-of-contents)
 
-### Component Composition
+#### Component Composition
 
 Angular v15 introduced the **Directive Composition API** (`hostDirectives`), allowing developers to compose components by applying directives to their host elements directly inside the component metadata. This provides a cleaner alternative to inheritance.
 
@@ -3223,11 +3189,11 @@ export class CompositionCardComponent {}
 
 [Back to top⤴️](#table-of-contents)
 
-### Standalone Components
+#### Standalone Components
 
 A standalone component is a type of component which is not part of any Angular module. It provides a simplified way to build Angular applications by reducing the need for NgModules. Standalone components are self-contained and declare their own dependencies.
 
-#### Creating a Standalone Component
+##### Creating a Standalone Component
 
 ```typescript
 import { Component } from "@angular/core";
@@ -3247,7 +3213,7 @@ export class StandaloneComponent {
 }
 ```
 
-#### Key Features of Standalone Components
+##### Key Features of Standalone Components
 
 - **Self-contained**: Declares its own dependencies through the imports array
 - **No NgModule required**: Can be used without declaring in a module
@@ -3255,7 +3221,7 @@ export class StandaloneComponent {
 - **Better tree-shaking**: Enables more efficient bundle optimization
 - **Simplified lazy-loading**: Can be lazy-loaded directly without module
 
-#### Using Standalone Components
+##### Using Standalone Components
 
 ```typescript
 // Importing in another standalone component
@@ -3277,7 +3243,7 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
-#### Converting to Standalone
+##### Converting to Standalone
 
 To convert an existing component to standalone:
 
@@ -3288,11 +3254,11 @@ To convert an existing component to standalone:
 
 [Back to top⤴️](#table-of-contents)
 
-### Component Lifecycle
+#### Component Lifecycle
 
 Angular manages the lifecycle of components and directives from creation to destruction, offering hooks to run code at specific lifecycle events.
 
-#### Lifecycle Hooks
+##### Lifecycle Hooks
 
 Here is the list of lifecycle hooks in order of execution:
 
@@ -3309,7 +3275,7 @@ Here is the list of lifecycle hooks in order of execution:
 
 [Back to top⤴️](#table-of-contents)
 
-#### OnChanges
+##### OnChanges
 
 It is called when the data-bound properties of a directive/component are changed. It is called before ngOnInit and whenever one or more data-bound input properties change.
 
@@ -3359,7 +3325,7 @@ export class TestComponent implements OnChanges {
 
 [Stackblitz Link](https://stackblitz.com/edit/angular-ivy-19r5mc?file=src/app/test/test.component.ts)
 
-#### OnInit
+##### OnInit
 
 It is called after Angular has initialized all data-bound properties of a directive/component. It is called only once after the first ngOnChanges.
 
@@ -3382,7 +3348,7 @@ export class AppComponent {
 
 [Stackblits Link](https://stackblitz.com/edit/angular-ivy-hkmssz?file=src/app/app.component.html)
 
-#### DoCheck
+##### DoCheck
 
 It is called during every change detection run, and it is used to detect and act upon changes that Angular doesn't catch on its own.
 
@@ -3403,7 +3369,7 @@ export class AppComponent implements DoCheck {
 
 [Stackblitz Link](https://stackblitz.com/edit/angular-ivy-f5msas?file=src/app/app.component.ts)
 
-#### AfterViewInit
+##### AfterViewInit
 
 It is called after Angular has fully initialized a component's view. It is the perfect place to put any initialization logic that depends on the view.
 
@@ -3431,7 +3397,7 @@ export class AppComponent implements AfterViewInit {
 
 [Stackblitz Link](https://stackblitz.com/edit/angular-wscf59?file=src/main.ts)
 
-#### AfterViewChecked
+##### AfterViewChecked
 
 It is called after Angular has checked the component's view and child views. It is called after ngAfterViewInit and every subsequent ngAfterContentChecked.
 
@@ -3459,7 +3425,7 @@ export class AppComponent implements AfterViewChecked {
 
 [Stackblitz Link](https://stackblitz.com/edit/angular-wnwfnv?file=src/main.ts)
 
-#### AfterContentInit
+##### AfterContentInit
 
 It is called after Angular has fully initialized the content of a directive. It is the perfect place to put any initialization logic that depends on the content.
 
@@ -3487,7 +3453,7 @@ export class AppComponent implements AfterContentInit {
 
 [Stackblitz Link](https://stackblitz.com/edit/angular-qhy7cw?file=src/main.ts)
 
-#### AfterContentChecked
+##### AfterContentChecked
 
 It is called after the default change detector has completed checking all content of a directive. It is called after ngAfterContentInit and every subsequent ngAfterContentChecked.
 
@@ -3515,7 +3481,7 @@ export class AppComponent implements AfterContentInit {
 
 [Stackblitz Link](https://stackblitz.com/edit/angular-ryx2uh?file=src/main.ts)
 
-#### OnDestroy
+##### OnDestroy
 
 It is called just before Angular destroys the directive/component. It is used to cleanup any resources or subscriptions that the directive/component has created.
 
@@ -3549,13 +3515,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
 [Back to top⤴️](#table-of-contents)
 
-### Advanced Topics
+#### Advanced Topics
 
-#### Dynamic Component Loading
+##### Dynamic Component Loading
 
 Load and create components programmatically at runtime.
 
-##### Using ComponentFactory (Deprecated)
+###### Using ComponentFactory (Deprecated)
 
 ```typescript
 import {
@@ -3587,7 +3553,7 @@ export class DynamicHostComponent {
 }
 ```
 
-##### Using ViewContainerRef.createComponent (Angular 13+)
+###### Using ViewContainerRef.createComponent (Angular 13+)
 
 ```typescript
 import { ViewContainerRef, ComponentRef } from "@angular/core";
@@ -3615,7 +3581,7 @@ export class DynamicHostComponent {
 }
 ```
 
-##### Dynamic Component Service
+###### Dynamic Component Service
 
 ```typescript
 import { Injectable, Type, ViewContainerRef } from "@angular/core";
@@ -3643,11 +3609,11 @@ export class DynamicComponentService {
 }
 ```
 
-#### Angular Elements
+##### Angular Elements
 
 Create custom elements that can be used in any HTML page.
 
-##### Creating Angular Elements
+###### Creating Angular Elements
 
 ```bash
 ng add @angular/elements
@@ -3694,7 +3660,7 @@ export class AppModule {
 }
 ```
 
-##### Using Angular Elements
+###### Using Angular Elements
 
 ```html
 <!-- Can be used in any HTML page -->
@@ -3707,18 +3673,18 @@ export class AppModule {
 </script>
 ```
 
-#### Angular Schematics
+##### Angular Schematics
 
 Create custom code generators and transformers.
 
-##### Creating a Schematic
+###### Creating a Schematic
 
 ```bash
 npm install -g @angular-devkit/schematics-cli
 schematics blank --name=my-schematic
 ```
 
-##### Schematic Definition
+###### Schematic Definition
 
 ```typescript
 // src/my-component/index.ts
@@ -3755,7 +3721,7 @@ export function myComponent(options: Options): Rule {
 }
 ```
 
-##### Template Files
+###### Template Files
 
 ```typescript
 // src/my-component/files/__name@dasherize__.component.ts.template
@@ -3770,17 +3736,17 @@ import { Component } from '@angular/core';
 export class <%= classify(name) %>Component {}
 ```
 
-#### Custom Libraries
+##### Custom Libraries
 
 Create reusable Angular libraries.
 
-##### Creating a Library
+###### Creating a Library
 
 ```bash
 ng generate library my-lib
 ```
 
-##### Library Structure
+###### Library Structure
 
 ```tree
 projects/
@@ -3795,7 +3761,7 @@ projects/
     package.json
 ```
 
-##### Public API
+###### Public API
 
 ```typescript
 // public-api.ts
@@ -3804,7 +3770,7 @@ export * from "./lib/my-lib.component";
 export * from "./lib/my-lib.module";
 ```
 
-##### Building and Publishing
+###### Building and Publishing
 
 ```bash
 ng build my-lib
@@ -3812,7 +3778,7 @@ cd dist/my-lib
 npm publish
 ```
 
-##### Secondary Entry Points
+###### Secondary Entry Points
 
 ```typescript
 // projects/my-lib/testing/public-api.ts
@@ -3826,11 +3792,11 @@ export * from './src/test-utils';
 }
 ```
 
-#### Micro Frontends
+##### Micro Frontends
 
 Split large applications into smaller, manageable pieces.
 
-##### Module Federation Setup
+###### Module Federation Setup
 
 ```bash
 npm install @angular-architects/module-federation
@@ -3838,7 +3804,7 @@ ng add @angular-architects/module-federation --project shell --type host
 ng add @angular-architects/module-federation --project mfe1 --type remote
 ```
 
-##### Shell Configuration
+###### Shell Configuration
 
 ```typescript
 // webpack.config.js (Shell)
@@ -3855,7 +3821,7 @@ module.exports = {
 };
 ```
 
-##### Remote Configuration
+###### Remote Configuration
 
 ```typescript
 // webpack.config.js (Remote)
@@ -3874,7 +3840,7 @@ module.exports = {
 };
 ```
 
-##### Dynamic Import
+###### Dynamic Import
 
 ```typescript
 // Shell application
@@ -3893,9 +3859,9 @@ const routes: Routes = [
 ];
 ```
 
-#### Content Projection Advanced Patterns
+##### Content Projection Advanced Patterns
 
-##### Multiple Slot Projection
+###### Multiple Slot Projection
 
 ```typescript
 @Component({
@@ -3924,7 +3890,7 @@ export class CardComponent {}
 // </app-card>
 ```
 
-##### Conditional Content Projection
+###### Conditional Content Projection
 
 ```typescript
 @Component({
@@ -3945,21 +3911,21 @@ export class ConditionalWrapperComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Component Styles
+#### Component Styles
 
 Angular components can define their own CSS styles directly in the component metadata using the `styles` or `styleUrls`/`styleUrl` properties. These styles only apply to the component's own template.
 
-### Change Detection
+#### Change Detection
 
 Angular checks component state changes to update the view. By default, it uses the `Default` change detection strategy, checking the entire tree. For performance optimization, components can use `ChangeDetectionStrategy.OnPush`.
 
-### Dynamic Components
+#### Dynamic Components
 
 Components can be loaded dynamically at runtime using a `ViewContainerRef` and `ComponentRef`.
 
 [Back to top⤴️](#table-of-contents)
 
-### Dynamic Template Rendering
+#### Dynamic Template Rendering
 
 In addition to dynamic components, Angular allows you to render templates dynamically using `ngTemplateOutlet`. This is useful when you want to define a reusable template block and render it in multiple places or pass it into other components.
 
@@ -3993,9 +3959,9 @@ export class DynamicRenderComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-## Templates
+### 2.2 Templates
 
-### Data Binding
+#### Data Binding
 
 Data binding is a core feature of Angular that allows you to bind data between the component's class and the HTML template.
 
@@ -4004,7 +3970,7 @@ There are two types of data binding in Angular:
 - **One-way binding** - This allows for passing data from the component's class to the HTML template or vice-versa.
 - **Two-way binding** - This allows for binding a property of an HTML element to a property in the component's class and vice-versa.
 
-### One-way Binding
+#### One-way Binding
 
 One-way binding allows for passing data from the component's class to the HTML template.
 
@@ -4023,7 +3989,7 @@ There are several ways to achieve one-way binding from the component to the view
 4. Style binding
 5. Attribute binding
 
-### Interpolation
+#### Interpolation
 
 Interpolation allows for embedding expressions in the HTML template. It is denoted by double curly braces (`{{ }}`).
 
@@ -4049,7 +4015,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/angular-ivy-zu564w?file=src%2Fapp%2Fapp.component.ts)
 
-### Property Binding
+#### Property Binding
 
 Property binding allows for binding a property of an HTML element to a property in the component's class. It is denoted by square brackets (`[]`).
 
@@ -4078,7 +4044,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/angular-ivy-vcpyoq?file=src/app/app.component.ts)
 
-### Class Binding
+#### Class Binding
 
 Class binding allows for binding a class of an HTML element to a property in the component's class. It is denoted by square brackets (`[]`).
 
@@ -4114,7 +4080,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/angular-ivy-s1pkwg?file=src/app/app.component.ts)
 
-### Style Binding
+#### Style Binding
 
 Style binding allows for binding a style of an HTML element to a property in the component's class. It is denoted by square brackets (`[]`).
 
@@ -4142,7 +4108,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/angular-ivy-w8nf7f?file=src/app/app.component.ts)
 
-### Attribute Binding
+#### Attribute Binding
 
 Attribute binding allows for binding an attribute of an HTML element to a property in the component's class. It is denoted by square brackets (`[]`).
 
@@ -4170,7 +4136,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/angular-ivy-bhqsgc?file=src/app/app.component.html)
 
-### Event Binding
+#### Event Binding
 
 Event binding allows for binding an event of an HTML element to a method in the component's class. It is denoted by parentheses (`()`).
 
@@ -4230,7 +4196,7 @@ The (change) event can also be specifically implemented by other Angular compone
 
 [☝️Source of Explaination](https://stackoverflow.com/a/51127794/14292971)
 
-### Two-Way Binding
+#### Two-Way Binding
 
 Two-way binding allows for binding a property of an HTML element to a property in the component's class and vice-versa. It is denoted by `[(ngModel)]`.
 
@@ -4330,7 +4296,7 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Template Reference Variables
+#### Template Reference Variables
 
 A **Template Reference Variable** allows you to reference a DOM element, component instance, or directive within your template. It is declared using the hash symbol (`#`).
 
@@ -4351,7 +4317,7 @@ Example referencing an Angular directive (`ngForm`):
 
 [Back to top⤴️](#table-of-contents)
 
-### Template Statements
+#### Template Statements
 
 A **Template Statement** is a method or property assignment that runs in response to an event. It appears on the right side of an event binding, such as `(click)="statement"`.
 
@@ -4366,7 +4332,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Template Expressions
+#### Template Expressions
 
  A **Template Expression** is a JavaScript-like code block that produces a value. It appears inside double curly braces (`{{ expression }}`) or as a property binding value `[property]="expression"`.
 
@@ -4382,7 +4348,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Pipes in Templates
+#### Pipes in Templates
 
 Pipes are simple functions designed to accept an input value, transform it, and return a formatted output directly inside your templates. They are declared using the pipe symbol (`|`).
 
@@ -4395,7 +4361,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### ng-template
+#### ng-template
 
 The `<ng-template>` element defines an Angular template block. Its content is **not** rendered by default in the DOM. Instead, Angular compiles it and renders it conditionally based on structural directives (like `*ngIf` or `*ngTemplateOutlet`).
 
@@ -4413,7 +4379,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### ng-container
+#### ng-container
 
 The `<ng-container>` is a special structural element that Angular does not render in the final HTML DOM. It acts as a grouping element, allowing you to apply structural directives (like `*ngIf` or `*ngFor`) without creating redundant wrapping tags (like `<div>` or `<span>`).
 
@@ -4429,7 +4395,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### ngTemplateOutlet
+#### ngTemplateOutlet
 
 The `*ngTemplateOutlet` directive is used to dynamically insert an `<ng-template>` fragment into the template DOM.
 
@@ -4444,7 +4410,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Template Context
+#### Template Context
 
 When rendering templates dynamically via `ngTemplateOutlet`, you can pass a local context object. The template accesses these values using the `let-` syntax.
 
@@ -4465,7 +4431,7 @@ myContext = { title: 'Card Title', $implicit: 'This is the card body text.' };
 
 [Back to top⤴️](#table-of-contents)
 
-### Safe Navigation Operator
+#### Safe Navigation Operator
 
 The **Safe Navigation Operator** (`?.`) protects your templates from throwing `NullPointerException` errors when navigating nested property paths that might be `null` or `undefined`.
 
@@ -4477,7 +4443,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Nullish Coalescing
+#### Nullish Coalescing
 
 The **Nullish Coalescing Operator** (`??`) returns the right-hand operand when the left-hand operand is `null` or `undefined`. Otherwise, it returns the left-hand operand.
 
@@ -4489,7 +4455,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Non-null Assertion
+#### Non-null Assertion
 
 The **Non-null Assertion Operator** (`!`) is a postfix operator that tells TypeScript's type checker that an expression is not `null` or `undefined` at template compile-time.
 
@@ -4501,7 +4467,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Template Variables
+#### Template Variables
 
 Introduced in Angular v18.1, the `@let` block syntax allows you to declare local template variables directly inside your HTML markup. This is extremely useful for storing intermediate values (like resolved async observables or computed variables) and reusing them multiple times.
 
@@ -4519,7 +4485,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### Track Expressions
+#### Track Expressions
 
 In modern Angular control flow, the `@for` block requires a **Track Expression** (`track`) to uniquely identify each item in the iterated collection. This allows Angular to minimize DOM manipulation when items are added, removed, or reordered, significantly increasing loop rendering performance.
 
@@ -4537,13 +4503,13 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-## Directives
+### 2.3 Directives
 
-### Directives
+#### Directives
 
 Directives add behaviour to an existing DOM element or an existing component instance.
 
-#### Types of Directives
+##### Types of Directives
 
 There are three types of directives in Angular:
 
@@ -4553,7 +4519,7 @@ There are three types of directives in Angular:
 
 3. **Custom Directives** - Custom directives are user-defined directives that add custom behavior to an element. They can be used to encapsulate complex behavior and reuse it across multiple components.
 
-#### Structural Directives
+##### Structural Directives
 
 There are several built-in structural directives in Angular, including:
 
@@ -4642,7 +4608,7 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/angular-ivy-xm8ztp?file=src%2Fapp%2Fapp.component.ts)
 
-#### Attribute Directives
+##### Attribute Directives
 
 There are several built-in attribute directives in Angular, including:
 
@@ -4737,23 +4703,23 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Built-in Directives
+##### Built-in Directives
 
 Angular provides several built-in directives that are categorized as either **Attribute** or **Structural** directives:
 
-##### Built-in Attribute Directives
+###### Built-in Attribute Directives
 - **`NgClass`**: Adds and removes a set of CSS classes dynamically. See [Attribute Directives](#attribute-directives) for details.
 - **`NgStyle`**: Adds and removes a set of HTML inline styles dynamically. See [Attribute Directives](#attribute-directives) for details.
 - **`NgModel`**: Adds two-way data binding to an HTML form element. See [Attribute Directives](#attribute-directives) for details.
 
-##### Built-in Structural Directives
+###### Built-in Structural Directives
 - **`NgIf`**: Conditionally projects or removes content from the template DOM. See [Structural Directives](#structural-directives) for details.
 - **`NgFor`**: Instantiates a template for each item in a collection. See [Structural Directives](#structural-directives) for details.
 - **`NgSwitch` / `NgSwitchCase` / `NgSwitchDefault`**: Conditionally selects one of several alternative templates. See [Structural Directives](#structural-directives) for details.
 
 [Back to top⤴️](#table-of-contents)
 
-#### Custom Directives
+##### Custom Directives
 
 Custom directives are user-defined directives that add custom behavior to an element. They can be used to encapsulate complex behavior and reuse it across multiple components.
 
@@ -4809,7 +4775,7 @@ export class AppModule {}
 
 [Back to top⤴️](#table-of-contents)
 
-#### Other directives
+##### Other directives
 
 There are several other built-in directives in Angular, including:
 
@@ -4953,13 +4919,13 @@ export class AppComponent {
 
 [Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-yerwcu?file=src%2Fmain.ts)
 
-### Directive Composition API (hostDirectives)
+#### Directive Composition API (hostDirectives)
 
 `hostDirectives` allows a component or directive to reuse the behavior of one or more standalone directives without adding them to its template.
 
 Instead of using inheritance or wrapper components, Angular composes behaviors directly into the host component.
 
-#### Why use hostDirectives?
+##### Why use hostDirectives?
 
 - Reuse directive logic
 - Composition over inheritance
@@ -4968,7 +4934,7 @@ Instead of using inheritance or wrapper components, Angular composes behaviors d
 - Less duplication
 - Recommended for reusable behaviors
 
-#### Basic Example
+##### Basic Example
 
 Highlight Directive
 
@@ -5009,7 +4975,7 @@ The component automatically gets the highlighting behavior without using:
 
 ---
 
-#### Multiple Host Directives
+##### Multiple Host Directives
 
 ```typescript
 @Component({
@@ -5024,7 +4990,7 @@ Angular composes all directive behaviors into the component.
 
 ---
 
-#### Exposing Inputs
+##### Exposing Inputs
 
 Host directive inputs are private by default.
 
@@ -5052,7 +5018,7 @@ Parent
 
 ---
 
-#### Exposing Outputs
+##### Exposing Outputs
 
 ```typescript
 @Component({
@@ -5076,7 +5042,7 @@ Parent
 
 ---
 
-#### Aliasing Inputs
+##### Aliasing Inputs
 
 ```typescript
 hostDirectives: [
@@ -5095,7 +5061,7 @@ Usage
 
 ---
 
-#### Aliasing Outputs
+##### Aliasing Outputs
 
 ```typescript
 hostDirectives: [
@@ -5114,7 +5080,7 @@ Usage
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 Loading Directive
 
@@ -5154,7 +5120,7 @@ The component gains loading behavior without containing any loading-related logi
 
 ---
 
-#### Combining Multiple Behaviors
+##### Combining Multiple Behaviors
 
 ```typescript
 hostDirectives: [
@@ -5172,7 +5138,7 @@ One component can reuse many independent behaviors.
 
 ---
 
-#### hostDirectives vs Inheritance
+##### hostDirectives vs Inheritance
 
 | hostDirectives      | Inheritance       |
 | ------------------- | ----------------- |
@@ -5184,7 +5150,7 @@ One component can reuse many independent behaviors.
 
 ---
 
-#### hostDirectives vs Wrapper Components
+##### hostDirectives vs Wrapper Components
 
 | hostDirectives     | Wrapper Component    |
 | ------------------ | -------------------- |
@@ -5195,7 +5161,7 @@ One component can reuse many independent behaviors.
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Keep host directives focused on a single responsibility.
 - Prefer composition over inheritance.
@@ -5205,7 +5171,7 @@ One component can reuse many independent behaviors.
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Using non-standalone directives
 
@@ -5243,7 +5209,7 @@ hostDirectives: [HighlightDirective];
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Promotes composition over inheritance.
 - Only standalone directives can be used as host directives.
@@ -5251,21 +5217,21 @@ hostDirectives: [HighlightDirective];
 - Enables highly reusable and maintainable component architectures.
 - Works seamlessly with standalone components.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/directives/directive-composition-api>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-host-directives>
 
 [Back to top⤴️](#table-of-contents)
 
-## Modern Control Flow
+### 2.4 Modern Control Flow
 
 Angular's modern control flow (introduced in v17) provides a new, built-in syntax for conditionally displaying content, looping, and switching inside templates. It uses a cleaner `@` syntax which does not require importing directives like `NgIf` or `NgFor`.
 
-### @if
+#### @if
 
 The `@if` block conditionally displays content when its expression is truthy.
 
@@ -5275,7 +5241,7 @@ The `@if` block conditionally displays content when its expression is truthy.
 }
 ```
 
-### @else
+#### @else
 
 The `@else` and `@else if` blocks provide fallback displays when the `@if` expression is falsy.
 
@@ -5289,7 +5255,7 @@ The `@else` and `@else if` blocks provide fallback displays when the `@if` expre
 }
 ```
 
-### @for
+#### @for
 
 The `@for` block renders a template for each item in a collection. It requires a `track` expression to optimize rendering performance.
 
@@ -5301,7 +5267,7 @@ The `@for` block renders a template for each item in a collection. It requires a
 </ul>
 ```
 
-### @empty
+#### @empty
 
 The `@empty` block serves as a fallback inside a `@for` block when the collection is empty.
 
@@ -5315,7 +5281,7 @@ The `@empty` block serves as a fallback inside a `@for` block when the collectio
 </ul>
 ```
 
-### @switch
+#### @switch
 
 The `@switch` block conditionally displays one of several templates based on the value of an expression.
 
@@ -5331,7 +5297,7 @@ The `@switch` block conditionally displays one of several templates based on the
 
 [Back to top⤴️](#table-of-contents)
 
-### @case
+#### @case
 
 The `@case` block is nested inside a `@switch` block to conditionally display content when the switch expression matches the case expression.
 
@@ -5349,7 +5315,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### @default
+#### @default
 
 The `@default` block is nested inside a `@switch` block to display fallback content when none of the `@case` expressions match the switch expression.
 
@@ -5364,7 +5330,7 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
-### @let
+#### @let
 
 Introduced in Angular v18.1, the `@let` block allows you to declare local template variables inside your component template.
 
@@ -5373,7 +5339,7 @@ Introduced in Angular v18.1, the `@let` block allows you to declare local templa
 <p>Hello, {{ name }}!</p>
 ```
 
-### @defer
+#### @defer
 
 The `@defer` block allows you to defer the loading of select dependencies (like components, directives, and pipes) within a template until a specific trigger condition is met (e.g., viewport entry, browser idle).
 
@@ -5383,7 +5349,7 @@ The `@defer` block allows you to defer the loading of select dependencies (like 
 }
 ```
 
-#### Prefetching
+##### Prefetching
 
 You can prefetch a deferred component before rendering it, using the `prefetch` keyword.
 
@@ -5393,7 +5359,7 @@ You can prefetch a deferred component before rendering it, using the `prefetch` 
 }
 ```
 
-#### Loading Placeholder
+##### Loading Placeholder
 
 Use `@loading` to display a placeholder component while the deferred dependency is loading.
 
@@ -5405,7 +5371,7 @@ Use `@loading` to display a placeholder component while the deferred dependency 
 }
 ```
 
-#### Error Placeholder
+##### Error Placeholder
 
 Use `@error` to display a fallback template if the deferred dependency fails to load.
 
@@ -5419,7 +5385,7 @@ Use `@error` to display a fallback template if the deferred dependency fails to 
 
 [Back to top⤴️](#table-of-contents)
 
-### Track Expressions
+#### Track Expressions
 
 In modern Angular control flow, the `@for` block requires a **Track Expression** to uniquely identify each item in the collection.
 
@@ -5436,7 +5402,7 @@ Unlike legacy `*ngFor` which required writing a `trackBy` function inside the co
 
 [Back to top⤴️](#table-of-contents)
 
-### Context Variables
+#### Context Variables
 
 Inside a `@for` block, Angular provides several implicit local variables to obtain details about the current iteration. These context variables are prefixed with a dollar sign (`$`):
 
@@ -5462,6 +5428,683 @@ Example:
 
 [Back to top⤴️](#table-of-contents)
 
+### 2.5 Content Projection
+
+Content projection allows passing HTML templates from parent components to child components.
+
+#### ng-content
+
+Use the `<ng-content></ng-content>` tag to serve as a placeholder for projected elements.
+
+#### Multi-slot Projection
+
+Specify slots using the `select` attribute (e.g. `<ng-content select="[header]"></ng-content>`).
+
+#### Conditional Projection
+
+Conditionally render projected templates using programmatic checks or `@if` directives.
+
+### 2.6 Pipes
+
+A pipe takes in data as input and transforms it to a desired output.
+
+Syntax:
+
+```text
+{{ data | pipe }}
+```
+
+```text
+Expression | pipeOperator[:pipeArguments]
+
+**Expression:** is the expression, which you want to transform
+**|** : is the Pipe Character
+**pipeOperator** : name of the Pipe
+**pipeArguments:** arguments to the Pipe
+```
+
+#### Built-in Pipes
+
+There are several built-in pipes in Angular, including:
+
+- **Date Pipe**
+- **Uppercase Pipe**
+- **Lowercase Pipe**
+- **Currency Pipe**
+- **Percent Pipe**
+- **Slice Pipe**
+- **Decimal/number Pipe**
+- **JSON Pipe**
+- **Async Pipe**
+
+#### Date Pipe
+
+The `date` pipe is used to format a date value according to the locale rules specified in the application.
+
+```ts
+import { DatePipe } from "@angular/common";
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  date = new Date();
+
+  constructor(private datePipe: DatePipe) {}
+
+  formatDate() {
+    return this.datePipe.transform(this.date, "shortDate");
+  }
+}
+```
+
+```html
+<h1>Date Pipe Example</h1>
+<p>{{ date | date: 'shortDate' }}</p>
+```
+
+```ts
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+
+import { AppComponent } from "./app.component";
+import { DatePipe } from "@angular/common";
+
+@NgModule({
+  imports: [BrowserModule, FormsModule],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  providers: [DatePipe],
+})
+export class AppModule {}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-fobnad?file=src%2Fapp%2Fapp.component.ts)
+
+#### Uppercase Pipe
+
+The `uppercase` pipe is used to transform a string to uppercase.
+
+```html
+<h1>Upper Case Pipe Example</h1>
+<p>{{ name | uppercase }}</p>
+```
+
+```ts
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  name = "Manthan Ank";
+}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-hlmoxp?file=src%2Fapp%2Fapp.component.ts)
+
+#### Lowercase Pipe
+
+The `lowercase` pipe is used to transform a string to lowercase.
+
+```html
+<p>{{ name | lowercase }}</p>
+```
+
+```ts
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  name = "Manthan Ank";
+}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-6gcdgx?file=src%2Fapp%2Fapp.component.ts)
+
+#### Currency Pipe
+
+The `currency` pipe is used to format a number as currency using the locale rules specified in the application.
+
+```html
+<h1>Currency Pipe Example</h1>
+<p>{{ price | currency }}</p>
+```
+
+```ts
+import { CurrencyPipe } from "@angular/common";
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  price = 100;
+
+  constructor(private currencyPipe: CurrencyPipe) {}
+
+  formatCurrency() {
+    return this.currencyPipe.transform(this.price, "USD", true);
+  }
+}
+```
+
+```ts
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+
+import { AppComponent } from "./app.component";
+import { CurrencyPipe } from "@angular/common";
+
+@NgModule({
+  imports: [BrowserModule, FormsModule],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  providers: [CurrencyPipe],
+})
+export class AppModule {}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-3fhhzz?file=src%2Fapp%2Fapp.component.ts)
+
+#### Percent Pipe
+
+The `percent` pipe is used to format a number as a percentage.
+
+```html
+<h1>Percent Pipe Example</h1>
+<p>{{ percentage | percent }}</p>
+```
+
+```ts
+import { PercentPipe } from "@angular/common";
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  percentage = 0.5;
+
+  constructor(private percentPipe: PercentPipe) {}
+
+  formatPercentage() {
+    return this.percentPipe.transform(this.percentage, "2");
+  }
+}
+```
+
+```ts
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+
+import { AppComponent } from "./app.component";
+import { HelloComponent } from "./hello.component";
+import { PercentPipe } from "@angular/common";
+
+@NgModule({
+  imports: [BrowserModule, FormsModule],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  providers: [PercentPipe],
+})
+export class AppModule {}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-tccybj?file=src%2Fapp%2Fapp.component.ts)
+
+#### Slice Pipe
+
+The `slice` pipe is used to create a new array or string containing a subset of the elements of the input array or string.
+
+```typescript
+<p>{{ ['apple', 'banana', 'orange', 'mango'] | slice:1:3 }}</p>
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-q88gmm?file=src%2Fapp%2Fapp.component.ts)
+
+#### Decimal/number Pipe
+
+The `number` pipe is used to format a number as text. It can be used to format a number as a percentage, currency, or decimal number.
+
+```html
+<p>{{ 123456.78 | number:'3.2-3' }}</p>
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-7cwk1u?file=src%2Fapp%2Fapp.component.ts)
+
+#### JSON Pipe
+
+The `json` pipe is used to transform a JavaScript object into a JSON string.
+
+```html
+<p>{{data | json}}</p>
+```
+
+```typescript
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  data = { name: "Manthan Ank", age: 25 };
+}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-jgc252?file=src%2Fmain.ts)
+
+#### Async Pipe
+
+The `async` pipe is used to subscribe to an Observable or Promise and return the latest value it has emitted.
+
+```html
+<p>{{data$ | async}}</p>
+```
+
+```typescript
+// DataService.service.ts
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
+
+@Injectable()
+export class DataService {
+  private data$: Observable<string>;
+
+  constructor() {
+    // Simulating an asynchronous data source
+    this.data$ = of("Hello, async pipe!").pipe(
+      // Simulating delay
+      delay(2000),
+    );
+  }
+
+  getData(): Observable<string> {
+    return this.data$;
+  }
+}
+```
+
+```typescript
+// ExampleComponent.component.ts
+import { Component } from "@angular/core";
+import { Observable } from "rxjs";
+import { DataService } from "./data.service";
+
+@Component({
+  selector: "app-example",
+  template: "<div>{{ data$ | async }}</div>",
+})
+export class ExampleComponent {
+  data$: Observable<string>;
+
+  constructor(private dataService: DataService) {
+    this.data$ = this.dataService.getData();
+  }
+}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-iatcbn?file=src%2Fmain.ts)
+
+#### Impure Pipes
+
+By default, Angular pipes are pure, meaning they are stateless and do not change unless the input value changes. However, you can create impure pipes by setting the pure property to false in the @Pipe decorator.
+
+```typescript
+import { Pipe, PipeTransform } from "@angular/core";
+
+@Pipe({
+  name: "impurePipe",
+  pure: false,
+})
+export class ImpurePipe implements PipeTransform {
+  transform(value: any): any {
+    return value;
+  }
+}
+```
+
+```html
+<p>{{ data | impurePipe }}</p>
+```
+
+```typescript
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "my-app",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
+})
+export class AppComponent {
+  data = "Hello, world!";
+}
+```
+
+```typescript
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+
+import { AppComponent } from "./app.component";
+
+@NgModule({
+  imports: [BrowserModule, FormsModule],
+  declarations: [AppComponent, ImpurePipe],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+[Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-xy3hhp?file=src%2Fmain.ts)
+
+[Back to top⤴️](#table-of-contents)
+
+### 2.7 Queries
+
+#### viewChild()
+
+Returns a Signal containing the first matching element, directive, or component from the component's own template.
+
+##### Example
+
+Child Component
+
+```typescript
+@Component({
+  selector: "app-child",
+  template: `<h2>Angular</h2>`,
+})
+export class ChildComponent {
+  message() {
+    console.log("Hello Angular");
+  }
+}
+```
+
+Parent Component
+
+```typescript
+import { Component, viewChild } from "@angular/core";
+
+@Component({
+  selector: "app-parent",
+  imports: [ChildComponent],
+  template: ` <app-child /> `,
+})
+export class ParentComponent {
+  child = viewChild(ChildComponent);
+
+  callChild() {
+    this.child()?.message();
+  }
+}
+```
+
+The returned value is a Signal.
+
+```typescript
+this.child();
+```
+
+---
+
+#### Required viewChild()
+
+```typescript
+child = viewChild.required(ChildComponent);
+```
+
+Angular throws an error if the child component cannot be found.
+
+---
+
+#### Reading Template Reference Variables
+
+```html
+<input #search />
+```
+
+```typescript
+import { ElementRef, viewChild } from "@angular/core";
+
+search = viewChild<ElementRef<HTMLInputElement>>("search");
+```
+
+Reading the value
+
+```typescript
+this.search()?.nativeElement.value;
+```
+
+---
+
+#### viewChildren()
+
+Returns a Signal containing all matching elements or components.
+
+```typescript
+items = viewChildren(ItemComponent);
+```
+
+Reading the components
+
+```typescript
+this.items().forEach((item) => {
+  console.log(item);
+});
+```
+
+##### Example
+
+```html
+<app-item />
+<app-item />
+<app-item />
+```
+
+```typescript
+items = viewChildren(ItemComponent);
+```
+
+Output
+
+```text
+[
+  ItemComponent,
+  ItemComponent,
+  ItemComponent
+]
+```
+
+---
+
+#### contentChild()
+
+Returns a Signal for projected content using `<ng-content>`.
+
+Child Component
+
+```typescript
+@Component({
+  selector: "app-card",
+  template: ` <ng-content /> `,
+})
+export class CardComponent {
+  heading = contentChild("heading");
+}
+```
+
+Parent Component
+
+```html
+<app-card>
+  <h2 #heading>Angular v22</h2>
+</app-card>
+```
+
+Reading the projected content
+
+```typescript
+this.heading();
+```
+
+---
+
+#### contentChildren()
+
+Returns a Signal containing multiple projected elements.
+
+Child Component
+
+```typescript
+items = contentChildren("item");
+```
+
+Parent Component
+
+```html
+<app-list>
+  <p #item>One</p>
+
+  <p #item>Two</p>
+
+  <p #item>Three</p>
+</app-list>
+```
+
+Reading all projected elements
+
+```typescript
+this.items();
+```
+
+---
+
+#### Reacting to Query Changes
+
+Since Functional Queries return Signals, they work naturally with `computed()`.
+
+```typescript
+childCount = computed(() => this.items().length);
+```
+
+Or with `effect()`.
+
+```typescript
+effect(() => {
+  console.log(this.items());
+});
+```
+
+Whenever the queried components change, the Signal updates automatically.
+
+---
+
+#### Real-world Example
+
+```typescript
+@Component({
+  selector: "app-dashboard",
+  imports: [ChartComponent],
+  template: ` <app-chart /> `,
+})
+export class DashboardComponent {
+  chart = viewChild(ChartComponent);
+
+  refreshChart() {
+    this.chart()?.refresh();
+  }
+}
+```
+
+---
+
+#### Functional Queries vs Decorators
+
+| Functional Queries      | Decorators               |
+| ----------------------- | ------------------------ |
+| Signal-based            | Decorator-based          |
+| Reactive                | Static                   |
+| Modern API              | Traditional API          |
+| Better type inference   | Good type inference      |
+| Works with `computed()` | Requires lifecycle hooks |
+| Works with `effect()`   | Manual updates           |
+
+---
+
+#### Best Practices
+
+- Prefer Functional Queries for new Angular applications.
+- Use `.required()` when the queried element must exist.
+- Use `viewChildren()` instead of multiple `viewChild()` calls.
+- Use `computed()` for derived values.
+- Keep direct DOM manipulation to a minimum.
+
+---
+
+#### Common Mistakes
+
+❌ Forgetting that queries return Signals
+
+```typescript
+this.child.message();
+```
+
+✅ Correct
+
+```typescript
+this.child()?.message();
+```
+
+---
+
+❌ Accessing before Angular initializes the view
+
+Always access query results after Angular has created the view or react to them using Signals.
+
+---
+
+❌ Using `ElementRef` unnecessarily
+
+Prefer querying components or directives instead of manipulating the DOM directly.
+
+---
+
+#### Angular v22 Notes
+
+- Recommended replacement for query decorators.
+- Fully integrated with Angular Signals.
+- Eliminates much of the boilerplate associated with lifecycle hooks.
+- Provides reactive access to child components and projected content.
+- Works seamlessly with standalone components.
+
+##### Official Documentation
+
+<https://angular.dev/guide/components/queries>
+
+##### StackBlitz Example
+
+<https://stackblitz.com/edit/stackblitz-starters-functional-queries>
+
+[Back to top⤴️](#table-of-contents)
+
 ## 3. Stage 3: Modern Signals Reactivity & State Management
 
 ```mermaid
@@ -5474,15 +6117,15 @@ flowchart LR
 
 ### 3.1 Signals Internals & Reactive Primitives
 
-### Signals Introduction
+#### Signals Introduction
 
 Angular Signals is a powerful system that provides detailed monitoring of state usage within an application, enabling the framework to efficiently optimize rendering updates.
 
-### signal()
+#### signal()
 
 The `signal()` function instantiates a writable signal with an initial value. It returns a `WritableSignal<T>` object that can be read by calling it as a function, and updated using the `.set()` or `.update()` methods.
 
-#### Writable Signals
+##### Writable Signals
 
 Writable signals provide an API for updating their values directly. You create writable signals by calling the `signal` function with the signal's initial value:
 
@@ -5497,11 +6140,11 @@ console.log(count()); // Reads the current value of the signal, which is 5
 
 [Back to top⤴️](#table-of-contents)
 
-### computed()
+#### computed()
 
 The `computed()` function creates a read-only signal that derives its value from other signals. It returns a `Signal<T>` that automatically tracks any reactive dependencies read during its execution.
 
-#### Computed Signals
+##### Computed Signals
 
 Computed signals are read-only signals that derive their value from other signals. You define computed signals using the `computed` function and specifying a derivation:
 
@@ -5519,11 +6162,11 @@ console.log(doubleCount()); // The computed signal automatically updates to 6
 
 [Back to top⤴️](#table-of-contents)
 
-### effect()
+#### effect()
 
 The `effect()` function registers a side-effect operation that runs whenever one or more signal dependencies change. It is designed for operations like logging, DOM synchronization, or rendering integrations.
 
-#### Effects
+##### Effects
 
 Signals are useful because they notify interested consumers when they change. An effect is an operation that runs whenever one or more signal values change. You can create an effect with the `effect` function:
 
@@ -5583,7 +6226,7 @@ export class AppComponent implements OnInit {
 <p>Double Count: {{ doubleCount() }}</p>
 ```
 
-#### Signal Equality
+##### Signal Equality
 
 When you update a signal's value, it notifies its dependencies only if the new value is different from the previous value (based on strict equality `===`).
 
@@ -5609,7 +6252,7 @@ const point = signal<Coordinate>(
 point.set({ x: 0, y: 0 });
 ```
 
-#### untracked()
+##### untracked()
 
 By default, reading a signal inside a computed derivation or an effect registers it as a dependency. If you want to read a signal's value _without_ creating a dependency, use the `untracked` function.
 
@@ -5632,13 +6275,13 @@ currentUser.set("Alice"); // Does NOT trigger the effect
 
 [Back to top⤴️](#table-of-contents)
 
-### Signal Inputs
+#### Signal Inputs
 
 Signal Inputs are a modern way to receive data from a parent component. Introduced in Angular, they replace the traditional `@Input()` decorator with a signal-based API.
 
 Unlike `@Input()`, Signal Inputs automatically integrate with Angular Signals and provide reactive updates without additional code.
 
-#### Why use Signal Inputs?
+##### Why use Signal Inputs?
 
 - Better performance
 - Fully reactive
@@ -5647,7 +6290,7 @@ Unlike `@Input()`, Signal Inputs automatically integrate with Angular Signals an
 - Type-safe
 - Works seamlessly with computed() and effect()
 
-#### Creating a Signal Input
+##### Creating a Signal Input
 
 ```typescript
 import { Component, input } from "@angular/core";
@@ -5661,7 +6304,7 @@ export class ChildComponent {
 }
 ```
 
-#### Passing Data from Parent
+##### Passing Data from Parent
 
 ```typescript
 @Component({
@@ -5674,7 +6317,7 @@ export class ParentComponent {
 }
 ```
 
-#### Reading Signal Input Value
+##### Reading Signal Input Value
 
 Signal Inputs are signals.
 
@@ -5690,7 +6333,7 @@ NOT
 name;
 ```
 
-#### Default Value
+##### Default Value
 
 ```typescript
 import { Component, input } from "@angular/core";
@@ -5706,7 +6349,7 @@ export class ChildComponent {
 
 If the parent doesn't provide a value, the default value is used.
 
-#### Required Signal Input
+##### Required Signal Input
 
 ```typescript
 import { Component, input } from "@angular/core";
@@ -5722,7 +6365,7 @@ export class ChildComponent {
 
 Angular throws an error if the parent does not provide the input.
 
-#### Using with computed()
+##### Using with computed()
 
 ```typescript
 import { Component, computed, input } from "@angular/core";
@@ -5740,7 +6383,7 @@ export class ChildComponent {
 
 Whenever the input changes, `upperName` updates automatically.
 
-#### Using with effect()
+##### Using with effect()
 
 ```typescript
 import { Component, effect, input } from "@angular/core";
@@ -5762,7 +6405,7 @@ export class ChildComponent {
 
 The effect automatically runs whenever the input value changes.
 
-#### Aliasing
+##### Aliasing
 
 ```typescript
 name = input("", {
@@ -5776,7 +6419,7 @@ Parent
 <app-child [userName]="username"> </app-child>
 ```
 
-#### Transforming Input Values
+##### Transforming Input Values
 
 ```typescript
 count = input(0, {
@@ -5786,7 +6429,7 @@ count = input(0, {
 
 Angular transforms the value before storing it.
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 @Component({
@@ -5815,7 +6458,7 @@ Parent
 </app-user-card>
 ```
 
-#### Signal Input vs @Input()
+##### Signal Input vs @Input()
 
 | Signal Input          | @Input()                  |
 | --------------------- | ------------------------- |
@@ -5826,7 +6469,7 @@ Parent
 | Works with effect()   | Requires ngOnChanges      |
 | Cleaner API           | More boilerplate          |
 
-#### Best Practices
+##### Best Practices
 
 - Prefer Signal Inputs for new Angular applications.
 - Use `input.required()` when an input is mandatory.
@@ -5834,7 +6477,7 @@ Parent
 - Avoid mutating input values directly.
 - Keep Signal Inputs immutable whenever possible.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Forgetting parentheses
 
@@ -5864,7 +6507,7 @@ Signal Inputs are read-only.
 
 Prefer `effect()` or `computed()` when working with Signal Inputs.
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Recommended API for new Angular applications.
 - Integrates seamlessly with Signals.
@@ -5872,21 +6515,21 @@ Prefer `effect()` or `computed()` when working with Signal Inputs.
 - Provides better type safety and readability.
 - Works perfectly with standalone components.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/components/inputs>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-signal-input-example>
 
 [Back to top⤴️](#table-of-contents)
 
-### Signal Outputs
+#### Signal Outputs
 
 Signal Outputs provide a modern way to emit events from a child component to a parent component. They replace the traditional `@Output()` decorator with a signal-based API, making component communication simpler and more type-safe.
 
-#### Why use Signal Outputs?
+##### Why use Signal Outputs?
 
 - Modern replacement for `@Output()`
 - Better type safety
@@ -5895,7 +6538,7 @@ Signal Outputs provide a modern way to emit events from a child component to a p
 - Works seamlessly with standalone components
 - Recommended for new Angular applications
 
-#### Creating a Signal Output
+##### Creating a Signal Output
 
 ```typescript
 import { Component, output } from "@angular/core";
@@ -5913,7 +6556,7 @@ export class ChildComponent {
 }
 ```
 
-#### Listening in Parent Component
+##### Listening in Parent Component
 
 ```html
 <app-child (messageSent)="receiveMessage($event)"> </app-child>
@@ -5934,9 +6577,9 @@ export class ParentComponent {
 }
 ```
 
-#### Emitting Different Types
+##### Emitting Different Types
 
-##### String
+###### String
 
 ```typescript
 messageSent = output<string>();
@@ -5944,7 +6587,7 @@ messageSent = output<string>();
 this.messageSent.emit("Angular");
 ```
 
-##### Number
+###### Number
 
 ```typescript
 counterChanged = output<number>();
@@ -5952,7 +6595,7 @@ counterChanged = output<number>();
 this.counterChanged.emit(100);
 ```
 
-##### Boolean
+###### Boolean
 
 ```typescript
 statusChanged = output<boolean>();
@@ -5960,7 +6603,7 @@ statusChanged = output<boolean>();
 this.statusChanged.emit(true);
 ```
 
-##### Object
+###### Object
 
 ```typescript
 userSelected = output<{
@@ -5974,7 +6617,7 @@ this.userSelected.emit({
 });
 ```
 
-#### Aliasing Output
+##### Aliasing Output
 
 ```typescript
 saved = output<void>({
@@ -5988,7 +6631,7 @@ Parent
 <app-child (save)="onSave()"> </app-child>
 ```
 
-#### Real-world Example
+##### Real-world Example
 
 Child Component
 
@@ -6022,7 +6665,7 @@ export class HomeComponent {
 }
 ```
 
-#### Emitting Without Data
+##### Emitting Without Data
 
 ```typescript
 closed = output<void>();
@@ -6038,7 +6681,7 @@ Parent
 <app-dialog (closed)="dialogClosed()"> </app-dialog>
 ```
 
-#### Signal Output vs @Output()
+##### Signal Output vs @Output()
 
 | Signal Output                | @Output()        |
 | ---------------------------- | ---------------- |
@@ -6048,7 +6691,7 @@ Parent
 | Less Boilerplate             | More Boilerplate |
 | Recommended for New Projects | Supported        |
 
-#### Best Practices
+##### Best Practices
 
 - Prefer `output()` for new Angular applications.
 - Always specify the emitted type.
@@ -6056,7 +6699,7 @@ Parent
 - Use meaningful event names.
 - Emit immutable objects whenever possible.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Forgetting `.emit()`
 
@@ -6098,30 +6741,30 @@ Instead, emit only the required data.
 this.userSelected.emit(user.id);
 ```
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Recommended replacement for `@Output()`.
 - Provides a cleaner and more readable API.
 - Fully compatible with standalone components.
 - Offers better type inference than the traditional decorator approach.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/components/outputs>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-signal-output-example>
 
 [Back to top⤴️](#table-of-contents)
 
-### Model Inputs
+#### Model Inputs
 
 Model Inputs provide a convenient way to create two-way binding between parent and child components. They replace the traditional combination of `@Input()` and `@Output()` with a single signal-based API.
 
 Unlike traditional two-way binding, Model Inputs are fully reactive and integrate seamlessly with Angular Signals.
 
-#### Why use Model Inputs?
+##### Why use Model Inputs?
 
 - Simplifies two-way binding
 - Less boilerplate
@@ -6130,7 +6773,7 @@ Unlike traditional two-way binding, Model Inputs are fully reactive and integrat
 - Works with Signals
 - Recommended for modern Angular applications
 
-#### Creating a Model Input
+##### Creating a Model Input
 
 ```typescript
 import { Component, model } from "@angular/core";
@@ -6158,7 +6801,7 @@ export class CounterComponent {
 }
 ```
 
-#### Using Model Input in Parent
+##### Using Model Input in Parent
 
 ```typescript
 @Component({
@@ -6177,7 +6820,7 @@ export class AppComponent {
 
 Whenever the child updates `count`, the parent property is automatically updated.
 
-#### Default Value
+##### Default Value
 
 ```typescript
 count = model(100);
@@ -6185,7 +6828,7 @@ count = model(100);
 
 If the parent doesn't provide a value, Angular uses the default value.
 
-#### Required Model Input
+##### Required Model Input
 
 ```typescript
 name = model.required<string>();
@@ -6193,7 +6836,7 @@ name = model.required<string>();
 
 Angular throws an error if the parent doesn't bind the value.
 
-#### Reading Model Value
+##### Reading Model Value
 
 Model Inputs are signals.
 
@@ -6207,7 +6850,7 @@ NOT
 count;
 ```
 
-#### Updating the Value
+##### Updating the Value
 
 Using `set()`
 
@@ -6221,7 +6864,7 @@ Using `update()`
 this.count.update((value) => value + 1);
 ```
 
-#### Working with computed()
+##### Working with computed()
 
 ```typescript
 import { Component, computed, model } from "@angular/core";
@@ -6241,7 +6884,7 @@ export class CartComponent {
 
 Whenever the quantity changes, the total updates automatically.
 
-#### Working with effect()
+##### Working with effect()
 
 ```typescript
 import { Component, effect, model } from "@angular/core";
@@ -6263,7 +6906,7 @@ export class CounterComponent {
 
 The effect automatically runs whenever the model value changes.
 
-#### Real-world Example
+##### Real-world Example
 
 Child Component
 
@@ -6304,7 +6947,7 @@ export class AppComponent {
 }
 ```
 
-#### Model Input vs @Input() + @Output()
+##### Model Input vs @Input() + @Output()
 
 | Model Input      | Traditional                   |
 | ---------------- | ----------------------------- |
@@ -6315,7 +6958,7 @@ export class AppComponent {
 | Signal-based     | Decorator-based               |
 | Cleaner Syntax   | More Code                     |
 
-#### Best Practices
+##### Best Practices
 
 - Prefer `model()` for two-way binding.
 - Use `set()` when assigning a new value.
@@ -6323,7 +6966,7 @@ export class AppComponent {
 - Keep model values immutable.
 - Use meaningful model names.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Forgetting parentheses
 
@@ -6369,30 +7012,30 @@ Prefer
 count = model(0);
 ```
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Recommended for two-way binding in new Angular applications.
 - Eliminates the need for paired `@Input()` and `@Output()`.
 - Fully integrated with Angular Signals.
 - Improves readability and reduces boilerplate.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/components/inputs#model-inputs>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-model-input-example>
 
 [Back to top⤴️](#table-of-contents)
 
-### linkedSignal()
+#### linkedSignal()
 
 `linkedSignal()` creates a writable signal whose value is derived from another signal while still allowing local updates. It automatically resets whenever its source signal changes.
 
 Unlike `computed()`, a `linkedSignal()` can be updated using `set()` and `update()`.
 
-#### Why use linkedSignal()?
+##### Why use linkedSignal()?
 
 - Creates writable derived state
 - Automatically stays in sync with another signal
@@ -6400,7 +7043,7 @@ Unlike `computed()`, a `linkedSignal()` can be updated using `set()` and `update
 - Eliminates manual synchronization
 - Improves readability
 
-#### Creating a linkedSignal
+##### Creating a linkedSignal
 
 ```typescript
 import { Component, signal, linkedSignal } from "@angular/core";
@@ -6422,7 +7065,7 @@ Initially, the value of `selectedUser()` is:
 Angular
 ```
 
-#### Updating the Linked Signal
+##### Updating the Linked Signal
 
 ```typescript
 this.selectedUser.set("Vue");
@@ -6436,7 +7079,7 @@ Vue
 
 Unlike `computed()`, the value can be changed manually.
 
-#### Source Signal Changes
+##### Source Signal Changes
 
 ```typescript
 this.users.set(["Svelte", "Solid", "Angular"]);
@@ -6450,7 +7093,7 @@ Svelte
 
 Whenever the source signal changes, Angular automatically recalculates the linked signal.
 
-#### Using update()
+##### Using update()
 
 ```typescript
 this.selectedUser.update((value) => value.toUpperCase());
@@ -6462,7 +7105,7 @@ Output
 ANGULAR
 ```
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component, signal, linkedSignal } from "@angular/core";
@@ -6504,7 +7147,7 @@ this.products.set(["Camera", "Drone"]);
 Camera
 ```
 
-#### linkedSignal() vs computed()
+##### linkedSignal() vs computed()
 
 | linkedSignal()                  | computed()                      |
 | ------------------------------- | ------------------------------- |
@@ -6514,7 +7157,7 @@ Camera
 | Derived from another signal     | Derived from another signal     |
 | Automatically syncs with source | Automatically syncs with source |
 
-#### Best Practices
+##### Best Practices
 
 - Use `linkedSignal()` when derived state needs to be editable.
 - Use `computed()` for read-only derived values.
@@ -6522,7 +7165,7 @@ Camera
 - Avoid storing duplicated business data.
 - Prefer immutable updates.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Using `computed()` for editable state
 
@@ -6560,30 +7203,30 @@ Prefer
 selectedUser = linkedSignal(() => users()[0]);
 ```
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Part of Angular's modern Signals API.
 - Ideal for editable derived state.
 - Automatically synchronizes with its source signal.
 - Reduces boilerplate required to keep signals in sync.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/signals/linked-signal>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-linked-signal>
 
 [Back to top⤴️](#table-of-contents)
 
-### resource()
+#### resource()
 
 `resource()` is a reactive API for managing asynchronous data in Angular Signals. It automatically tracks loading, success, and error states without requiring subscriptions.
 
 Unlike Observables, a Resource integrates directly with Signals and updates automatically whenever its dependencies change.
 
-#### Why use resource()?
+##### Why use resource()?
 
 - Reactive asynchronous data
 - Automatic loading state
@@ -6592,7 +7235,7 @@ Unlike Observables, a Resource integrates directly with Signals and updates auto
 - Works seamlessly with Signals
 - Eliminates boilerplate
 
-#### Creating a Resource
+##### Creating a Resource
 
 ```typescript
 import { Component, resource, signal } from "@angular/core";
@@ -6617,7 +7260,7 @@ export class UserComponent {
 }
 ```
 
-#### Reading Resource Value
+##### Reading Resource Value
 
 ```typescript
 user.value();
@@ -6632,7 +7275,7 @@ Example output
 }
 ```
 
-#### Loading State
+##### Loading State
 
 ```typescript
 @if (user.isLoading()) {
@@ -6640,7 +7283,7 @@ Example output
 }
 ```
 
-#### Error State
+##### Error State
 
 ```typescript
 @if (user.error()) {
@@ -6648,7 +7291,7 @@ Example output
 }
 ```
 
-#### Updating the Request
+##### Updating the Request
 
 ```typescript
 this.userId.set(2);
@@ -6656,7 +7299,7 @@ this.userId.set(2);
 
 Angular automatically executes the loader again.
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component, resource, signal } from "@angular/core";
@@ -6698,7 +7341,7 @@ export class ProductComponent {
 
 Whenever the product ID changes, the resource reloads automatically.
 
-#### Resource States
+##### Resource States
 
 ```typescript
 resource.value();
@@ -6724,7 +7367,7 @@ resource.hasValue();
 
 Returns `true` if a value exists.
 
-#### Reloading a Resource
+##### Reloading a Resource
 
 ```typescript
 this.user.reload();
@@ -6732,7 +7375,7 @@ this.user.reload();
 
 Angular executes the loader again using the current request.
 
-#### resource() vs Observable
+##### resource() vs Observable
 
 | resource()              | Observable            |
 | ----------------------- | --------------------- |
@@ -6743,7 +7386,7 @@ Angular executes the loader again using the current request.
 | Reactive by default     | Reactive through RxJS |
 | Cleaner API             | More boilerplate      |
 
-#### Best Practices
+##### Best Practices
 
 - Use `resource()` for asynchronous Signal-based state.
 - Keep the loader focused on fetching data.
@@ -6751,7 +7394,7 @@ Angular executes the loader again using the current request.
 - Avoid expensive computations inside the loader.
 - Use `reload()` when data needs refreshing.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Fetching data outside the loader
 
@@ -6785,30 +7428,30 @@ Prefer
 @if (user.isLoading()) { Loading... } @else { {{ user.value()?.name }} }
 ```
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Designed for Signal-based asynchronous state.
 - Automatically reacts to Signal changes.
 - Removes much of the boilerplate associated with Observables.
 - Forms the foundation for higher-level APIs such as `httpResource()`.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/signals/resource>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-resource-example>
 
 [Back to top⤴️](#table-of-contents)
 
-### httpResource()
+#### httpResource()
 
 `httpResource()` is a Signal-based API for fetching HTTP data reactively. It is built on top of Angular's `HttpClient` and `resource()`, automatically handling loading, success, and error states.
 
 Whenever the request URL or request options change, Angular automatically sends a new HTTP request.
 
-#### Why use httpResource()?
+##### Why use httpResource()?
 
 - Declarative data fetching
 - Automatic loading state
@@ -6817,7 +7460,7 @@ Whenever the request URL or request options change, Angular automatically sends 
 - Reactive updates
 - Built on Angular Signals
 
-#### Prerequisites
+##### Prerequisites
 
 Provide the HttpClient when bootstrapping the application.
 
@@ -6830,7 +7473,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-#### Creating an HTTP Resource
+##### Creating an HTTP Resource
 
 ```typescript
 import { Component, signal } from "@angular/core";
@@ -6852,7 +7495,7 @@ export class UserComponent {
 
 Angular automatically performs a new request whenever `userId()` changes.
 
-#### Reading Data
+##### Reading Data
 
 ```typescript
 user.value();
@@ -6867,7 +7510,7 @@ Example Output
 }
 ```
 
-#### Loading State
+##### Loading State
 
 ```html
 @if (user.isLoading()) {
@@ -6875,7 +7518,7 @@ Example Output
 }
 ```
 
-#### Error State
+##### Error State
 
 ```html
 @if (user.error()) {
@@ -6883,7 +7526,7 @@ Example Output
 }
 ```
 
-#### Changing the Request
+##### Changing the Request
 
 ```typescript
 this.userId.set(2);
@@ -6891,7 +7534,7 @@ this.userId.set(2);
 
 Angular automatically performs another HTTP request.
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component, signal } from "@angular/core";
@@ -6930,7 +7573,7 @@ export class ProductListComponent {
 
 Every time the page changes, Angular automatically requests the next set of products.
 
-#### Reloading Data
+##### Reloading Data
 
 ```typescript
 this.products.reload();
@@ -6938,7 +7581,7 @@ this.products.reload();
 
 This performs the HTTP request again using the current URL.
 
-#### Resource States
+##### Resource States
 
 ```typescript
 products.value();
@@ -6964,7 +7607,7 @@ products.hasValue();
 
 Returns `true` if a response has been successfully received.
 
-#### httpResource() vs HttpClient
+##### httpResource() vs HttpClient
 
 | httpResource()          | HttpClient                    |
 | ----------------------- | ----------------------------- |
@@ -6975,7 +7618,7 @@ Returns `true` if a response has been successfully received.
 | Best for GET requests   | Suitable for all HTTP methods |
 | Reactive by default     | RxJS-based                    |
 
-#### Best Practices
+##### Best Practices
 
 - Use `httpResource()` primarily for reactive **GET** requests.
 - Use `HttpClient` directly for POST, PUT, PATCH, and DELETE operations.
@@ -6983,7 +7626,7 @@ Returns `true` if a response has been successfully received.
 - Avoid performing business logic inside the resource.
 - Use Signals to drive request parameters.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Creating a resource inside a method
 
@@ -7013,7 +7656,7 @@ Always display a loading indicator while the request is in progress.
 
 For mutations (POST, PUT, PATCH, DELETE), prefer `HttpClient`.
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Built on top of Angular Signals.
 - Automatically refetches when reactive dependencies change.
@@ -7021,17 +7664,17 @@ For mutations (POST, PUT, PATCH, DELETE), prefer `HttpClient`.
 - Designed for declarative HTTP data fetching.
 - Complements, rather than replaces, `HttpClient`.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/http/http-resource>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-http-resource>
 
 [Back to top⤴️](#table-of-contents)
 
-### Signal Queries
+#### Signal Queries
 
 **Signal Queries** are modern, signal-based alternatives to decorator-based queries (`@ViewChild`, `@ViewChildren`, `@ContentChild`, `@ContentChildren`). They return queries as standard Angular Signals.
 
@@ -7066,7 +7709,7 @@ export class SearchInputComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Signal Store
+#### Signal Store
 
 The **NgRx SignalStore** (`@ngrx/signals`) is a lightweight, fully reactive state management library built on top of Angular Signals. It provides a modular, functional API to define and compose local or global state.
 
@@ -7108,7 +7751,7 @@ export const TasksStore = signalStore(
 
 [Back to top⤴️](#table-of-contents)
 
-### toSignal()
+#### toSignal()
 
 The `toSignal()` helper function (from `@angular/core/rxjs-interop`) converts an RxJS **Observable** into a read-only Angular **Signal**. This is the primary tool for bridging existing RxJS streams (like HttpClient requests or router events) into signal-based templates.
 
@@ -7146,7 +7789,7 @@ export class UserListComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### toObservable()
+#### toObservable()
 
 The `toObservable()` helper function (from `@angular/core/rxjs-interop`) converts an Angular **Signal** into an RxJS **Observable**. It sets up an internal effect that monitors the signal and emits new values to the Observable stream whenever the signal changes.
 
@@ -7186,16 +7829,236 @@ export class LiveSearchComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Signal Best Practices
+#### Signal Best Practices
 
 - Always read signal values in templates using function call syntax: `{{ value() }}`
 - Keep effects focused on side effects (like logging, DOM manipulation) rather than changing state
 - Use `computed` for derived state instead of manual updates inside effects
 
-### Signals vs RxJS
+#### Signals vs RxJS
 
 - **Signals**: Best for synchronous state management, template bindings, and local reactivity.
 - **RxJS**: Best for asynchronous operations, event streams, timers, HTTP calls, and complex data flows.
+
+### 3.2 State Management
+
+#### State Management Introduction
+
+State management is essential for maintaining application state across components and providing a predictable data flow.
+
+##### NgRx
+
+NgRx is a reactive state management library inspired by Redux. It provides a centralized store for all application state.
+
+###### Installing NgRx
+
+```bash
+ng add @ngrx/store
+ng add @ngrx/effects
+ng add @ngrx/store-devtools
+```
+
+###### Setting up NgRx Store
+
+```typescript
+// counter.actions.ts
+import { createAction, props } from "@ngrx/store";
+
+export const increment = createAction("[Counter] Increment");
+export const decrement = createAction("[Counter] Decrement");
+export const reset = createAction("[Counter] Reset");
+```
+
+```typescript
+// counter.reducer.ts
+import { createReducer, on } from "@ngrx/store";
+import { increment, decrement, reset } from "./counter.actions";
+
+export const initialState = 0;
+
+const _counterReducer = createReducer(
+  initialState,
+  on(increment, (state) => state + 1),
+  on(decrement, (state) => state - 1),
+  on(reset, () => 0),
+);
+
+export function counterReducer(state, action) {
+  return _counterReducer(state, action);
+}
+```
+
+```typescript
+// app.module.ts
+import { StoreModule } from "@ngrx/store";
+import { counterReducer } from "./counter.reducer";
+
+@NgModule({
+  imports: [StoreModule.forRoot({ counter: counterReducer })],
+})
+export class AppModule {}
+```
+
+###### Using NgRx in Components
+
+```typescript
+import { Component } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { increment, decrement, reset } from "./counter.actions";
+
+@Component({
+  selector: "app-counter",
+  template: `
+    <div>Current Count: {{ count$ | async }}</div>
+    <button (click)="increment()">+</button>
+    <button (click)="decrement()">-</button>
+    <button (click)="reset()">Reset</button>
+  `,
+})
+export class CounterComponent {
+  count$: Observable<number>;
+
+  constructor(private store: Store<{ counter: number }>) {
+    this.count$ = store.select("counter");
+  }
+
+  increment() {
+    this.store.dispatch(increment());
+  }
+
+  decrement() {
+    this.store.dispatch(decrement());
+  }
+
+  reset() {
+    this.store.dispatch(reset());
+  }
+}
+```
+
+##### NgXS
+
+NgXS is a state management pattern that acts as a single source of truth for your application.
+
+###### Installing NgXS
+
+```bash
+npm install @ngxs/store
+```
+
+###### Setting up NgXS
+
+```typescript
+// counter.state.ts
+import { State, Action, StateContext, Selector } from "@ngxs/store";
+
+export class Increment {
+  static readonly type = "[Counter] Increment";
+}
+
+export class Decrement {
+  static readonly type = "[Counter] Decrement";
+}
+
+export interface CounterStateModel {
+  count: number;
+}
+
+@State<CounterStateModel>({
+  name: "counter",
+  defaults: {
+    count: 0,
+  },
+})
+export class CounterState {
+  @Selector()
+  static getCount(state: CounterStateModel) {
+    return state.count;
+  }
+
+  @Action(Increment)
+  increment(ctx: StateContext<CounterStateModel>) {
+    const state = ctx.getState();
+    ctx.setState({
+      count: state.count + 1,
+    });
+  }
+
+  @Action(Decrement)
+  decrement(ctx: StateContext<CounterStateModel>) {
+    const state = ctx.getState();
+    ctx.setState({
+      count: state.count - 1,
+    });
+  }
+}
+```
+
+##### Akita
+
+Akita is a state management library built on top of RxJS.
+
+```bash
+npm install @datorama/akita
+```
+
+##### Simple State Management
+
+For simple applications, you can use services with BehaviorSubject:
+
+```typescript
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+
+@Injectable({
+  providedIn: "root",
+})
+export class StateService {
+  private countSubject = new BehaviorSubject<number>(0);
+  count$ = this.countSubject.asObservable();
+
+  increment() {
+    this.countSubject.next(this.countSubject.value + 1);
+  }
+
+  decrement() {
+    this.countSubject.next(this.countSubject.value - 1);
+  }
+
+  reset() {
+    this.countSubject.next(0);
+  }
+}
+```
+
+[Back to top⤴️](#table-of-contents)
+
+#### What is NgRx?
+
+**NgRx** is a Reactive libraries for Angular. It provides state management, side effects, and route handling. It is inspired by Redux. It is a set of Angular libraries to help manage state at scale in Angular applications.
+
+#### What is NgXS?
+
+**NgXS** is a state management pattern + library for Angular. It acts as a single source of truth for your application's state, providing simple rules for predictable state mutations.
+
+[Back to top⤴️](#table-of-contents)
+
+#### Signals
+
+Use Angular Signals as simple, reactive, lightweight store options.
+
+#### Signal Store
+
+Configure `NgRx SignalStore` for reactive, extensible state management.
+
+#### Component Store
+
+Manage component-specific state using `ComponentStore`.
+
+#### State Management Patterns
+
+Use actions, reducers, and selectors to enforce unidirectional data flow.
 
 ## 4. Stage 4: Hierarchical Dependency Injection & Routing
 
@@ -7209,7 +8072,7 @@ flowchart TD
 
 ### 4.1 Dependency Injection Architecture
 
-### Dependency Injection
+#### Dependency Injection
 
 Services are used to encapsulate reusable functionality that can be shared across components. They are used to fetch data from a server, perform calculations, or interact with external services.
 
@@ -7244,7 +8107,7 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Injectable Decorator
+##### Injectable Decorator
 
 The `@Injectable` decorator is used to define a service class that can be injected into other components or services.
 
@@ -7261,7 +8124,7 @@ export class DataService {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Dependency Injection
+##### Dependency Injection
 
 Dependency injection is a design pattern used to create objects and manage their dependencies. It allows you to inject dependencies into a class rather than creating them within the class.
 
@@ -7317,7 +8180,7 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Providers
+##### Providers
 
 Providers are used to define dependencies that are injected into components, directives, pipes, and services. They are defined in the `@NgModule` decorator of the root module or feature modules.
 
@@ -7338,7 +8201,7 @@ import { DataService } from "./data.service";
 export class AppModule {}
 ```
 
-#### Provider Types
+##### Provider Types
 
 Angular provides different ways to define how a dependency token is resolved. When configuring a provider, you can use the following options:
 
@@ -7370,11 +8233,11 @@ Angular provides different ways to define how a dependency token is resolved. Wh
    }
    ```
 
-#### Hierarchical DI
+##### Hierarchical DI
 
 Angular has a **Hierarchical Dependency Injection** system, meaning the application has a tree of injectors that mirrors the component tree structure.
 
-##### The Injector Hierarchy
+###### The Injector Hierarchy
 
 When a dependency is requested, Angular resolves it by traversing the injector tree upward, starting from the requesting component:
 
@@ -7383,7 +8246,7 @@ When a dependency is requested, Angular resolves it by traversing the injector t
 3. **PlatformInjector**: Configured for platform-wide services (e.g., shared across multiple Angular apps running on the same page).
 4. **NullInjector**: The top of the hierarchy. If a dependency lookup reaches this injector, Angular throws a "No provider found" error (unless the dependency is marked with `@Optional()`).
 
-##### Resolution Rules & Decorators
+###### Resolution Rules & Decorators
 
 You can modify the traversal behavior using resolution decorators:
 
@@ -7394,13 +8257,13 @@ You can modify the traversal behavior using resolution decorators:
 
 [Back to top⤴️](#table-of-contents)
 
-### inject()
+#### inject()
 
 `inject()` is a modern Dependency Injection (DI) API that allows dependencies to be injected without using a constructor. It simplifies Angular code, improves readability, and is the recommended approach for new Angular applications.
 
 It can be used in components, directives, pipes, services, route guards, resolvers, interceptors, validators, and other injection contexts.
 
-#### Why use inject()?
+##### Why use inject()?
 
 - Eliminates constructor injection
 - Less boilerplate
@@ -7409,7 +8272,7 @@ It can be used in components, directives, pipes, services, route guards, resolve
 - Better type inference
 - Recommended for modern Angular applications
 
-#### Basic Example
+##### Basic Example
 
 Traditional constructor injection
 
@@ -7441,7 +8304,7 @@ export class HomeComponent {
 }
 ```
 
-#### Injecting Multiple Services
+##### Injecting Multiple Services
 
 ```typescript
 import { Component, inject } from "@angular/core";
@@ -7463,7 +8326,7 @@ export class HomeComponent {
 }
 ```
 
-#### Using inject() in Services
+##### Using inject() in Services
 
 ```typescript
 import { Injectable, inject } from "@angular/core";
@@ -7482,7 +8345,7 @@ export class UserService {
 }
 ```
 
-#### Using inject() in Functional Route Guards
+##### Using inject() in Functional Route Guards
 
 ```typescript
 import { inject } from "@angular/core";
@@ -7504,7 +8367,7 @@ export const authGuard: CanActivateFn = () => {
 };
 ```
 
-#### Using inject() in Functional HTTP Interceptors
+##### Using inject() in Functional HTTP Interceptors
 
 ```typescript
 import { inject } from "@angular/core";
@@ -7528,7 +8391,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 ```
 
-#### Optional Injection
+##### Optional Injection
 
 ```typescript
 import { inject } from "@angular/core";
@@ -7542,7 +8405,7 @@ const logger = inject(LoggerService, {
 
 If the service is unavailable, Angular returns `null` instead of throwing an error.
 
-#### Injecting an Injection Token
+##### Injecting an Injection Token
 
 ```typescript
 import { inject } from "@angular/core";
@@ -7552,7 +8415,7 @@ import { APP_CONFIG } from "./app.config";
 const config = inject(APP_CONFIG);
 ```
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component, inject } from "@angular/core";
@@ -7577,7 +8440,7 @@ export class ProfileComponent {
 }
 ```
 
-#### inject() vs Constructor Injection
+##### inject() vs Constructor Injection
 
 | inject()                 | Constructor Injection |
 | ------------------------ | --------------------- |
@@ -7588,7 +8451,7 @@ export class ProfileComponent {
 | Works in functional APIs | Constructor only      |
 | Better readability       | Familiar syntax       |
 
-#### Best Practices
+##### Best Practices
 
 - Prefer `inject()` for new Angular applications.
 - Group injected dependencies together at the top of the class.
@@ -7596,7 +8459,7 @@ export class ProfileComponent {
 - Continue using Angular's Dependency Injection system instead of manually creating services.
 - Use constructor injection only when a framework or library specifically requires it.
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Calling `inject()` outside an injection context
 
@@ -7632,30 +8495,30 @@ private userService = inject(UserService);
 
 Prefer one style consistently unless there is a specific reason to mix them.
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Recommended Dependency Injection API for new Angular applications.
 - Works seamlessly with standalone components.
 - Essential for functional guards, resolvers, interceptors, validators, and effects.
 - Reduces boilerplate and improves code readability.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/reference/migrations/inject-function>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-inject-function>
 
 [Back to top⤴️](#table-of-contents)
 
-### EnvironmentInjector
+#### EnvironmentInjector
 
 `EnvironmentInjector` is Angular's modern dependency injection container used to manage providers outside the component tree. It enables creating isolated dependency injection scopes for standalone applications, lazy-loaded features, and dynamically created components.
 
 Unlike the traditional `Injector`, an `EnvironmentInjector` is designed to work with Angular's standalone APIs.
 
-#### Why use EnvironmentInjector?
+##### Why use EnvironmentInjector?
 
 - Create custom dependency injection scopes
 - Support standalone applications
@@ -7664,7 +8527,7 @@ Unlike the traditional `Injector`, an `EnvironmentInjector` is designed to work 
 - Improve modularity
 - Recommended for advanced Angular applications
 
-#### Injecting EnvironmentInjector
+##### Injecting EnvironmentInjector
 
 ```typescript
 import { Component, EnvironmentInjector, inject } from "@angular/core";
@@ -7680,7 +8543,7 @@ export class HomeComponent {
 
 ---
 
-#### Creating a Child Environment Injector
+##### Creating a Child Environment Injector
 
 ```typescript
 import {
@@ -7706,7 +8569,7 @@ The child injector inherits providers from the parent while allowing additional 
 
 ---
 
-#### Creating a Dynamic Component
+##### Creating a Dynamic Component
 
 ```typescript
 import {
@@ -7739,7 +8602,7 @@ Angular creates the component using the provided injector.
 
 ---
 
-#### Providing Feature-specific Services
+##### Providing Feature-specific Services
 
 ```typescript
 const featureInjector = createEnvironmentInjector(
@@ -7752,7 +8615,7 @@ Only components created with this injector can access those providers.
 
 ---
 
-#### Lazy-loaded Features
+##### Lazy-loaded Features
 
 ```typescript
 export const routes = [
@@ -7769,7 +8632,7 @@ Angular internally creates a separate environment injector for lazy-loaded route
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import {
@@ -7802,7 +8665,7 @@ The dynamically created notification receives all required dependencies through 
 
 ---
 
-#### EnvironmentInjector vs Injector
+##### EnvironmentInjector vs Injector
 
 | EnvironmentInjector         | Injector          |
 | --------------------------- | ----------------- |
@@ -7814,7 +8677,7 @@ The dynamically created notification receives all required dependencies through 
 
 ---
 
-#### EnvironmentInjector vs NgModule Providers
+##### EnvironmentInjector vs NgModule Providers
 
 | EnvironmentInjector     | NgModule                  |
 | ----------------------- | ------------------------- |
@@ -7825,7 +8688,7 @@ The dynamically created notification receives all required dependencies through 
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Prefer `EnvironmentInjector` in standalone applications.
 - Use `createEnvironmentInjector()` for isolated dependency scopes.
@@ -7835,7 +8698,7 @@ The dynamically created notification receives all required dependencies through 
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Creating multiple injectors unnecessarily
 
@@ -7881,7 +8744,7 @@ viewContainer.createComponent(UserCardComponent, {
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Recommended dependency injection container for standalone applications.
 - Used internally for lazy-loaded routes.
@@ -7889,17 +8752,17 @@ viewContainer.createComponent(UserCardComponent, {
 - Enables isolated provider scopes.
 - Works seamlessly with the modern Angular dependency injection system.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/api/core/EnvironmentInjector>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-environment-injector>
 
 [Back to top⤴️](#table-of-contents)
 
-### Destroy Ref
+#### Destroy Ref
 
 The DestroyRef provider is a utility that allows Angular components to register cleanup callbacks that are executed when the component is destroyed. This is useful for cleaning up resources, such as subscriptions, timers, or other resources that need to be released when the component is no longer in use.
 
@@ -7926,13 +8789,13 @@ export class MyComponent implements OnInit, OnDestroy {
 }
 ```
 
-## Functional APIs
+### 4.2 Functional APIs
 
-### Functional Guards, Resolvers & Interceptors
+#### Functional Guards, Resolvers & Interceptors
 
 Angular introduced **Functional APIs** in v15 (which became the default in v17+) to replace class-based guards, resolvers, and interceptors with simpler, lightweight function-based alternatives. These APIs utilize the `inject()` function to manage dependencies.
 
-#### Functional Guards
+##### Functional Guards
 
 **Functional Guards** are functions (like `CanActivateFn`, `CanActivateChildFn`, or `CanMatchFn`) that control navigation to routes. Unlike legacy class-based guards, they don't require creating a class that implements an interface.
 
@@ -7972,7 +8835,7 @@ export const routes: Routes = [
 ];
 ```
 
-#### Functional Resolvers
+##### Functional Resolvers
 
 **Functional Resolvers** (using the `ResolveFn` type) are functions that fetch data before a route is activated, ensuring the component is only rendered once data is ready.
 
@@ -8003,7 +8866,7 @@ export const routes: Routes = [
 ];
 ```
 
-#### Functional Interceptors
+##### Functional Interceptors
 
 **Functional Interceptors** (using the `HttpInterceptorFn` type) intercept and modify outgoing HTTP requests or incoming HTTP responses globally. They replace legacy class-based interceptors.
 
@@ -8046,13 +8909,13 @@ export const appConfig: ApplicationConfig = {
 
 [Back to top⤴️](#table-of-contents)
 
-### Functional Queries
+#### Functional Queries
 
 Functional Queries are a modern API for accessing child components, directives, template references, and projected content. They replace the traditional decorator-based query APIs with functions that return Signals.
 
 Unlike decorators, Functional Queries are reactive and integrate seamlessly with Angular Signals.
 
-#### Why use Functional Queries?
+##### Why use Functional Queries?
 
 - Modern replacement for decorators
 - Signal-based API
@@ -8061,7 +8924,7 @@ Unlike decorators, Functional Queries are reactive and integrate seamlessly with
 - Less boilerplate
 - Recommended for new Angular applications
 
-#### Available Functional Queries
+##### Available Functional Queries
 
 | Function            | Replaces             |
 | ------------------- | -------------------- |
@@ -8072,13 +8935,13 @@ Unlike decorators, Functional Queries are reactive and integrate seamlessly with
 
 ---
 
-### Functional Providers
+#### Functional Providers
 
 Functional providers allow configuring dependencies using functions instead of traditional provider configuration arrays, such as `provideHttpClient(withInterceptors([...]))`.
 
-## Routing
+### 4.3 Routing
 
-### Routing
+#### Routing
 
 Routing is used to navigate between different components in an Angular application. It allows users to move between different parts of the application by changing the URL in the browser.
 
@@ -8117,7 +8980,7 @@ export const appConfig: ApplicationConfig = {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router Outlet
+##### Router Outlet
 
 The `router-outlet` directive is used to render the component associated with the current route.
 
@@ -8127,7 +8990,7 @@ The `router-outlet` directive is used to render the component associated with th
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router Link
+##### Router Link
 
 The `routerLink` directive is used to navigate to a different route when the element is clicked.
 
@@ -8137,7 +9000,7 @@ The `routerLink` directive is used to navigate to a different route when the ele
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router Link Active
+##### Router Link Active
 
 The `routerLinkActive` directive is used to add a CSS class to an element when the associated route is active.
 
@@ -8147,7 +9010,7 @@ The `routerLinkActive` directive is used to add a CSS class to an element when t
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router Link Active Options
+##### Router Link Active Options
 
 The `routerLinkActiveOptions` directive is used to configure the behavior of the `routerLinkActive` directive.
 
@@ -8162,7 +9025,7 @@ The `routerLinkActiveOptions` directive is used to configure the behavior of the
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router State
+##### Router State
 
 The `RouterState` class is used to access the current state of the router.
 
@@ -8177,7 +9040,7 @@ constructor(private router: Router) {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router Events
+##### Router Events
 
 The `RouterEvents` class is used to listen for router events such as navigation start, navigation end, and navigation error.
 
@@ -8201,7 +9064,7 @@ constructor(private router: Router) {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router Guards
+##### Router Guards
 
 Router guards are used to control navigation and access to routes in an Angular application. They can be used to prevent unauthorized access to certain routes, redirect users to a login page, or perform other actions before navigating to a route.
 
@@ -8241,7 +9104,7 @@ export class AppRoutingModule {}
 
 [Back to top⤴️](#table-of-contents)
 
-#### Nested Routes
+##### Nested Routes
 
 **Nested Routes** (or Child Routes) allow you to define routes inside other routes. This is useful for layouts where a parent view (like a dashboard) has its own nested sub-views (like analytics, settings, or profile) that render within a child `<router-outlet>`.
 
@@ -8265,11 +9128,11 @@ export const routes: Routes = [
 ];
 ```
 
-#### Query Parameters
+##### Query Parameters
 
 **Query Parameters** allow you to pass optional, serialized parameters to any route in the application (e.g., `/search?q=angular&page=2`). Unlike route parameters (e.g. `/user/:id`), query parameters are not configured as part of the route path.
 
-##### 1. Passing Query Parameters
+###### 1. Passing Query Parameters
 
 From template using `routerLink`:
 
@@ -8297,7 +9160,7 @@ export class SearchTriggerComponent {
 }
 ```
 
-##### 2. Reading Query Parameters
+###### 2. Reading Query Parameters
 
 Using **ActivatedRoute** observables (recommended for tracking dynamic changes on the same page):
 
@@ -8333,11 +9196,11 @@ export class SearchComponent {
 }
 ```
 
-#### Route Data
+##### Route Data
 
 **Route Data** allows you to attach custom data to a specific route configuration. This data can be static (pre-defined in the configuration) or dynamic (resolved at runtime via resolvers before component rendering).
 
-##### 1. Defining Static Route Data
+###### 1. Defining Static Route Data
 
 You can attach static data directly in the routes configuration using the `data` property:
 
@@ -8354,7 +9217,7 @@ export const routes: Routes = [
 ];
 ```
 
-##### 2. Reading Route Data
+###### 2. Reading Route Data
 
 Using **ActivatedRoute** observable:
 
@@ -8387,11 +9250,11 @@ export class AdminComponent {
 }
 ```
 
-#### Route Animations
+##### Route Animations
 
 **Route Animations** let you animate transitions between different components when the active route changes.
 
-##### 1. Enable Animations
+###### 1. Enable Animations
 
 To use animations, import and add the animations provider in `app.config.ts` (or `main.ts` for standalone applications):
 
@@ -8404,7 +9267,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-##### 2. Define the Animation
+###### 2. Define the Animation
 
 Create a reusable animation trigger (e.g. inside `route-animations.ts`):
 
@@ -8443,7 +9306,7 @@ export const slideInAnimation = trigger("routeAnimations", [
 ]);
 ```
 
-##### 3. Assign Animation States to Routes
+###### 3. Assign Animation States to Routes
 
 Assign custom states to routes using the `data` configuration property:
 
@@ -8458,7 +9321,7 @@ export const routes: Routes = [
 ];
 ```
 
-##### 4. Apply Animation in the App Template
+###### 4. Apply Animation in the App Template
 
 Wrap the `<router-outlet>` inside a container bound to the animation trigger:
 
@@ -8489,7 +9352,7 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Routing Module Configuration
+#### Routing Module Configuration
 
 A module is a container for a group of related components, directives, pipes, and services. It is used to organize an Angular application into cohesive blocks of functionality.
 
@@ -8510,7 +9373,7 @@ export class AppModule {}
 
 [Back to top⤴️](#table-of-contents)
 
-#### Router
+##### Router
 
 The Angular Router is a powerful tool that allows you to define navigation paths and routes in your application. It enables you to navigate between different components and views based on the URL path.
 
@@ -8532,7 +9395,7 @@ const routes: Routes = [
 export class AppRoutingModule {}
 ```
 
-#### Required Route Params
+##### Required Route Params
 
 To define a route with a required parameter, you can use a colon (`:`) followed by the parameter name. For example, in `app.module.ts`:
 
@@ -8554,7 +9417,7 @@ const routes: Routes = [
 export class AppRoutingModule {}
 ```
 
-#### Navigating in the App
+##### Navigating in the App
 
 To navigate to a route with a required parameter, you can use the `Router` service. For example, in a component:
 
@@ -8571,7 +9434,7 @@ export class SomeComponent {
 }
 ```
 
-#### Optional Route Params
+##### Optional Route Params
 
 To define a route with an optional parameter, you can use a question mark (`?`) after the parameter name. For example, in `app.module.ts`:
 
@@ -8593,7 +9456,7 @@ const routes: Routes = [
 export class AppRoutingModule {}
 ```
 
-#### Params
+##### Params
 
 To access route parameters in a component, you can use the `ActivatedRoute` service. For example, in a component:
 
@@ -8612,7 +9475,7 @@ export class UserDetailsComponent {
 }
 ```
 
-### Route Parameters
+#### Route Parameters
 
 Route parameters are used to pass data to a route in Angular. They allow you to create dynamic routes that can be customized based on user input or other factors. Route parameters are defined in the route configuration and can be accessed in the component associated with the route.
 
@@ -8648,7 +9511,7 @@ Optional parameters are used to define route parameters that are not required. T
 
 In this example, the ":category" parameter is optional. The ProductComponent can handle URLs like "/products/123" or "/products/123/electronics" based on the presence of the ":category" parameter.
 
-### Route Guards
+#### Route Guards
 
 Route guards are used to control access to routes in an Angular application. They allow you to implement logic that determines whether a user is allowed to navigate to a particular route or not. Route guards can be used to protect routes based on user authentication, authorization, or other criteria.
 
@@ -8771,7 +9634,7 @@ export class AuthGuard implements CanLoad {
 
 [Back to top⤴️](#table-of-contents)
 
-### Component Input Binding
+#### Component Input Binding
 
 With `withComponentInputBinding()` enabled, Angular can automatically bind route parameters directly to component inputs (including Signal inputs).
 
@@ -8779,14 +9642,14 @@ With `withComponentInputBinding()` enabled, Angular can automatically bind route
 
 ### 5.1 Reactive Forms Architecture
 
-### Forms Introduction
+#### Forms Introduction
 
 Angular provides two types of forms:
 
 - **Template-driven forms**
 - **Reactive forms**
 
-#### Template-driven Forms
+##### Template-driven Forms
 
 Template-driven forms are created using directives in the template. Angular automatically tracks the value and validity of the form controls.
 
@@ -8812,7 +9675,7 @@ export class AppComponent {
 }
 ```
 
-#### Reactive Forms
+##### Reactive Forms
 
 Reactive forms are created programmatically using form controls and form groups. They provide more control and flexibility compared to template-driven forms.
 
@@ -9357,7 +10220,7 @@ export class AppComponent {
 </form>
 ```
 
-### Signal Forms
+#### Signal Forms
 
 Signal Forms provide a modern, signal-based approach to building forms in Angular. Unlike Reactive Forms, Signal Forms use Angular Signals for state management, making forms more reactive, easier to read, and requiring less boilerplate.
 
@@ -9365,7 +10228,7 @@ Signal Forms automatically track field values, validation state, dirty state, to
 
 > **Note:** Signal Forms are a newer Angular API. Check the Angular documentation for the current stability status in your Angular version.
 
-#### Why use Signal Forms?
+##### Why use Signal Forms?
 
 - Signal-based state management
 - Less boilerplate
@@ -9377,7 +10240,7 @@ Signal Forms automatically track field values, validation state, dirty state, to
 
 ---
 
-#### Creating a Signal Form
+##### Creating a Signal Form
 
 ```typescript
 import { Component, signal } from "@angular/core";
@@ -9401,7 +10264,7 @@ export class UserFormComponent {
 
 ---
 
-#### Form State
+##### Form State
 
 Signal Forms expose reactive form state.
 
@@ -9425,7 +10288,7 @@ Updates based on the current value.
 
 ---
 
-#### Multiple Fields
+##### Multiple Fields
 
 ```typescript
 import { Component, signal } from "@angular/core";
@@ -9447,7 +10310,7 @@ Each field is independently reactive.
 
 ---
 
-#### Computed Values
+##### Computed Values
 
 ```typescript
 import { computed } from "@angular/core";
@@ -9459,7 +10322,7 @@ Whenever either field changes, `fullName()` updates automatically.
 
 ---
 
-#### Validation Example
+##### Validation Example
 
 ```typescript
 email = signal("");
@@ -9479,7 +10342,7 @@ Template
 
 ---
 
-#### Required Field
+##### Required Field
 
 ```typescript
 name = signal("");
@@ -9489,7 +10352,7 @@ isRequired = computed(() => this.name().trim().length > 0);
 
 ---
 
-#### Password Validation
+##### Password Validation
 
 ```typescript
 password = signal("");
@@ -9499,7 +10362,7 @@ passwordValid = computed(() => this.password().length >= 8);
 
 ---
 
-#### Confirm Password
+##### Confirm Password
 
 ```typescript
 password = signal("");
@@ -9511,7 +10374,7 @@ passwordsMatch = computed(() => this.password() === this.confirmPassword());
 
 ---
 
-#### Form Validity
+##### Form Validity
 
 ```typescript
 formValid = computed(
@@ -9527,7 +10390,7 @@ Template
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component, computed, signal } from "@angular/core";
@@ -9566,7 +10429,7 @@ export class RegisterComponent {
 
 ---
 
-#### Using effect()
+##### Using effect()
 
 ```typescript
 import {
@@ -9588,7 +10451,7 @@ Runs automatically whenever the email changes.
 
 ---
 
-#### Signal Forms vs Reactive Forms
+##### Signal Forms vs Reactive Forms
 
 | Signal Forms                  | Reactive Forms   |
 | ----------------------------- | ---------------- |
@@ -9600,7 +10463,7 @@ Runs automatically whenever the email changes.
 
 ---
 
-#### Signal Forms vs Template-driven Forms
+##### Signal Forms vs Template-driven Forms
 
 | Signal Forms       | Template Forms          |
 | ------------------ | ----------------------- |
@@ -9611,7 +10474,7 @@ Runs automatically whenever the email changes.
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Keep each field as an individual Signal.
 - Use `computed()` for validation.
@@ -9622,7 +10485,7 @@ Runs automatically whenever the email changes.
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Storing derived values manually
 
@@ -9673,7 +10536,7 @@ this.user.update((user) => ({
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Designed for Angular Signals.
 - Simplifies form state management.
@@ -9681,23 +10544,23 @@ this.user.update((user) => ({
 - Excellent performance due to fine-grained reactivity.
 - Integrates naturally with `computed()` and `effect()`.
 
-##### Official Documentation
+###### Official Documentation
 
 <https://next.angular.dev/essentials/signal-forms>
 
-##### StackBlitz Example
+###### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-signal-forms>
 
 [Back to top⤴️](#table-of-contents)
 
-### ControlValueAccessor (CVA)
+#### ControlValueAccessor (CVA)
 
 `ControlValueAccessor` (CVA) is an interface that allows custom components to integrate with Angular Forms. It acts as a bridge between Angular Forms and your custom form controls.
 
 Once implemented, a custom component behaves like a built-in form control such as `<input>`, `<textarea>`, or `<select>`.
 
-#### Why use ControlValueAccessor?
+##### Why use ControlValueAccessor?
 
 - Create reusable form controls
 - Works with Reactive Forms
@@ -9708,7 +10571,7 @@ Once implemented, a custom component behaves like a built-in form control such a
 
 ---
 
-#### How ControlValueAccessor Works
+##### How ControlValueAccessor Works
 
 ```
 Angular Form
@@ -9730,7 +10593,7 @@ Angular communicates with your component through the `ControlValueAccessor` inte
 
 ---
 
-#### ControlValueAccessor Interface
+##### ControlValueAccessor Interface
 
 ```typescript
 interface ControlValueAccessor {
@@ -9746,9 +10609,9 @@ interface ControlValueAccessor {
 
 ---
 
-#### Methods
+##### Methods
 
-##### writeValue()
+###### writeValue()
 
 Updates the value inside the custom component.
 
@@ -9762,7 +10625,7 @@ writeValue(value: string): void {
 
 ---
 
-##### registerOnChange()
+###### registerOnChange()
 
 Registers a callback that Angular calls whenever the value changes.
 
@@ -9776,7 +10639,7 @@ registerOnChange(fn: any): void {
 
 ---
 
-##### registerOnTouched()
+###### registerOnTouched()
 
 Registers a callback when the control is touched.
 
@@ -9790,7 +10653,7 @@ registerOnTouched(fn: any): void {
 
 ---
 
-##### setDisabledState()
+###### setDisabledState()
 
 Handles the disabled state.
 
@@ -9806,7 +10669,7 @@ setDisabledState(
 
 ---
 
-#### Creating a Custom Input Component
+##### Creating a Custom Input Component
 
 ```typescript
 import { Component, forwardRef } from "@angular/core";
@@ -9868,7 +10731,7 @@ export class TextboxComponent implements ControlValueAccessor {
 
 ---
 
-#### Using with Reactive Forms
+##### Using with Reactive Forms
 
 ```typescript
 form = new FormGroup({
@@ -9888,7 +10751,7 @@ The custom component behaves exactly like a standard `<input>`.
 
 ---
 
-#### Using with Template-driven Forms
+##### Using with Template-driven Forms
 
 ```html
 <app-textbox [(ngModel)]="username" name="username"> </app-textbox>
@@ -9896,7 +10759,7 @@ The custom component behaves exactly like a standard `<input>`.
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 Rating Component
 
@@ -9949,7 +10812,7 @@ Usage
 
 ---
 
-#### ControlValueAccessor Lifecycle
+##### ControlValueAccessor Lifecycle
 
 ```
 Angular Form
@@ -9981,7 +10844,7 @@ onTouched()
 
 ---
 
-#### ControlValueAccessor vs Standard Input
+##### ControlValueAccessor vs Standard Input
 
 | ControlValueAccessor     | Standard Input         |
 | ------------------------ | ---------------------- |
@@ -9993,7 +10856,7 @@ onTouched()
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Always implement all required interface methods.
 - Call `onChange()` whenever the value changes.
@@ -10003,7 +10866,7 @@ onTouched()
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Forgetting to call `onChange()`
 
@@ -10049,30 +10912,30 @@ Always register the component as a value accessor.
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Required for creating custom Angular form controls.
 - Fully compatible with Reactive Forms and Template-driven Forms.
 - Continues to be the recommended integration mechanism for custom controls.
 - Can be combined with Signals for internal component state management while exposing the standard Angular Forms API.
 
-##### Official Documentation
+###### Official Documentation
 
 <https://angular.dev/api/forms/ControlValueAccessor>
 
-##### StackBlitz Example
+###### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-control-value-accessor>
 
 [Back to top⤴️](#table-of-contents)
 
-### Typed Reactive Forms
+#### Typed Reactive Forms
 
 Typed Reactive Forms provide strong type safety for Angular forms by ensuring that form controls, values, and validation are checked at compile time. This helps catch errors early, improves IDE autocompletion, and makes applications more maintainable.
 
 Unlike untyped forms, Typed Reactive Forms know the exact type of every control.
 
-#### Why use Typed Reactive Forms?
+##### Why use Typed Reactive Forms?
 
 - Better type safety
 - Compile-time error checking
@@ -10083,7 +10946,7 @@ Unlike untyped forms, Typed Reactive Forms know the exact type of every control.
 
 ---
 
-#### Creating a Typed Form
+##### Creating a Typed Form
 
 ```typescript
 import { Component } from "@angular/core";
@@ -10107,7 +10970,7 @@ export class UserComponent {
 
 ---
 
-#### Accessing Values
+##### Accessing Values
 
 ```typescript
 const firstName = this.form.controls.firstName.value;
@@ -10119,7 +10982,7 @@ The returned values are strongly typed.
 
 ---
 
-#### Setting Values
+##### Setting Values
 
 ```typescript
 this.form.controls.firstName.setValue("Manthan");
@@ -10137,7 +11000,7 @@ this.form.controls.age.setValue("Twenty Eight");
 
 ---
 
-#### Form Value
+##### Form Value
 
 ```typescript
 const value = this.form.value;
@@ -10155,7 +11018,7 @@ Example
 
 ---
 
-#### Using patchValue()
+##### Using patchValue()
 
 ```typescript
 this.form.patchValue({
@@ -10167,7 +11030,7 @@ Only specified controls are updated.
 
 ---
 
-#### Using setValue()
+##### Using setValue()
 
 ```typescript
 this.form.setValue({
@@ -10183,7 +11046,7 @@ All controls must be provided.
 
 ---
 
-#### Nested Typed Forms
+##### Nested Typed Forms
 
 ```typescript
 form = new FormGroup({
@@ -10205,7 +11068,7 @@ this.form.controls.address.controls.city.value;
 
 ---
 
-#### Typed FormArray
+##### Typed FormArray
 
 ```typescript
 import { FormArray, FormControl } from "@angular/forms";
@@ -10221,7 +11084,7 @@ this.skills.push(new FormControl("TypeScript"));
 
 ---
 
-#### Using FormBuilder
+##### Using FormBuilder
 
 ```typescript
 import {
@@ -10249,7 +11112,7 @@ Angular infers the control types automatically.
 
 ---
 
-#### NonNullableFormBuilder
+##### NonNullableFormBuilder
 
 ```typescript
 import {
@@ -10275,7 +11138,7 @@ Controls never return `null`.
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component } from "@angular/core";
@@ -10313,7 +11176,7 @@ export class RegisterComponent {
 
 ---
 
-#### Typed Forms vs Untyped Forms
+##### Typed Forms vs Untyped Forms
 
 | Typed Forms           | Untyped Forms          |
 | --------------------- | ---------------------- |
@@ -10325,7 +11188,7 @@ export class RegisterComponent {
 
 ---
 
-#### FormBuilder vs NonNullableFormBuilder
+##### FormBuilder vs NonNullableFormBuilder
 
 | FormBuilder            | NonNullableFormBuilder                      |
 | ---------------------- | ------------------------------------------- |
@@ -10335,7 +11198,7 @@ export class RegisterComponent {
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Prefer Typed Reactive Forms for all new applications.
 - Use `NonNullableFormBuilder` whenever possible.
@@ -10345,7 +11208,7 @@ export class RegisterComponent {
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Using `UntypedFormGroup`
 
@@ -10391,30 +11254,30 @@ Or use `NonNullableFormBuilder` to avoid `null` entirely.
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Typed Reactive Forms are the recommended approach for new Angular applications.
 - They provide stronger compile-time guarantees than untyped forms.
 - Work seamlessly with Reactive Forms, validators, and custom form controls.
 - Pair well with `ControlValueAccessor` for reusable, type-safe custom components.
 
-##### Official Documentation
+###### Official Documentation
 
 <https://angular.dev/guide/forms/typed-forms>
 
-##### StackBlitz Example
+###### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-typed-reactive-forms>
 
 [Back to top⤴️](#table-of-contents)
 
-### Custom Validators
+#### Custom Validators
 
 Custom Validators allow you to create reusable validation logic for Angular forms. They are useful when the built-in validators are not sufficient for your business requirements.
 
 Custom validators can be applied to individual form controls or entire form groups.
 
-#### Why use Custom Validators?
+##### Why use Custom Validators?
 
 - Reusable validation logic
 - Encapsulate business rules
@@ -10425,7 +11288,7 @@ Custom validators can be applied to individual form controls or entire form grou
 
 ---
 
-#### Validator Function
+##### Validator Function
 
 A custom validator is simply a function that accepts an `AbstractControl` and returns either:
 
@@ -10450,7 +11313,7 @@ export function usernameValidator(
 
 ---
 
-#### Using a Custom Validator
+##### Using a Custom Validator
 
 ```typescript
 import { FormControl } from "@angular/forms";
@@ -10464,7 +11327,7 @@ username = new FormControl(
 
 ---
 
-#### Template
+##### Template
 
 ```html
 <input [formControl]="username" />
@@ -10478,7 +11341,7 @@ username = new FormControl(
 
 ---
 
-#### Validator with Parameters
+##### Validator with Parameters
 
 ```typescript
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
@@ -10510,7 +11373,7 @@ password = new FormControl(
 
 ---
 
-#### Multiple Validators
+##### Multiple Validators
 
 ```typescript
 import { Validators } from "@angular/forms";
@@ -10526,7 +11389,7 @@ Angular executes every validator.
 
 ---
 
-#### Cross-field Validator
+##### Cross-field Validator
 
 ```typescript
 import { AbstractControl, ValidationErrors } from "@angular/forms";
@@ -10550,7 +11413,7 @@ export function passwordMatchValidator(
 
 ---
 
-#### Using with FormGroup
+##### Using with FormGroup
 
 ```typescript
 form = new FormGroup(
@@ -10568,7 +11431,7 @@ form = new FormGroup(
 
 ---
 
-#### Displaying Group Errors
+##### Displaying Group Errors
 
 ```html
 @if ( form.hasError( 'passwordMismatch' ) ) {
@@ -10580,7 +11443,7 @@ form = new FormGroup(
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 import { Component } from "@angular/core";
@@ -10610,7 +11473,7 @@ export class RegisterComponent {
 
 ---
 
-#### Validator Factory Example
+##### Validator Factory Example
 
 ```typescript
 export function forbiddenWordsValidator(words: string[]): ValidatorFn {
@@ -10640,7 +11503,7 @@ comment = new FormControl(
 
 ---
 
-#### Custom Validators vs Built-in Validators
+##### Custom Validators vs Built-in Validators
 
 | Custom Validators | Built-in Validators     |
 | ----------------- | ----------------------- |
@@ -10651,7 +11514,7 @@ comment = new FormControl(
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Keep validators pure.
 - Return `null` when valid.
@@ -10662,7 +11525,7 @@ comment = new FormControl(
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Returning `false`
 
@@ -10706,29 +11569,29 @@ Validators should only validate.
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Custom Validators remain the recommended approach for implementing business-specific validation rules.
 - Compatible with Typed Reactive Forms, Reactive Forms, and Template-driven Forms.
 - Combine with Async Validators when validation depends on server-side data.
 
-##### Official Documentation
+###### Official Documentation
 
 <https://angular.dev/guide/forms/form-validation>
 
-##### StackBlitz Example
+###### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-custom-validator>
 
 [Back to top⤴️](#table-of-contents)
 
-### Async Validators
+#### Async Validators
 
 Async Validators allow Angular forms to perform asynchronous validation using Observables or Promises. They are commonly used when validation depends on server-side data, such as checking whether a username or email already exists.
 
 Unlike synchronous validators, Async Validators execute after synchronous validation succeeds.
 
-#### Why use Async Validators?
+##### Why use Async Validators?
 
 - Validate against server data
 - Check username availability
@@ -10739,7 +11602,7 @@ Unlike synchronous validators, Async Validators execute after synchronous valida
 
 ---
 
-#### How Async Validation Works
+##### How Async Validation Works
 
 ```
 User Input
@@ -10777,7 +11640,7 @@ Validation Result
 
 ---
 
-#### Async Validator Function
+##### Async Validator Function
 
 An Async Validator returns either:
 
@@ -10814,7 +11677,7 @@ export function usernameAvailableValidator(): AsyncValidatorFn {
 
 ---
 
-#### Using an Async Validator
+##### Using an Async Validator
 
 ```typescript
 import { FormControl } from "@angular/forms";
@@ -10830,7 +11693,7 @@ username = new FormControl(
 
 ---
 
-#### Displaying Validation Errors
+##### Displaying Validation Errors
 
 ```html
 <input [formControl]="username" />
@@ -10848,7 +11711,7 @@ username = new FormControl(
 
 ---
 
-#### Using HttpClient
+##### Using HttpClient
 
 ```typescript
 import { HttpClient } from "@angular/common/http";
@@ -10877,7 +11740,7 @@ export function emailValidator(): AsyncValidatorFn {
 
 ---
 
-#### Using with FormGroup
+##### Using with FormGroup
 
 ```typescript
 form = new FormGroup({
@@ -10893,7 +11756,7 @@ form = new FormGroup({
 
 ---
 
-#### Multiple Async Validators
+##### Multiple Async Validators
 
 ```typescript
 email = new FormControl(
@@ -10909,7 +11772,7 @@ Angular executes all Async Validators.
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 @Component({
@@ -10939,7 +11802,7 @@ export class RegisterComponent {
 
 ---
 
-#### Validation Status
+##### Validation Status
 
 ```typescript
 control.pending;
@@ -10967,7 +11830,7 @@ Returns validation errors.
 
 ---
 
-#### Async Validators vs Custom Validators
+##### Async Validators vs Custom Validators
 
 | Async Validators           | Custom Validators                |
 | -------------------------- | -------------------------------- |
@@ -10978,7 +11841,7 @@ Returns validation errors.
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Perform quick synchronous validation before async validation.
 - Debounce API requests when appropriate.
@@ -10988,7 +11851,7 @@ Returns validation errors.
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Making HTTP requests in synchronous validators
 
@@ -11042,30 +11905,30 @@ if (!control.value) {
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Async Validators remain the recommended solution for server-side validation.
 - Fully compatible with Typed Reactive Forms.
 - Support both Observables and Promises.
 - Angular waits for all synchronous validators to pass before executing Async Validators.
 
-##### Official Documentation
+###### Official Documentation
 
 <https://angular.dev/guide/forms/form-validation>
 
-##### StackBlitz Example
+###### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-async-validator>
 
 [Back to top⤴️](#table-of-contents)
 
-### Dynamic Forms
+#### Dynamic Forms
 
 Dynamic Forms allow you to build Angular forms from configuration instead of hardcoding form controls. This approach is useful when form fields are determined at runtime, such as forms generated from APIs, JSON schemas, or database configurations.
 
 Instead of manually creating every control, Angular generates the form based on metadata.
 
-#### Why use Dynamic Forms?
+##### Why use Dynamic Forms?
 
 - Generate forms from configuration
 - Reduce duplicated code
@@ -11076,7 +11939,7 @@ Instead of manually creating every control, Angular generates the form based on 
 
 ---
 
-#### How Dynamic Forms Work
+##### How Dynamic Forms Work
 
 ```
 JSON Configuration
@@ -11102,7 +11965,7 @@ Render Form
 
 ---
 
-#### Example Configuration
+##### Example Configuration
 
 ```typescript
 fields = [
@@ -11131,7 +11994,7 @@ fields = [
 
 ---
 
-#### Creating the Form
+##### Creating the Form
 
 ```typescript
 import {
@@ -11171,7 +12034,7 @@ constructor() {
 
 ---
 
-#### Rendering the Form
+##### Rendering the Form
 
 ```html
 <form [formGroup]="form">
@@ -11189,7 +12052,7 @@ Angular automatically renders all configured fields.
 
 ---
 
-#### Real-world Example
+##### Real-world Example
 
 ```typescript
 fields = [
@@ -11252,7 +12115,7 @@ Template
 
 ---
 
-#### Adding Controls Dynamically
+##### Adding Controls Dynamically
 
 ```typescript
 this.form.addControl(
@@ -11264,7 +12127,7 @@ this.form.addControl(
 
 ---
 
-#### Removing Controls
+##### Removing Controls
 
 ```typescript
 this.form.removeControl("phone");
@@ -11272,7 +12135,7 @@ this.form.removeControl("phone");
 
 ---
 
-#### Updating Validators
+##### Updating Validators
 
 ```typescript
 const control = this.form.get("email");
@@ -11284,7 +12147,7 @@ control?.updateValueAndValidity();
 
 ---
 
-#### Nested Dynamic Forms
+##### Nested Dynamic Forms
 
 ```typescript
 form = new FormGroup({
@@ -11300,7 +12163,7 @@ Dynamic controls can also contain nested `FormGroup` and `FormArray` instances.
 
 ---
 
-#### Dynamic FormArray
+##### Dynamic FormArray
 
 ```typescript
 skills = new FormArray([new FormControl("Angular")]);
@@ -11310,7 +12173,7 @@ this.skills.push(new FormControl("TypeScript"));
 
 ---
 
-#### Dynamic Forms vs Static Forms
+##### Dynamic Forms vs Static Forms
 
 | Dynamic Forms              | Static Forms            |
 | -------------------------- | ----------------------- |
@@ -11321,7 +12184,7 @@ this.skills.push(new FormControl("TypeScript"));
 
 ---
 
-#### Best Practices
+##### Best Practices
 
 - Keep form configuration separate from UI.
 - Use Typed Reactive Forms for generated controls.
@@ -11331,7 +12194,7 @@ this.skills.push(new FormControl("TypeScript"));
 
 ---
 
-#### Common Mistakes
+##### Common Mistakes
 
 ❌ Hardcoding every control
 
@@ -11369,26 +12232,26 @@ after changing validators.
 
 ---
 
-#### Angular v22 Notes
+##### Angular v22 Notes
 
 - Dynamic Forms continue to be built using Reactive Forms.
 - Angular's modern control flow (`@for`, `@switch`, `@if`) makes dynamic templates cleaner and easier to read.
 - Typed Reactive Forms provide better type safety for dynamically generated forms.
 - Ideal for admin panels, survey builders, CMS platforms, and configurable business applications.
 
-##### Official Documentation
+###### Official Documentation
 
 <https://angular.dev/guide/forms/dynamic-forms>
 
-##### StackBlitz Example
+###### StackBlitz Example
 
 <https://stackblitz.com/edit/stackblitz-starters-dynamic-forms>
 
 [Back to top⤴️](#table-of-contents)
 
-## HTTP
+### 5.2 HTTP
 
-### HTTP Client Module
+#### HTTP Client Module
 
 The `HttpClientModule` is used to make HTTP requests to a server in an Angular application. It provides services for making GET, POST, PUT, DELETE, and other types of requests.
 
@@ -11419,7 +12282,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-### HTTP Client
+#### HTTP Client
 
 The `HttpClient` service is used to make HTTP requests to a server. It provides methods for making GET, POST, PUT, DELETE, and other types of requests.
 
@@ -11435,7 +12298,7 @@ getData() {
 
 [Back to top⤴️](#table-of-contents)
 
-### HTTP Introduction
+#### HTTP Introduction
 
 Import HttpClient Module in Root Module -
 
@@ -11465,7 +12328,7 @@ constructor(public http: HttpClient) {
 }
 ```
 
-#### HTTP GET
+##### HTTP GET
 
 ```typescript
 getData(){
@@ -11473,7 +12336,7 @@ getData(){
 }
 ```
 
-#### HTTP POST
+##### HTTP POST
 
 ```typescript
 sendData(data: any){
@@ -11481,7 +12344,7 @@ sendData(data: any){
 }
 ```
 
-#### HTTP PUT
+##### HTTP PUT
 
 ```typescript
 updateData(data: any){
@@ -11489,7 +12352,7 @@ updateData(data: any){
 }
 ```
 
-#### HTTP PATCH
+##### HTTP PATCH
 
 ```typescript
 updateData(data: any){
@@ -11497,7 +12360,7 @@ updateData(data: any){
 }
 ```
 
-#### HTTP DELETE
+##### HTTP DELETE
 
 ```typescript
 deleteData(id: string){
@@ -11505,7 +12368,7 @@ deleteData(id: string){
 }
 ```
 
-#### HTTP Interceptor
+##### HTTP Interceptor
 
 Http Interceptors are a powerful feature provided by the `@angular/common/http` module. They allow you to intercept and modify HTTP requests and responses in your Angular application. With interceptors, you can perform various tasks such as authentication, logging, error handling, and more. Interceptors provide a way to add global behavior to your HTTP requests and responses, making it easier to implement common functionalities across your application.
 
@@ -11612,7 +12475,7 @@ There are two ways to implement interceptors in Angular:
 
 **Note**: DI-based interceptors run in provider registration order, which can be unpredictable in complex applications with hierarchical DI configurations.
 
-#### Using Observable
+##### Using Observable
 
 ```typescript
 import { Observable } from "rxjs";
@@ -11647,7 +12510,7 @@ export class MyService {
 }
 ```
 
-#### Headers
+##### Headers
 
 HTTP headers are configured using the `HttpHeaders` class. Since `HttpHeaders` instances are immutable, utility methods like `set()`, `append()`, and `delete()` return a new instance of `HttpHeaders` rather than modifying the existing one.
 
@@ -11682,7 +12545,7 @@ export class HeaderDemoComponent {
 }
 ```
 
-#### Params
+##### Params
 
 Query parameters are configured using the `HttpParams` class. Similar to `HttpHeaders`, `HttpParams` is immutable, so calling `set()` or `append()` returns a new instance.
 
@@ -11712,7 +12575,7 @@ export class ParamsDemoComponent {
 }
 ```
 
-#### Observe and Response Type
+##### Observe and Response Type
 
 By default, `HttpClient` parses the JSON body of the response. You can customize this behavior by setting the `observe` option to read the full `HttpResponse` object or by configuring `responseType` to receive text, blob, or arraybuffer.
 
@@ -11748,7 +12611,7 @@ export class ResponseDemoComponent {
 }
 ```
 
-#### File Upload
+##### File Upload
 
 Uploading files with `HttpClient` involves wrapping the file object in a `FormData` payload and sending it via an HTTP POST or PUT request. `HttpClient` automatically sets the appropriate `multipart/form-data` content-type header along with the boundary string when `FormData` is passed as the request body.
 
@@ -11789,7 +12652,7 @@ export class FileUploadComponent {
 }
 ```
 
-#### Progress Events
+##### Progress Events
 
 To monitor the progress of uploading or downloading large files, configure the request with `reportProgress: true` and `observe: 'events'`. This returns an Observable that emits events of type `HttpEvent`, which can be filtered using `HttpEventType`.
 
@@ -11854,7 +12717,7 @@ export class UploadProgressComponent {
 }
 ```
 
-#### Request Cancellation
+##### Request Cancellation
 
 HTTP requests in Angular are represented by RxJS Observables, which are cold by default. The actual request is sent only when you call `.subscribe()`. You can cancel an active request simply by unsubscribing from the corresponding Subscription. In modern Angular applications, you can manage this efficiently using RxJS declarative operators like `takeUntil` or `takeUntilDestroyed`.
 
@@ -11903,13 +12766,13 @@ export class CancellationDemoComponent implements OnInit {
 }
 ```
 
-## RxJS
+### 5.3 RxJS
 
-### RxJS Introduction
+#### RxJS Introduction
 
 **Reactive Extensions Library for JavaScript** - RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code.
 
-#### Observables
+##### Observables
 
 An Observable is a lazy computation stream that can synchronously or asynchronously emit multiple values over time to zero or more consumers (unicast). Observables are cold by default, meaning they do not start producing data until they are subscribed to.
 
@@ -11941,7 +12804,7 @@ const subscription = stream$.subscribe({
 });
 ```
 
-#### Observers
+##### Observers
 
 An Observer is a consumer of values delivered by an Observable. It is a simple object containing callbacks for the three kinds of notifications that an Observable can deliver: `next`, `error`, and `complete`.
 
@@ -11959,7 +12822,7 @@ const consoleObserver = {
 of(10, 20, 30).subscribe(consoleObserver);
 ```
 
-#### Subjects
+##### Subjects
 
 A Subject is a special type of Observable that allows values to be multicasted to many Observers. While plain Observables are unicast (each subscribed Observer owns an independent execution of the Observable), Subjects are multicast. A Subject is also an Observer, meaning you can call `next()`, `error()`, and `complete()` directly on it.
 
@@ -11980,7 +12843,7 @@ subject.subscribe((val) => console.log(`Subscriber B: ${val}`));
 subject.next(3); // Both subscribers will receive 3
 ```
 
-#### BehaviorSubject
+##### BehaviorSubject
 
 A `BehaviorSubject` is a variant of Subject that requires an initial value and stores the "current" or "latest" value. Whenever a new Observer subscribes to a `BehaviorSubject`, it immediately receives the latest emitted value.
 
@@ -12000,7 +12863,7 @@ appState$.next("logging-in");
 appState$.subscribe((state) => console.log(`Auth state (Sub B): ${state}`));
 ```
 
-#### ReplaySubject
+##### ReplaySubject
 
 A `ReplaySubject` is a variant of Subject that records multiple values from the Observable execution and replays them to new subscribers. You can configure it to buffer a specific number of values and/or specify a window of time for how long values should be cached.
 
@@ -12018,7 +12881,7 @@ history$.next("Event 3");
 history$.subscribe((evt) => console.log(`Replayed event: ${evt}`));
 ```
 
-#### AsyncSubject
+##### AsyncSubject
 
 An `AsyncSubject` is a variant of Subject where only the last value of the execution is sent to its subscribers, and only when the execution completes. If the subject never completes, no values are emitted.
 
@@ -12036,7 +12899,7 @@ result$.next(300); // Only this value will be emitted
 result$.complete(); // Subscribers receive 300 and complete notification
 ```
 
-#### Common Operators
+##### Common Operators
 
 Pipeable operators are functions that take an Observable as input, process the stream, and return a new Observable. They are combined using the `.pipe()` method.
 
@@ -12061,7 +12924,7 @@ of(1, 2, 2, 3, 4, 5)
   .subscribe((val) => console.log(`Subscriber got: ${val}`));
 ```
 
-#### Higher-order Mapping Operators
+##### Higher-order Mapping Operators
 
 Higher-order mapping operators map outer observable values to inner observables and flatten the resulting stream. Choosing the right operator is critical to avoid race conditions:
 
@@ -12093,7 +12956,7 @@ const exhaustExample$ = click$.pipe(
 );
 ```
 
-#### Error Handling Operators
+##### Error Handling Operators
 
 Errors in RxJS streams are terminal notifications. Operators like `catchError` and `retry` allow you to intercept errors, retry executions, or gracefully recover by providing fallback streams.
 
@@ -12114,7 +12977,7 @@ unreliableStream$
   .subscribe((response) => console.log("Data:", response));
 ```
 
-#### Combination Operators
+##### Combination Operators
 
 Combination operators merge multiple streams into a single Observable stream.
 
@@ -12139,7 +13002,7 @@ forkJoin({
 });
 ```
 
-#### Multicasting
+##### Multicasting
 
 By default, Observables are cold and unicast. Multicasting operators share a single subscription execution among multiple observers.
 
@@ -12165,11 +13028,11 @@ setTimeout(() => {
 }, 2500);
 ```
 
-### Observables in Angular
+#### Observables in Angular
 
 An observable is a class that can be used to handle asynchronous data streams. Observables are used to handle data that can arrive over time, such as data received from a server, user input, or timed events.
 
-#### Creating Observables
+##### Creating Observables
 
 There are several ways to create observables in Angular:
 
@@ -12201,7 +13064,7 @@ import { from } from "rxjs";
 const observable = from(["Hello", "World"]);
 ```
 
-#### Subscribing to Observables
+##### Subscribing to Observables
 
 To receive data from an observable, you need to subscribe to it. The `subscribe` method is used to subscribe to an observable and receive data emitted by the observable.
 
@@ -12213,7 +13076,7 @@ observable.subscribe({
 });
 ```
 
-#### Difference between `observables` and `promises` in Angular
+##### Difference between `observables` and `promises` in Angular
 
 - **Observables**:
   - Observables are lazy, meaning they only execute when subscribed to.
@@ -12231,7 +13094,7 @@ observable.subscribe({
 
 [Back to top⤴️](#table-of-contents)
 
-### Unsubscribe in Angular
+#### Unsubscribe in Angular
 
 In Angular, managing subscriptions is crucial to avoid memory leaks and improve the performance of your application. Here are five ways to unsubscribe in Angular:
 
@@ -12378,712 +13241,41 @@ In Angular, managing subscriptions is crucial to avoid memory leaks and improve 
 
 [Back to top⤴️](#table-of-contents)
 
-### Subjects
+#### Subjects
 
 A `Subject` is a special type of Observable that allows values to be multicasted to many Observers.
 
-### BehaviorSubject
+#### BehaviorSubject
 
 A `BehaviorSubject` stores the latest value emitted and immediately emits it to new subscribers.
 
-### ReplaySubject
+#### ReplaySubject
 
 A `ReplaySubject` caches a specified number of values and replays them to new subscribers.
 
-### AsyncSubject
+#### AsyncSubject
 
 An `AsyncSubject` only emits the last value of the execution, and only when the execution completes.
-
-## Rendering
-
-### afterNextRender()
-
-`afterNextRender()` schedules a callback to run once after Angular has finished rendering the current view. It is useful when you need to interact with the DOM after it has been created.
-
-Unlike `ngAfterViewInit`, it is a standalone function that works naturally with standalone components and the modern Angular rendering pipeline.
-
-#### Why use afterNextRender()?
-
-- Modern alternative to `ngAfterViewInit`
-- Executes after the view has been rendered
-- Safe for DOM interactions
-- Works with Signals
-- Better readability
-- Recommended for new Angular applications
-
-#### Basic Example
-
-```typescript
-import { Component, afterNextRender } from "@angular/core";
-
-@Component({
-  selector: "app-home",
-  template: ` <h2>Hello Angular</h2> `,
-})
-export class HomeComponent {
-  constructor() {
-    afterNextRender(() => {
-      console.log("View rendered");
-    });
-  }
-}
-```
-
-Output
-
-```text
-View rendered
-```
-
-The callback runs once after Angular finishes rendering the component.
-
-#### Accessing DOM Elements
-
-```typescript
-import {
-  Component,
-  ElementRef,
-  viewChild,
-  afterNextRender,
-} from "@angular/core";
-
-@Component({
-  selector: "app-search",
-  template: ` <input #search /> `,
-})
-export class SearchComponent {
-  search = viewChild<ElementRef<HTMLInputElement>>("search");
-
-  constructor() {
-    afterNextRender(() => {
-      this.search()?.nativeElement.focus();
-    });
-  }
-}
-```
-
-The input automatically receives focus after the component is rendered.
-
-#### Measuring Element Size
-
-```typescript
-afterNextRender(() => {
-  const width = this.card()?.nativeElement.offsetWidth;
-
-  console.log(width);
-});
-```
-
-This is useful for responsive layouts and chart libraries.
-
-#### Scrolling an Element
-
-```typescript
-afterNextRender(() => {
-  this.messages()?.nativeElement.scrollIntoView();
-});
-```
-
-#### Real-world Example
-
-```typescript
-import {
-  Component,
-  ElementRef,
-  viewChild,
-  afterNextRender,
-} from "@angular/core";
-
-@Component({
-  selector: "app-chat",
-  template: ` <div #container>Chat Messages</div> `,
-})
-export class ChatComponent {
-  container = viewChild<ElementRef>("container");
-
-  constructor() {
-    afterNextRender(() => {
-      this.container()?.nativeElement.scrollIntoView({
-        behavior: "smooth",
-      });
-    });
-  }
-}
-```
-
-#### Using with Signals
-
-```typescript
-import { Component, signal, afterNextRender } from "@angular/core";
-
-@Component({
-  selector: "app-counter",
-  template: ` {{ count() }} `,
-})
-export class CounterComponent {
-  count = signal(0);
-
-  constructor() {
-    afterNextRender(() => {
-      console.log(this.count());
-    });
-  }
-}
-```
-
-#### afterNextRender() vs ngAfterViewInit
-
-| afterNextRender()                | ngAfterViewInit                    |
-| -------------------------------- | ---------------------------------- |
-| Function-based                   | Lifecycle hook                     |
-| Modern API                       | Traditional API                    |
-| Works with standalone components | Works with all components          |
-| Better readability               | Requires implementing an interface |
-| Signal-friendly                  | Lifecycle-based                    |
-| Recommended for new projects     | Legacy approach                    |
-
-#### Best Practices
-
-- Use `afterNextRender()` for DOM-related logic.
-- Prefer querying components instead of directly manipulating the DOM.
-- Use it for focus management, scrolling, measuring elements, and initializing third-party libraries.
-- Keep rendering callbacks lightweight.
-- Combine with Functional Queries where appropriate.
-
-#### Common Mistakes
-
-❌ Accessing DOM before rendering
-
-```typescript
-constructor() {
-
-  this.input()?.nativeElement.focus();
-
-}
-```
-
-The element may not exist yet.
-
----
-
-✅ Correct
-
-```typescript
-constructor() {
-
-  afterNextRender(() => {
-
-    this.input()?.nativeElement.focus();
-
-  });
-
-}
-```
-
----
-
-❌ Performing expensive work
-
-```typescript
-afterNextRender(() => {
-  // Heavy calculations...
-});
-```
-
-Keep the callback focused on rendering-related tasks.
-
----
-
-❌ Using `setTimeout()`
-
-```typescript
-setTimeout(() => {
-  this.input.focus();
-});
-```
-
-Prefer
-
-```typescript
-afterNextRender(() => {
-  this.input()?.nativeElement.focus();
-});
-```
-
-#### Angular v22 Notes
-
-- Recommended replacement for many `ngAfterViewInit` use cases.
-- Designed for Angular's modern rendering pipeline.
-- Integrates naturally with Functional Queries and Signals.
-- Improves readability by avoiding unnecessary lifecycle hooks.
-
-#### Official Documentation
-
-<https://angular.dev/api/core/afterNextRender>
-
-#### StackBlitz Example
-
-<https://stackblitz.com/edit/stackblitz-starters-after-next-render>
-
-[Back to top⤴️](#table-of-contents)
-
-### afterRenderEffect()
-
-`afterRenderEffect()` registers a reactive effect that runs after Angular finishes rendering the view. Unlike `afterNextRender()`, which executes only once, `afterRenderEffect()` automatically re-runs whenever its Signal dependencies change and Angular performs another render.
-
-It is ideal for synchronizing the rendered DOM with reactive application state.
-
-#### Why use afterRenderEffect()?
-
-- Reactive after-render callback
-- Automatically re-runs after every render
-- Integrates seamlessly with Signals
-- Eliminates many `ngAfterViewChecked` use cases
-- Ideal for DOM synchronization
-- Recommended for modern Angular applications
-
-#### Basic Example
-
-```typescript
-import { Component, signal, afterRenderEffect } from "@angular/core";
-
-@Component({
-  selector: "app-counter",
-  template: `
-    <h2>{{ count() }}</h2>
-
-    <button (click)="increment()">Increment</button>
-  `,
-})
-export class CounterComponent {
-  count = signal(0);
-
-  constructor() {
-    afterRenderEffect(() => {
-      console.log("Rendered:", this.count());
-    });
-  }
-
-  increment() {
-    this.count.update((value) => value + 1);
-  }
-}
-```
-
-Output
-
-```text
-Rendered: 0
-Rendered: 1
-Rendered: 2
-Rendered: 3
-```
-
-The effect automatically runs after every render.
-
-#### Updating the Document Title
-
-```typescript
-import { Component, signal, afterRenderEffect } from "@angular/core";
-
-@Component({
-  selector: "app-profile",
-  template: ` {{ username() }} `,
-})
-export class ProfileComponent {
-  username = signal("Manthan");
-
-  constructor() {
-    afterRenderEffect(() => {
-      document.title = this.username();
-    });
-  }
-}
-```
-
-Whenever `username()` changes, the browser title updates after rendering.
-
-#### Synchronizing Third-party Libraries
-
-```typescript
-afterRenderEffect(() => {
-  chart.update();
-});
-```
-
-Useful when integrating libraries such as:
-
-- Chart.js
-- Leaflet
-- Google Maps
-- Monaco Editor
-- CodeMirror
-
-#### Working with Functional Queries
-
-```typescript
-import {
-  Component,
-  ElementRef,
-  viewChild,
-  signal,
-  afterRenderEffect,
-} from "@angular/core";
-
-@Component({
-  selector: "app-search",
-  template: `
-    <input #search />
-
-    <button (click)="toggle()">Toggle</button>
-  `,
-})
-export class SearchComponent {
-  visible = signal(true);
-
-  search = viewChild<ElementRef<HTMLInputElement>>("search");
-
-  constructor() {
-    afterRenderEffect(() => {
-      if (this.visible()) {
-        this.search()?.nativeElement.focus();
-      }
-    });
-  }
-
-  toggle() {
-    this.visible.update((value) => !value);
-  }
-}
-```
-
-The effect runs again whenever Angular re-renders.
-
-#### Real-world Example
-
-```typescript
-import { Component, signal, afterRenderEffect } from "@angular/core";
-
-@Component({
-  selector: "app-progress",
-  template: ` Progress: {{ progress() }}% `,
-})
-export class ProgressComponent {
-  progress = signal(0);
-
-  constructor() {
-    afterRenderEffect(() => {
-      console.log(`Current progress: ${this.progress()}%`);
-    });
-  }
-
-  updateProgress(value: number) {
-    this.progress.set(value);
-  }
-}
-```
-
-#### afterRenderEffect() vs afterNextRender()
-
-| afterRenderEffect()                  | afterNextRender()           |
-| ------------------------------------ | --------------------------- |
-| Runs after every render              | Runs once                   |
-| Reactive                             | Non-reactive                |
-| Tracks Signals                       | No dependency tracking      |
-| Automatically re-executes            | Executes only once          |
-| Suitable for ongoing synchronization | Suitable for initialization |
-
-#### afterRenderEffect() vs ngAfterViewChecked
-
-| afterRenderEffect() | ngAfterViewChecked                   |
-| ------------------- | ------------------------------------ |
-| Signal-based        | Lifecycle hook                       |
-| Reactive            | Runs on every change detection cycle |
-| Better performance  | Can execute unnecessarily            |
-| Modern API          | Traditional API                      |
-| Cleaner code        | More boilerplate                     |
-
-#### Best Practices
-
-- Use `afterRenderEffect()` only for work that must happen after rendering.
-- Keep the callback lightweight.
-- Prefer Signals over manual state tracking.
-- Use it to synchronize UI with external libraries.
-- Avoid expensive calculations inside the callback.
-
-#### Common Mistakes
-
-❌ Updating Signals inside the effect
-
-```typescript
-afterRenderEffect(() => {
-  this.count.set(10);
-});
-```
-
-This can create unnecessary render cycles.
-
----
-
-❌ Performing heavy business logic
-
-```typescript
-afterRenderEffect(() => {
-  // Complex calculations...
-});
-```
-
-Keep business logic outside rendering callbacks.
-
----
-
-❌ Using it for one-time initialization
-
-```typescript
-afterRenderEffect(() => {
-  input.focus();
-});
-```
-
-Prefer
-
-```typescript
-afterNextRender(() => {
-  input.focus();
-});
-```
-
-#### When to Use
-
-Use **afterNextRender()**
-
-- Focus an input
-- Initialize a chart
-- Measure an element once
-- Scroll after page load
-
-Use **afterRenderEffect()**
-
-- Synchronize DOM with Signals
-- Update third-party libraries
-- React after every render
-- Keep external UI in sync
-
-#### Angular v22 Notes
-
-- Modern replacement for many `ngAfterViewChecked` use cases.
-- Fully integrated with Angular Signals.
-- Runs only when reactive dependencies require it.
-- Designed for Angular's new rendering model.
-
-#### Official Documentation
-
-<https://angular.dev/api/core/afterRenderEffect>
-
-#### StackBlitz Example
-
-<https://stackblitz.com/edit/stackblitz-starters-after-render-effect>
-
-[Back to top⤴️](#table-of-contents)
-
-### Rendering Pipeline
-
-To optimize performance and avoid forced reflows (layout thrashing), Angular's rendering hooks allow you to partition DOM operations into four discrete execution phases:
-
-1. **`earlyRead`**: Use this phase to read DOM properties needed for subsequent writes (e.g., element size or layout position).
-2. **`write`**: Use this phase to safely write modifications to the DOM.
-3. **`read`**: Use this phase to perform subsequent DOM reading operations once the layout is stable.
-4. **`mixedReadWrite`**: Use this fallback phase only if reads and writes cannot be separated.
-
-```typescript
-import { Component, afterRender } from "@angular/core";
-
-@Component({
-  selector: "app-safe-dom",
-  standalone: true,
-  template: `<div>Safe Rendering</div>`,
-})
-export class SafeDomComponent {
-  constructor() {
-    // Specifying phase execution to keep the rendering pipeline clean
-    afterRender(
-      () => {
-        const height = document.body.clientHeight; // Safe read phase
-        console.log("Height read in safe phase:", height);
-      },
-      { phase: 1 },
-    ); // Phase 1 represents earlyRead/read
-  }
-}
-```
-
-### Change Detection Strategies
-
-Angular offers two strategies for tracking application state changes and propagating them to the template:
-
-- **`Default` (CheckAlways)**: Angular checks the component template during every change detection run. Any asynchronous task, user event, or timer will trigger a check of the entire component tree.
-- **`OnPush` (CheckOnce)**: Angular optimizes performance by checking the component template _only_ when:
-  1. An `@Input` reference changes.
-  2. An event originates from the component or its children.
-  3. A component signal changes.
-  4. An `Observable` bound with the `async` pipe emits a new value.
-  5. You manually request a check via `ChangeDetectorRef.markForCheck()`.
-
-```typescript
-import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
-
-@Component({
-  selector: "app-optimized-view",
-  standalone: true,
-  template: `<div>Optimized: {{ data }}</div>`,
-  changeDetection: ChangeDetectionStrategy.OnPush, // Enables OnPush optimization
-})
-export class OptimizedViewComponent {
-  @Input() data!: string;
-}
-```
-
-### Zoneless Angular
-
-Historically, Angular relied on `zone.js` to patch asynchronous APIs (like events, promises, and timers) and trigger automatic global change detection. Beginning in Angular 18, you can construct fully **Zoneless** applications. Zoneless Angular does not load `zone.js`, resulting in smaller bundle sizes, faster startup speeds, and easier debugging. Instead, it relies on Signals, event handlers, and explicit CD notifications to refresh the UI.
-
-To bootstrap an application without `zone.js`, configure `provideExperimentalZonelessChangeDetection()` in your `ApplicationConfig`:
-
-```typescript
-import {
-  ApplicationConfig,
-  provideExperimentalZonelessChangeDetection,
-} from "@angular/core";
-import { provideRouter } from "@angular/router";
-import { routes } from "./app.routes";
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideExperimentalZonelessChangeDetection(), // Enables Zoneless Change Detection
-    provideRouter(routes),
-  ],
-};
-```
-
-### Pending Tasks
-
-In Zoneless or Server-Side Rendered (SSR) environments, Angular needs to know when an application is "stable" (e.g., when all asynchronous actions have finished) before rendering the final HTML or completing hydration. The `PendingTasks` service allows developers to notify Angular of ongoing asynchronous work, preventing stability resolution until the task completes.
-
-```typescript
-import { Component, inject } from "@angular/core";
-import { PendingTasks } from "@angular/core";
-
-@Component({
-  selector: "app-async-data",
-  standalone: true,
-  template: `<div>Rendering complex data...</div>`,
-})
-export class AsyncDataComponent {
-  private pendingTasks = inject(PendingTasks);
-
-  constructor() {
-    // Notify Angular that an async operation has started
-    const removeTask = this.pendingTasks.add();
-
-    this.loadHeavyResources().then(() => {
-      // Notify Angular that the operation has completed
-      removeTask();
-    });
-  }
-
-  async loadHeavyResources() {
-    return new Promise((resolve) => setTimeout(resolve, 3000));
-  }
-}
-```
-
-### Renderer2
-
-Renderer2 is a utility class that provides methods to manipulate and interact with the DOM (Document Object Model). It is used to perform operations such as creating, modifying, and removing elements, applying styles, and listening to events.
-
-```typescript
-import { Component, Renderer2, ElementRef } from "@angular/core";
-
-@Component({
-  selector: "app-example",
-  template: ` <button (click)="changeColor()">Change Color</button> `,
-})
-export class ExampleComponent {
-  constructor(
-    private renderer: Renderer2,
-    private el: ElementRef,
-  ) {}
-
-  changeColor() {
-    const button = this.el.nativeElement.querySelector("button");
-    this.renderer.setStyle(button, "background-color", "red");
-  }
-}
-```
-
-### JIT
-
-**Just-in-Time** (JIT) is a type of compilation that compiles your app in the browser at runtime. This is the default compilation mode for Angular applications.
-
-#### Advantages of JIT
-
-- Faster development cycle as changes can be seen immediately.
-- No build step required during development.
-- More flexible for dynamic template generation.
-
-### AOT
-
-**Ahead-of-Time** (AOT) is a type of compilation that compiles your app at build time. This mode is used to pre-compile your Angular application before deployment.
-
-#### Advantages of AOT
-
-- Faster startup times as the browser only needs to execute the compiled code.
-- Improved performance due to optimized and pre-compiled templates.
-- Better security as the templates are already compiled and validated before deployment.
-- Smaller bundle sizes since the templates are not included.
-
-### JIT vs AOT
-
-#### Differences between AOT and JIT
-
-| Feature               | AOT            | JIT     |
-| --------------------- | -------------- | ------- |
-| Compilation time      | Build time     | Runtime |
-| Application size      | Smaller        | Larger  |
-| Application load time | Faster         | Slower  |
-| Debugging             | More difficult | Easier  |
-| Development           | More difficult | Easier  |
-| Performance           | Better         | Worse   |
-
-### Deferrable Views
-
-Deferrable views can be used in component template to defer the loading of select dependencies within that template.
-
-```typescript
-@defer {
-  <large-component />
-}
-```
 
 ## 6. Stage 6: Server-Side Rendering (SSR), Deferrable Views & Performance
 
 ### 6.1 Server-Side Rendering & Hydration
 
-### SSR Introduction
+#### SSR Introduction
 
 Server-Side Rendering (SSR) is the process of rendering pages on the server and serving static HTML to client browsers.
 
-### provideServerRendering()
+#### provideServerRendering()
 
 Configures provider dependencies required for rendering Angular application pages on the server.
 
-### provideClientHydration()
+#### provideClientHydration()
 
 `provideClientHydration()` enables hydration for Angular Server-Side Rendered (SSR) applications. Instead of discarding the HTML generated on the server and rendering everything again in the browser, Angular reuses the existing DOM and attaches event listeners, making the application interactive.
 
 Hydration improves startup performance, reduces DOM work, and enhances Core Web Vitals.
 
-#### Why use provideClientHydration()?
+##### Why use provideClientHydration()?
 
 - Reuses server-rendered HTML
 - Faster page interactivity
@@ -13094,7 +13286,7 @@ Hydration improves startup performance, reduces DOM work, and enhances Core Web 
 
 ---
 
-### Without Hydration
+#### Without Hydration
 
 ```
 Server
@@ -13128,7 +13320,7 @@ The browser recreates the DOM from scratch.
 
 ---
 
-### With Hydration
+#### With Hydration
 
 ```
 Server
@@ -13162,7 +13354,7 @@ The browser keeps the existing HTML and makes it interactive.
 
 ---
 
-### Enabling Client Hydration
+#### Enabling Client Hydration
 
 ```typescript
 import { ApplicationConfig } from "@angular/core";
@@ -13178,7 +13370,7 @@ This enables hydration for the application.
 
 ---
 
-### Complete Example
+#### Complete Example
 
 ```typescript
 import { bootstrapApplication } from "@angular/platform-browser";
@@ -13196,7 +13388,7 @@ Angular automatically hydrates the server-rendered application.
 
 ---
 
-### Hydration Process
+#### Hydration Process
 
 ```
 SSR
@@ -13230,7 +13422,7 @@ Unlike client-side rendering, Angular does **not** recreate the DOM.
 
 ---
 
-### Event Replay
+#### Event Replay
 
 During hydration, users may interact with the page before Angular finishes attaching event listeners.
 
@@ -13258,7 +13450,7 @@ This prevents lost user interactions during startup.
 
 ---
 
-### Real-world Example
+#### Real-world Example
 
 Imagine an online shopping application.
 
@@ -13310,7 +13502,7 @@ Users can start interacting much sooner.
 
 ---
 
-### Using with Incremental Hydration
+#### Using with Incremental Hydration
 
 ```typescript
 providers: [provideClientHydration()];
@@ -13322,7 +13514,7 @@ This combination provides excellent startup performance.
 
 ---
 
-### Benefits
+#### Benefits
 
 - Better SEO
 - Faster startup
@@ -13335,7 +13527,7 @@ This combination provides excellent startup performance.
 
 ---
 
-### provideClientHydration() vs Client-side Rendering
+#### provideClientHydration() vs Client-side Rendering
 
 | Client Hydration       | Client-side Rendering       |
 | ---------------------- | --------------------------- |
@@ -13347,7 +13539,7 @@ This combination provides excellent startup performance.
 
 ---
 
-### Best Practices
+#### Best Practices
 
 - Enable hydration for all SSR applications.
 - Combine hydration with Incremental Hydration.
@@ -13357,7 +13549,7 @@ This combination provides excellent startup performance.
 
 ---
 
-### Common Mistakes
+#### Common Mistakes
 
 ❌ Using hydration without SSR
 
@@ -13389,7 +13581,7 @@ Hydration generally provides better performance than re-rendering the entire app
 
 ---
 
-### Angular v22 Notes
+#### Angular v22 Notes
 
 - Recommended for all Angular SSR applications.
 - Reuses server-rendered DOM instead of recreating it.
@@ -13398,17 +13590,17 @@ Hydration generally provides better performance than re-rendering the entire app
 - Supports Event Replay during application startup.
 - Integrates seamlessly with standalone applications.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/hydration>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 Hydration requires Angular SSR and cannot be demonstrated in StackBlitz.
 
 [Back to top⤴️](#table-of-contents)
 
-### Incremental Hydration
+#### Incremental Hydration
 
 Incremental Hydration is a modern Angular rendering technique that allows parts of a Server-Side Rendered (SSR) application to become interactive only when needed.
 
@@ -13416,7 +13608,7 @@ Instead of hydrating the entire application at once, Angular hydrates components
 
 This improves initial page load performance and reduces JavaScript execution.
 
-#### Why use Incremental Hydration?
+##### Why use Incremental Hydration?
 
 - Faster initial page load
 - Less JavaScript execution
@@ -13425,7 +13617,7 @@ This improves initial page load performance and reduces JavaScript execution.
 - Better user experience
 - Reduced memory usage
 
-#### What is Hydration?
+##### What is Hydration?
 
 When using Server-Side Rendering (SSR), Angular first sends static HTML from the server.
 
@@ -13448,7 +13640,7 @@ The entire application waits for all JavaScript before becoming interactive.
 
 ---
 
-#### What is Incremental Hydration?
+##### What is Incremental Hydration?
 
 Instead of hydrating everything immediately,
 
@@ -13477,7 +13669,7 @@ Each section becomes interactive independently.
 
 ---
 
-### Example
+#### Example
 
 ```html
 <header>...</header>
@@ -13493,11 +13685,11 @@ Angular can hydrate these sections independently instead of waiting for the enti
 
 ---
 
-### Hydration Triggers
+#### Hydration Triggers
 
 Angular can hydrate components based on different triggers.
 
-#### On Viewport
+##### On Viewport
 
 Hydrate when the component enters the viewport.
 
@@ -13510,7 +13702,7 @@ Ideal for
 
 ---
 
-#### On Interaction
+##### On Interaction
 
 Hydrate when the user interacts.
 
@@ -13530,7 +13722,7 @@ Useful for
 
 ---
 
-#### On Idle
+##### On Idle
 
 Hydrate when the browser is idle.
 
@@ -13543,7 +13735,7 @@ Useful for
 
 ---
 
-#### On Immediate
+##### On Immediate
 
 Hydrate immediately after the page loads.
 
@@ -13556,7 +13748,7 @@ Useful for
 
 ---
 
-### Real-world Example
+#### Real-world Example
 
 Imagine an e-commerce homepage.
 
@@ -13593,7 +13785,7 @@ Only important parts become interactive first.
 
 ---
 
-### Benefits
+#### Benefits
 
 - Smaller startup cost
 - Better Lighthouse score
@@ -13604,7 +13796,7 @@ Only important parts become interactive first.
 
 ---
 
-### Incremental Hydration vs Full Hydration
+#### Incremental Hydration vs Full Hydration
 
 | Incremental Hydration              | Full Hydration                  |
 | ---------------------------------- | ------------------------------- |
@@ -13616,7 +13808,7 @@ Only important parts become interactive first.
 
 ---
 
-### Best Practices
+#### Best Practices
 
 - Hydrate only interactive components.
 - Delay non-critical UI.
@@ -13626,7 +13818,7 @@ Only important parts become interactive first.
 
 ---
 
-### Common Mistakes
+#### Common Mistakes
 
 ❌ Hydrating everything immediately
 
@@ -13664,7 +13856,7 @@ usually does not need immediate hydration.
 
 ---
 
-### Angular v22 Notes
+#### Angular v22 Notes
 
 - Available for Angular Server-Side Rendering (SSR) applications.
 - Improves Core Web Vitals and startup performance.
@@ -13672,27 +13864,27 @@ usually does not need immediate hydration.
 - Especially beneficial for large applications.
 - Works together with `provideClientHydration()` and deferred loading.
 
-#### Official Documentation
+##### Official Documentation
 
 <https://angular.dev/guide/incremental-hydration>
 
-#### StackBlitz Example
+##### StackBlitz Example
 
 Incremental Hydration requires Angular SSR and is not currently supported in StackBlitz.
 
 [Back to top⤴️](#table-of-contents)
 
-### Hybrid Rendering
+#### Hybrid Rendering
 
 Combines pre-rendering and server-side rendering strategies to dynamically render routes.
 
-### Rendering Strategies
+#### Rendering Strategies
 
 Allows configuring build/deploy tasks using static pre-rendering, server rendering, or client rendering.
 
-### Meta tags
+#### Meta tags
 
-#### Title Service
+##### Title Service
 
 ```typescript
 import { BrowserModule, Title } from "@angular/platform-browser";
@@ -13743,7 +13935,7 @@ export class AppComponent implements OnInit {
 }
 ```
 
-#### Title Service Example
+##### Title Service Example
 
 ```typescript
 // app.module.ts
@@ -13829,7 +14021,7 @@ export class HomeComponent implements OnInit {
 }
 ```
 
-#### Dynamic Title
+##### Dynamic Title
 
 ```typescript
 // app.module.ts
@@ -13982,7 +14174,7 @@ export class ChildComponent implements OnInit {
 }
 ```
 
-#### Meta Service
+##### Meta Service
 
 ```typescript
 import { BrowserModule, Meta } from "@angular/platform-browser";
@@ -14059,696 +14251,690 @@ this.metaService.removeTag("name='robots'");
 
 [Back to top⤴️](#table-of-contents)
 
-## Content Projection
+### 6.2 Rendering
 
-Content projection allows passing HTML templates from parent components to child components.
+#### afterNextRender()
 
-### ng-content
+`afterNextRender()` schedules a callback to run once after Angular has finished rendering the current view. It is useful when you need to interact with the DOM after it has been created.
 
-Use the `<ng-content></ng-content>` tag to serve as a placeholder for projected elements.
+Unlike `ngAfterViewInit`, it is a standalone function that works naturally with standalone components and the modern Angular rendering pipeline.
 
-### Multi-slot Projection
+##### Why use afterNextRender()?
 
-Specify slots using the `select` attribute (e.g. `<ng-content select="[header]"></ng-content>`).
+- Modern alternative to `ngAfterViewInit`
+- Executes after the view has been rendered
+- Safe for DOM interactions
+- Works with Signals
+- Better readability
+- Recommended for new Angular applications
 
-### Conditional Projection
-
-Conditionally render projected templates using programmatic checks or `@if` directives.
-
-## Pipes
-
-A pipe takes in data as input and transforms it to a desired output.
-
-Syntax:
-
-```text
-{{ data | pipe }}
-```
-
-```text
-Expression | pipeOperator[:pipeArguments]
-
-**Expression:** is the expression, which you want to transform
-**|** : is the Pipe Character
-**pipeOperator** : name of the Pipe
-**pipeArguments:** arguments to the Pipe
-```
-
-### Built-in Pipes
-
-There are several built-in pipes in Angular, including:
-
-- **Date Pipe**
-- **Uppercase Pipe**
-- **Lowercase Pipe**
-- **Currency Pipe**
-- **Percent Pipe**
-- **Slice Pipe**
-- **Decimal/number Pipe**
-- **JSON Pipe**
-- **Async Pipe**
-
-### Date Pipe
-
-The `date` pipe is used to format a date value according to the locale rules specified in the application.
-
-```ts
-import { DatePipe } from "@angular/common";
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
-})
-export class AppComponent {
-  date = new Date();
-
-  constructor(private datePipe: DatePipe) {}
-
-  formatDate() {
-    return this.datePipe.transform(this.date, "shortDate");
-  }
-}
-```
-
-```html
-<h1>Date Pipe Example</h1>
-<p>{{ date | date: 'shortDate' }}</p>
-```
-
-```ts
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
-
-import { AppComponent } from "./app.component";
-import { DatePipe } from "@angular/common";
-
-@NgModule({
-  imports: [BrowserModule, FormsModule],
-  declarations: [AppComponent],
-  bootstrap: [AppComponent],
-  providers: [DatePipe],
-})
-export class AppModule {}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-fobnad?file=src%2Fapp%2Fapp.component.ts)
-
-### Uppercase Pipe
-
-The `uppercase` pipe is used to transform a string to uppercase.
-
-```html
-<h1>Upper Case Pipe Example</h1>
-<p>{{ name | uppercase }}</p>
-```
-
-```ts
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
-})
-export class AppComponent {
-  name = "Manthan Ank";
-}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-hlmoxp?file=src%2Fapp%2Fapp.component.ts)
-
-### Lowercase Pipe
-
-The `lowercase` pipe is used to transform a string to lowercase.
-
-```html
-<p>{{ name | lowercase }}</p>
-```
-
-```ts
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
-})
-export class AppComponent {
-  name = "Manthan Ank";
-}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-6gcdgx?file=src%2Fapp%2Fapp.component.ts)
-
-### Currency Pipe
-
-The `currency` pipe is used to format a number as currency using the locale rules specified in the application.
-
-```html
-<h1>Currency Pipe Example</h1>
-<p>{{ price | currency }}</p>
-```
-
-```ts
-import { CurrencyPipe } from "@angular/common";
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
-})
-export class AppComponent {
-  price = 100;
-
-  constructor(private currencyPipe: CurrencyPipe) {}
-
-  formatCurrency() {
-    return this.currencyPipe.transform(this.price, "USD", true);
-  }
-}
-```
-
-```ts
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
-
-import { AppComponent } from "./app.component";
-import { CurrencyPipe } from "@angular/common";
-
-@NgModule({
-  imports: [BrowserModule, FormsModule],
-  declarations: [AppComponent],
-  bootstrap: [AppComponent],
-  providers: [CurrencyPipe],
-})
-export class AppModule {}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-3fhhzz?file=src%2Fapp%2Fapp.component.ts)
-
-### Percent Pipe
-
-The `percent` pipe is used to format a number as a percentage.
-
-```html
-<h1>Percent Pipe Example</h1>
-<p>{{ percentage | percent }}</p>
-```
-
-```ts
-import { PercentPipe } from "@angular/common";
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
-})
-export class AppComponent {
-  percentage = 0.5;
-
-  constructor(private percentPipe: PercentPipe) {}
-
-  formatPercentage() {
-    return this.percentPipe.transform(this.percentage, "2");
-  }
-}
-```
-
-```ts
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
-
-import { AppComponent } from "./app.component";
-import { HelloComponent } from "./hello.component";
-import { PercentPipe } from "@angular/common";
-
-@NgModule({
-  imports: [BrowserModule, FormsModule],
-  declarations: [AppComponent],
-  bootstrap: [AppComponent],
-  providers: [PercentPipe],
-})
-export class AppModule {}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-tccybj?file=src%2Fapp%2Fapp.component.ts)
-
-### Slice Pipe
-
-The `slice` pipe is used to create a new array or string containing a subset of the elements of the input array or string.
+##### Basic Example
 
 ```typescript
-<p>{{ ['apple', 'banana', 'orange', 'mango'] | slice:1:3 }}</p>
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-q88gmm?file=src%2Fapp%2Fapp.component.ts)
-
-### Decimal/number Pipe
-
-The `number` pipe is used to format a number as text. It can be used to format a number as a percentage, currency, or decimal number.
-
-```html
-<p>{{ 123456.78 | number:'3.2-3' }}</p>
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/angular-ivy-7cwk1u?file=src%2Fapp%2Fapp.component.ts)
-
-### JSON Pipe
-
-The `json` pipe is used to transform a JavaScript object into a JSON string.
-
-```html
-<p>{{data | json}}</p>
-```
-
-```typescript
-import { Component } from "@angular/core";
+import { Component, afterNextRender } from "@angular/core";
 
 @Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  selector: "app-home",
+  template: ` <h2>Hello Angular</h2> `,
 })
-export class AppComponent {
-  data = { name: "Manthan Ank", age: 25 };
-}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-jgc252?file=src%2Fmain.ts)
-
-### Async Pipe
-
-The `async` pipe is used to subscribe to an Observable or Promise and return the latest value it has emitted.
-
-```html
-<p>{{data$ | async}}</p>
-```
-
-```typescript
-// DataService.service.ts
-import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-
-@Injectable()
-export class DataService {
-  private data$: Observable<string>;
-
+export class HomeComponent {
   constructor() {
-    // Simulating an asynchronous data source
-    this.data$ = of("Hello, async pipe!").pipe(
-      // Simulating delay
-      delay(2000),
-    );
-  }
-
-  getData(): Observable<string> {
-    return this.data$;
+    afterNextRender(() => {
+      console.log("View rendered");
+    });
   }
 }
-```
-
-```typescript
-// ExampleComponent.component.ts
-import { Component } from "@angular/core";
-import { Observable } from "rxjs";
-import { DataService } from "./data.service";
-
-@Component({
-  selector: "app-example",
-  template: "<div>{{ data$ | async }}</div>",
-})
-export class ExampleComponent {
-  data$: Observable<string>;
-
-  constructor(private dataService: DataService) {
-    this.data$ = this.dataService.getData();
-  }
-}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-iatcbn?file=src%2Fmain.ts)
-
-### Impure Pipes
-
-By default, Angular pipes are pure, meaning they are stateless and do not change unless the input value changes. However, you can create impure pipes by setting the pure property to false in the @Pipe decorator.
-
-```typescript
-import { Pipe, PipeTransform } from "@angular/core";
-
-@Pipe({
-  name: "impurePipe",
-  pure: false,
-})
-export class ImpurePipe implements PipeTransform {
-  transform(value: any): any {
-    return value;
-  }
-}
-```
-
-```html
-<p>{{ data | impurePipe }}</p>
-```
-
-```typescript
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
-})
-export class AppComponent {
-  data = "Hello, world!";
-}
-```
-
-```typescript
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
-
-import { AppComponent } from "./app.component";
-
-@NgModule({
-  imports: [BrowserModule, FormsModule],
-  declarations: [AppComponent, ImpurePipe],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
-```
-
-[Stackblitz Example](https://stackblitz.com/edit/stackblitz-starters-xy3hhp?file=src%2Fmain.ts)
-
-[Back to top⤴️](#table-of-contents)
-
-## Queries
-
-### viewChild()
-
-Returns a Signal containing the first matching element, directive, or component from the component's own template.
-
-#### Example
-
-Child Component
-
-```typescript
-@Component({
-  selector: "app-child",
-  template: `<h2>Angular</h2>`,
-})
-export class ChildComponent {
-  message() {
-    console.log("Hello Angular");
-  }
-}
-```
-
-Parent Component
-
-```typescript
-import { Component, viewChild } from "@angular/core";
-
-@Component({
-  selector: "app-parent",
-  imports: [ChildComponent],
-  template: ` <app-child /> `,
-})
-export class ParentComponent {
-  child = viewChild(ChildComponent);
-
-  callChild() {
-    this.child()?.message();
-  }
-}
-```
-
-The returned value is a Signal.
-
-```typescript
-this.child();
-```
-
----
-
-### Required viewChild()
-
-```typescript
-child = viewChild.required(ChildComponent);
-```
-
-Angular throws an error if the child component cannot be found.
-
----
-
-### Reading Template Reference Variables
-
-```html
-<input #search />
-```
-
-```typescript
-import { ElementRef, viewChild } from "@angular/core";
-
-search = viewChild<ElementRef<HTMLInputElement>>("search");
-```
-
-Reading the value
-
-```typescript
-this.search()?.nativeElement.value;
-```
-
----
-
-### viewChildren()
-
-Returns a Signal containing all matching elements or components.
-
-```typescript
-items = viewChildren(ItemComponent);
-```
-
-Reading the components
-
-```typescript
-this.items().forEach((item) => {
-  console.log(item);
-});
-```
-
-#### Example
-
-```html
-<app-item />
-<app-item />
-<app-item />
-```
-
-```typescript
-items = viewChildren(ItemComponent);
 ```
 
 Output
 
 ```text
-[
-  ItemComponent,
-  ItemComponent,
-  ItemComponent
-]
+View rendered
 ```
 
----
+The callback runs once after Angular finishes rendering the component.
 
-### contentChild()
-
-Returns a Signal for projected content using `<ng-content>`.
-
-Child Component
+##### Accessing DOM Elements
 
 ```typescript
+import {
+  Component,
+  ElementRef,
+  viewChild,
+  afterNextRender,
+} from "@angular/core";
+
 @Component({
-  selector: "app-card",
-  template: ` <ng-content /> `,
+  selector: "app-search",
+  template: ` <input #search /> `,
 })
-export class CardComponent {
-  heading = contentChild("heading");
-}
-```
+export class SearchComponent {
+  search = viewChild<ElementRef<HTMLInputElement>>("search");
 
-Parent Component
-
-```html
-<app-card>
-  <h2 #heading>Angular v22</h2>
-</app-card>
-```
-
-Reading the projected content
-
-```typescript
-this.heading();
-```
-
----
-
-### contentChildren()
-
-Returns a Signal containing multiple projected elements.
-
-Child Component
-
-```typescript
-items = contentChildren("item");
-```
-
-Parent Component
-
-```html
-<app-list>
-  <p #item>One</p>
-
-  <p #item>Two</p>
-
-  <p #item>Three</p>
-</app-list>
-```
-
-Reading all projected elements
-
-```typescript
-this.items();
-```
-
----
-
-### Reacting to Query Changes
-
-Since Functional Queries return Signals, they work naturally with `computed()`.
-
-```typescript
-childCount = computed(() => this.items().length);
-```
-
-Or with `effect()`.
-
-```typescript
-effect(() => {
-  console.log(this.items());
-});
-```
-
-Whenever the queried components change, the Signal updates automatically.
-
----
-
-### Real-world Example
-
-```typescript
-@Component({
-  selector: "app-dashboard",
-  imports: [ChartComponent],
-  template: ` <app-chart /> `,
-})
-export class DashboardComponent {
-  chart = viewChild(ChartComponent);
-
-  refreshChart() {
-    this.chart()?.refresh();
+  constructor() {
+    afterNextRender(() => {
+      this.search()?.nativeElement.focus();
+    });
   }
 }
 ```
 
----
+The input automatically receives focus after the component is rendered.
 
-### Functional Queries vs Decorators
-
-| Functional Queries      | Decorators               |
-| ----------------------- | ------------------------ |
-| Signal-based            | Decorator-based          |
-| Reactive                | Static                   |
-| Modern API              | Traditional API          |
-| Better type inference   | Good type inference      |
-| Works with `computed()` | Requires lifecycle hooks |
-| Works with `effect()`   | Manual updates           |
-
----
-
-### Best Practices
-
-- Prefer Functional Queries for new Angular applications.
-- Use `.required()` when the queried element must exist.
-- Use `viewChildren()` instead of multiple `viewChild()` calls.
-- Use `computed()` for derived values.
-- Keep direct DOM manipulation to a minimum.
-
----
-
-### Common Mistakes
-
-❌ Forgetting that queries return Signals
+##### Measuring Element Size
 
 ```typescript
-this.child.message();
+afterNextRender(() => {
+  const width = this.card()?.nativeElement.offsetWidth;
+
+  console.log(width);
+});
 ```
+
+This is useful for responsive layouts and chart libraries.
+
+##### Scrolling an Element
+
+```typescript
+afterNextRender(() => {
+  this.messages()?.nativeElement.scrollIntoView();
+});
+```
+
+##### Real-world Example
+
+```typescript
+import {
+  Component,
+  ElementRef,
+  viewChild,
+  afterNextRender,
+} from "@angular/core";
+
+@Component({
+  selector: "app-chat",
+  template: ` <div #container>Chat Messages</div> `,
+})
+export class ChatComponent {
+  container = viewChild<ElementRef>("container");
+
+  constructor() {
+    afterNextRender(() => {
+      this.container()?.nativeElement.scrollIntoView({
+        behavior: "smooth",
+      });
+    });
+  }
+}
+```
+
+##### Using with Signals
+
+```typescript
+import { Component, signal, afterNextRender } from "@angular/core";
+
+@Component({
+  selector: "app-counter",
+  template: ` {{ count() }} `,
+})
+export class CounterComponent {
+  count = signal(0);
+
+  constructor() {
+    afterNextRender(() => {
+      console.log(this.count());
+    });
+  }
+}
+```
+
+##### afterNextRender() vs ngAfterViewInit
+
+| afterNextRender()                | ngAfterViewInit                    |
+| -------------------------------- | ---------------------------------- |
+| Function-based                   | Lifecycle hook                     |
+| Modern API                       | Traditional API                    |
+| Works with standalone components | Works with all components          |
+| Better readability               | Requires implementing an interface |
+| Signal-friendly                  | Lifecycle-based                    |
+| Recommended for new projects     | Legacy approach                    |
+
+##### Best Practices
+
+- Use `afterNextRender()` for DOM-related logic.
+- Prefer querying components instead of directly manipulating the DOM.
+- Use it for focus management, scrolling, measuring elements, and initializing third-party libraries.
+- Keep rendering callbacks lightweight.
+- Combine with Functional Queries where appropriate.
+
+##### Common Mistakes
+
+❌ Accessing DOM before rendering
+
+```typescript
+constructor() {
+
+  this.input()?.nativeElement.focus();
+
+}
+```
+
+The element may not exist yet.
+
+---
 
 ✅ Correct
 
 ```typescript
-this.child()?.message();
+constructor() {
+
+  afterNextRender(() => {
+
+    this.input()?.nativeElement.focus();
+
+  });
+
+}
 ```
 
 ---
 
-❌ Accessing before Angular initializes the view
+❌ Performing expensive work
 
-Always access query results after Angular has created the view or react to them using Signals.
+```typescript
+afterNextRender(() => {
+  // Heavy calculations...
+});
+```
+
+Keep the callback focused on rendering-related tasks.
 
 ---
 
-❌ Using `ElementRef` unnecessarily
+❌ Using `setTimeout()`
 
-Prefer querying components or directives instead of manipulating the DOM directly.
+```typescript
+setTimeout(() => {
+  this.input.focus();
+});
+```
 
----
+Prefer
 
-### Angular v22 Notes
+```typescript
+afterNextRender(() => {
+  this.input()?.nativeElement.focus();
+});
+```
 
-- Recommended replacement for query decorators.
-- Fully integrated with Angular Signals.
-- Eliminates much of the boilerplate associated with lifecycle hooks.
-- Provides reactive access to child components and projected content.
-- Works seamlessly with standalone components.
+##### Angular v22 Notes
 
-#### Official Documentation
+- Recommended replacement for many `ngAfterViewInit` use cases.
+- Designed for Angular's modern rendering pipeline.
+- Integrates naturally with Functional Queries and Signals.
+- Improves readability by avoiding unnecessary lifecycle hooks.
 
-<https://angular.dev/guide/components/queries>
+##### Official Documentation
 
-#### StackBlitz Example
+<https://angular.dev/api/core/afterNextRender>
 
-<https://stackblitz.com/edit/stackblitz-starters-functional-queries>
+##### StackBlitz Example
+
+<https://stackblitz.com/edit/stackblitz-starters-after-next-render>
 
 [Back to top⤴️](#table-of-contents)
 
-## Animations
+#### afterRenderEffect()
 
-### Angular Animations Overview
+`afterRenderEffect()` registers a reactive effect that runs after Angular finishes rendering the view. Unlike `afterNextRender()`, which executes only once, `afterRenderEffect()` automatically re-runs whenever its Signal dependencies change and Angular performs another render.
+
+It is ideal for synchronizing the rendered DOM with reactive application state.
+
+##### Why use afterRenderEffect()?
+
+- Reactive after-render callback
+- Automatically re-runs after every render
+- Integrates seamlessly with Signals
+- Eliminates many `ngAfterViewChecked` use cases
+- Ideal for DOM synchronization
+- Recommended for modern Angular applications
+
+##### Basic Example
+
+```typescript
+import { Component, signal, afterRenderEffect } from "@angular/core";
+
+@Component({
+  selector: "app-counter",
+  template: `
+    <h2>{{ count() }}</h2>
+
+    <button (click)="increment()">Increment</button>
+  `,
+})
+export class CounterComponent {
+  count = signal(0);
+
+  constructor() {
+    afterRenderEffect(() => {
+      console.log("Rendered:", this.count());
+    });
+  }
+
+  increment() {
+    this.count.update((value) => value + 1);
+  }
+}
+```
+
+Output
+
+```text
+Rendered: 0
+Rendered: 1
+Rendered: 2
+Rendered: 3
+```
+
+The effect automatically runs after every render.
+
+##### Updating the Document Title
+
+```typescript
+import { Component, signal, afterRenderEffect } from "@angular/core";
+
+@Component({
+  selector: "app-profile",
+  template: ` {{ username() }} `,
+})
+export class ProfileComponent {
+  username = signal("Manthan");
+
+  constructor() {
+    afterRenderEffect(() => {
+      document.title = this.username();
+    });
+  }
+}
+```
+
+Whenever `username()` changes, the browser title updates after rendering.
+
+##### Synchronizing Third-party Libraries
+
+```typescript
+afterRenderEffect(() => {
+  chart.update();
+});
+```
+
+Useful when integrating libraries such as:
+
+- Chart.js
+- Leaflet
+- Google Maps
+- Monaco Editor
+- CodeMirror
+
+##### Working with Functional Queries
+
+```typescript
+import {
+  Component,
+  ElementRef,
+  viewChild,
+  signal,
+  afterRenderEffect,
+} from "@angular/core";
+
+@Component({
+  selector: "app-search",
+  template: `
+    <input #search />
+
+    <button (click)="toggle()">Toggle</button>
+  `,
+})
+export class SearchComponent {
+  visible = signal(true);
+
+  search = viewChild<ElementRef<HTMLInputElement>>("search");
+
+  constructor() {
+    afterRenderEffect(() => {
+      if (this.visible()) {
+        this.search()?.nativeElement.focus();
+      }
+    });
+  }
+
+  toggle() {
+    this.visible.update((value) => !value);
+  }
+}
+```
+
+The effect runs again whenever Angular re-renders.
+
+##### Real-world Example
+
+```typescript
+import { Component, signal, afterRenderEffect } from "@angular/core";
+
+@Component({
+  selector: "app-progress",
+  template: ` Progress: {{ progress() }}% `,
+})
+export class ProgressComponent {
+  progress = signal(0);
+
+  constructor() {
+    afterRenderEffect(() => {
+      console.log(`Current progress: ${this.progress()}%`);
+    });
+  }
+
+  updateProgress(value: number) {
+    this.progress.set(value);
+  }
+}
+```
+
+##### afterRenderEffect() vs afterNextRender()
+
+| afterRenderEffect()                  | afterNextRender()           |
+| ------------------------------------ | --------------------------- |
+| Runs after every render              | Runs once                   |
+| Reactive                             | Non-reactive                |
+| Tracks Signals                       | No dependency tracking      |
+| Automatically re-executes            | Executes only once          |
+| Suitable for ongoing synchronization | Suitable for initialization |
+
+##### afterRenderEffect() vs ngAfterViewChecked
+
+| afterRenderEffect() | ngAfterViewChecked                   |
+| ------------------- | ------------------------------------ |
+| Signal-based        | Lifecycle hook                       |
+| Reactive            | Runs on every change detection cycle |
+| Better performance  | Can execute unnecessarily            |
+| Modern API          | Traditional API                      |
+| Cleaner code        | More boilerplate                     |
+
+##### Best Practices
+
+- Use `afterRenderEffect()` only for work that must happen after rendering.
+- Keep the callback lightweight.
+- Prefer Signals over manual state tracking.
+- Use it to synchronize UI with external libraries.
+- Avoid expensive calculations inside the callback.
+
+##### Common Mistakes
+
+❌ Updating Signals inside the effect
+
+```typescript
+afterRenderEffect(() => {
+  this.count.set(10);
+});
+```
+
+This can create unnecessary render cycles.
+
+---
+
+❌ Performing heavy business logic
+
+```typescript
+afterRenderEffect(() => {
+  // Complex calculations...
+});
+```
+
+Keep business logic outside rendering callbacks.
+
+---
+
+❌ Using it for one-time initialization
+
+```typescript
+afterRenderEffect(() => {
+  input.focus();
+});
+```
+
+Prefer
+
+```typescript
+afterNextRender(() => {
+  input.focus();
+});
+```
+
+##### When to Use
+
+Use **afterNextRender()**
+
+- Focus an input
+- Initialize a chart
+- Measure an element once
+- Scroll after page load
+
+Use **afterRenderEffect()**
+
+- Synchronize DOM with Signals
+- Update third-party libraries
+- React after every render
+- Keep external UI in sync
+
+##### Angular v22 Notes
+
+- Modern replacement for many `ngAfterViewChecked` use cases.
+- Fully integrated with Angular Signals.
+- Runs only when reactive dependencies require it.
+- Designed for Angular's new rendering model.
+
+##### Official Documentation
+
+<https://angular.dev/api/core/afterRenderEffect>
+
+##### StackBlitz Example
+
+<https://stackblitz.com/edit/stackblitz-starters-after-render-effect>
+
+[Back to top⤴️](#table-of-contents)
+
+#### Rendering Pipeline
+
+To optimize performance and avoid forced reflows (layout thrashing), Angular's rendering hooks allow you to partition DOM operations into four discrete execution phases:
+
+1. **`earlyRead`**: Use this phase to read DOM properties needed for subsequent writes (e.g., element size or layout position).
+2. **`write`**: Use this phase to safely write modifications to the DOM.
+3. **`read`**: Use this phase to perform subsequent DOM reading operations once the layout is stable.
+4. **`mixedReadWrite`**: Use this fallback phase only if reads and writes cannot be separated.
+
+```typescript
+import { Component, afterRender } from "@angular/core";
+
+@Component({
+  selector: "app-safe-dom",
+  standalone: true,
+  template: `<div>Safe Rendering</div>`,
+})
+export class SafeDomComponent {
+  constructor() {
+    // Specifying phase execution to keep the rendering pipeline clean
+    afterRender(
+      () => {
+        const height = document.body.clientHeight; // Safe read phase
+        console.log("Height read in safe phase:", height);
+      },
+      { phase: 1 },
+    ); // Phase 1 represents earlyRead/read
+  }
+}
+```
+
+#### Change Detection Strategies
+
+Angular offers two strategies for tracking application state changes and propagating them to the template:
+
+- **`Default` (CheckAlways)**: Angular checks the component template during every change detection run. Any asynchronous task, user event, or timer will trigger a check of the entire component tree.
+- **`OnPush` (CheckOnce)**: Angular optimizes performance by checking the component template _only_ when:
+  1. An `@Input` reference changes.
+  2. An event originates from the component or its children.
+  3. A component signal changes.
+  4. An `Observable` bound with the `async` pipe emits a new value.
+  5. You manually request a check via `ChangeDetectorRef.markForCheck()`.
+
+```typescript
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
+
+@Component({
+  selector: "app-optimized-view",
+  standalone: true,
+  template: `<div>Optimized: {{ data }}</div>`,
+  changeDetection: ChangeDetectionStrategy.OnPush, // Enables OnPush optimization
+})
+export class OptimizedViewComponent {
+  @Input() data!: string;
+}
+```
+
+#### Zoneless Angular
+
+Historically, Angular relied on `zone.js` to patch asynchronous APIs (like events, promises, and timers) and trigger automatic global change detection. Beginning in Angular 18, you can construct fully **Zoneless** applications. Zoneless Angular does not load `zone.js`, resulting in smaller bundle sizes, faster startup speeds, and easier debugging. Instead, it relies on Signals, event handlers, and explicit CD notifications to refresh the UI.
+
+To bootstrap an application without `zone.js`, configure `provideExperimentalZonelessChangeDetection()` in your `ApplicationConfig`:
+
+```typescript
+import {
+  ApplicationConfig,
+  provideExperimentalZonelessChangeDetection,
+} from "@angular/core";
+import { provideRouter } from "@angular/router";
+import { routes } from "./app.routes";
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideExperimentalZonelessChangeDetection(), // Enables Zoneless Change Detection
+    provideRouter(routes),
+  ],
+};
+```
+
+#### Pending Tasks
+
+In Zoneless or Server-Side Rendered (SSR) environments, Angular needs to know when an application is "stable" (e.g., when all asynchronous actions have finished) before rendering the final HTML or completing hydration. The `PendingTasks` service allows developers to notify Angular of ongoing asynchronous work, preventing stability resolution until the task completes.
+
+```typescript
+import { Component, inject } from "@angular/core";
+import { PendingTasks } from "@angular/core";
+
+@Component({
+  selector: "app-async-data",
+  standalone: true,
+  template: `<div>Rendering complex data...</div>`,
+})
+export class AsyncDataComponent {
+  private pendingTasks = inject(PendingTasks);
+
+  constructor() {
+    // Notify Angular that an async operation has started
+    const removeTask = this.pendingTasks.add();
+
+    this.loadHeavyResources().then(() => {
+      // Notify Angular that the operation has completed
+      removeTask();
+    });
+  }
+
+  async loadHeavyResources() {
+    return new Promise((resolve) => setTimeout(resolve, 3000));
+  }
+}
+```
+
+#### Renderer2
+
+Renderer2 is a utility class that provides methods to manipulate and interact with the DOM (Document Object Model). It is used to perform operations such as creating, modifying, and removing elements, applying styles, and listening to events.
+
+```typescript
+import { Component, Renderer2, ElementRef } from "@angular/core";
+
+@Component({
+  selector: "app-example",
+  template: ` <button (click)="changeColor()">Change Color</button> `,
+})
+export class ExampleComponent {
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+  ) {}
+
+  changeColor() {
+    const button = this.el.nativeElement.querySelector("button");
+    this.renderer.setStyle(button, "background-color", "red");
+  }
+}
+```
+
+#### JIT
+
+**Just-in-Time** (JIT) is a type of compilation that compiles your app in the browser at runtime. This is the default compilation mode for Angular applications.
+
+##### Advantages of JIT
+
+- Faster development cycle as changes can be seen immediately.
+- No build step required during development.
+- More flexible for dynamic template generation.
+
+#### AOT
+
+**Ahead-of-Time** (AOT) is a type of compilation that compiles your app at build time. This mode is used to pre-compile your Angular application before deployment.
+
+##### Advantages of AOT
+
+- Faster startup times as the browser only needs to execute the compiled code.
+- Improved performance due to optimized and pre-compiled templates.
+- Better security as the templates are already compiled and validated before deployment.
+- Smaller bundle sizes since the templates are not included.
+
+#### JIT vs AOT
+
+##### Differences between AOT and JIT
+
+| Feature               | AOT            | JIT     |
+| --------------------- | -------------- | ------- |
+| Compilation time      | Build time     | Runtime |
+| Application size      | Smaller        | Larger  |
+| Application load time | Faster         | Slower  |
+| Debugging             | More difficult | Easier  |
+| Development           | More difficult | Easier  |
+| Performance           | Better         | Worse   |
+
+#### Deferrable Views
+
+Deferrable views can be used in component template to defer the loading of select dependencies within that template.
+
+```typescript
+@defer {
+  <large-component />
+}
+```
+
+### 6.3 Animations
+
+#### Angular Animations Overview
 
 Angular's animation system is built on CSS functionality in order to animate any property that the browser considers animatable. These properties includes positions, sizes, transforms, colors, borders etc. The Angular modules for animations are @angular/animations and @angular/platform-browser.
 
-#### Installing Angular Animations
+##### Installing Angular Animations
 
 ```bash
 npm install @angular/animations
 ```
 
-#### Importing Angular Animations
+##### Importing Angular Animations
 
 To use Angular animations in an Angular application, you need to import the BrowserAnimationsModule module in the app.module.ts file.
 
@@ -14764,7 +14950,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 export class AppModule {}
 ```
 
-#### Animation Example
+##### Animation Example
 
 ```typescript
 import { Component } from "@angular/core";
@@ -14802,25 +14988,25 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Transitions
+#### Transitions
 
 Defines animations that run when transitioning between two visual states.
 
-### States
+#### States
 
 Defines named animation states and style properties.
 
-### Route Animations
+#### Route Animations
 
 Provides transition animations triggered by active routing actions.
 
-## Internationalization (i18n)
+### 6.4 Internationalization (i18n)
 
-### i18n Basics
+#### i18n Basics
 
 Internationalization (i18n) is the process of designing and preparing your application to be usable in multiple languages and regions.
 
-#### Setting up i18n
+##### Setting up i18n
 
 First, add the Angular i18n package:
 
@@ -14852,7 +15038,7 @@ Configure your application to support multiple locales in `angular.json`:
 }
 ```
 
-#### Marking Text for Translation
+##### Marking Text for Translation
 
 Mark text for translation using the `i18n` attribute:
 
@@ -14881,7 +15067,7 @@ Mark text for translation using the `i18n` attribute:
 </span>
 ```
 
-#### Extracting Messages
+##### Extracting Messages
 
 Extract marked text into translation files:
 
@@ -14905,7 +15091,7 @@ This creates an XLIFF file (`messages.xlf`) in your `src/locale` directory:
 </xliff>
 ```
 
-#### Creating Translation Files
+##### Creating Translation Files
 
 Copy and translate the extraction file for each locale:
 
@@ -14925,7 +15111,7 @@ Copy and translate the extraction file for each locale:
 </xliff>
 ```
 
-#### Building for Different Locales
+##### Building for Different Locales
 
 Build for specific locales:
 
@@ -14940,7 +15126,7 @@ ng build --localize
 ng serve --configuration=fr
 ```
 
-#### Runtime i18n with Angular i18n Service
+##### Runtime i18n with Angular i18n Service
 
 For dynamic locale switching, use a custom service:
 
@@ -14965,7 +15151,7 @@ export class I18nService {
 }
 ```
 
-#### Date and Currency Pipes with i18n
+##### Date and Currency Pipes with i18n
 
 ```html
 <!-- Date formatting based on locale -->
@@ -14978,7 +15164,7 @@ export class I18nService {
 <p>{{ largeNumber | number:'1.2-2' }}</p>
 ```
 
-#### Custom i18n Pipe
+##### Custom i18n Pipe
 
 ```typescript
 import { Pipe, PipeTransform } from "@angular/core";
@@ -14999,11 +15185,11 @@ export class TranslatePipe implements PipeTransform {
 
 [Back to top⤴️](#table-of-contents)
 
-### Localization
+#### Localization
 
 Configure translation files (`messages.xlf`, `messages.fr.xlf`) and localized configurations.
 
-### ICU Messages
+#### ICU Messages
 
 Use ICU Message format inside templates to translate numbers, select values, and plurals:
 
@@ -15011,13 +15197,13 @@ Use ICU Message format inside templates to translate numbers, select values, and
 {numGuests, plural, =0 {no guests} =1 {one guest} other {# guests}}
 ```
 
-## Security
+### 6.5 Security
 
-### Security Introduction
+#### Security Introduction
 
 The security of an Angular application is a critical aspect that needs to be considered during development. Here are some best practices to enhance the security of your Angular application:
 
-### Preventing cross-site scripting (XSS)
+#### Preventing cross-site scripting (XSS)
 
 Cross-site scripting (XSS) is a security vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. To prevent XSS attacks in Angular applications, you can use the following best practices:
 
@@ -15027,7 +15213,7 @@ Cross-site scripting (XSS) is a security vulnerability that allows attackers to 
 - Enable strict mode in Angular templates to prevent template expressions from executing arbitrary code.
 - Use Angular's HttpClient module to make HTTP requests and automatically sanitize responses to prevent XSS attacks.
 
-### Angular's cross-site scripting security model
+#### Angular's cross-site scripting security model
 
 Angular provides a built-in security model to prevent cross-site scripting (XSS) attacks in applications. This security model includes the following features:
 
@@ -15036,7 +15222,7 @@ Angular provides a built-in security model to prevent cross-site scripting (XSS)
 - Content Security Policy (CSP): Angular applications can use CSP to restrict the sources of scripts and other resources that can be loaded by the application.
 - Trusted Types: Angular supports Trusted Types, a new web platform feature that helps prevent DOM-based XSS attacks by enforcing strict type checking on DOM APIs.
 
-### Sanitization and security contexts
+#### Sanitization and security contexts
 
 Angular provides a built-in sanitization mechanism to prevent cross-site scripting (XSS) attacks in applications. Sanitization is the process of cleaning user input to remove potentially dangerous content, such as script tags and event handlers. Angular uses security contexts to determine how to sanitize user input based on its intended use.
 
@@ -15048,7 +15234,7 @@ Angular provides the following security contexts for sanitization:
 - URL: Sanitizes user input for use in URL contexts, such as setting href attributes.
 - Resource URL: Sanitizes user input for use in resource URL contexts, such as loading external resources.
 
-### Sanitization example
+#### Sanitization example
 
 ```typescript
 import { Component } from "@angular/core";
@@ -15068,7 +15254,7 @@ export class AppComponent {
 }
 ```
 
-### Direct use of the DOM APIs and explicit sanitization calls
+#### Direct use of the DOM APIs and explicit sanitization calls
 
 Directly using the DOM APIs to manipulate the DOM can introduce security vulnerabilities in Angular applications. To prevent XSS attacks, avoid using unsafe methods like innerHTML and instead use Angular's built-in sanitization mechanisms to render dynamic content safely.
 
@@ -15084,7 +15270,7 @@ this.renderer.setProperty(div, 'innerHTML', sanitizedContent);
 document.body.appendChild(div);
 ```
 
-### Trusting safe values
+#### Trusting safe values
 
 Angular provides a mechanism to trust safe values and bypass the built-in sanitization mechanisms when rendering trusted content. To trust a safe value, you can use the bypassSecurityTrustHtml, bypassSecurityTrustStyle, bypassSecurityTrustScript, bypassSecurityTrustUrl, and bypassSecurityTrustResourceUrl methods provided by the DomSanitizer service.
 
@@ -15092,7 +15278,7 @@ Angular provides a mechanism to trust safe values and bypass the built-in saniti
 const safeHtml = this.sanitizer.bypassSecurityTrustHtml("<b>Safe Content</b>");
 ```
 
-### Content security policy
+#### Content security policy
 
 Content Security Policy (CSP) is a security feature that helps prevent cross-site scripting (XSS) attacks by restricting the sources of scripts and other resources that can be loaded by a web application. Angular applications can use CSP to define a policy that specifies which content is allowed to be loaded by the application.
 
@@ -15102,7 +15288,7 @@ To enable CSP in an Angular application, you can add a Content-Security-Policy h
 Content-Security-Policy: default-src 'self'; script-src 'self' https://example.com; style-src 'self' https://example.com; img-src 'self' https://example.com; font-src 'self' https://example.com;
 ```
 
-### Enforcing Trusted Types
+#### Enforcing Trusted Types
 
 Trusted Types is a new web platform feature that helps prevent DOM-based cross-site scripting (XSS) attacks by enforcing strict type checking on DOM APIs. Angular applications can use Trusted Types to ensure that only trusted values are passed to DOM APIs, preventing script injection and other security vulnerabilities.
 
@@ -15135,7 +15321,7 @@ import { TRUSTED_TYPES_CONFIG } from "./trusted-types.config";
 export class AppModule {}
 ```
 
-### Use the AOT template compiler
+#### Use the AOT template compiler
 
 The Angular Ahead-of-Time (AOT) template compiler compiles Angular templates at build time, which helps prevent cross-site scripting (XSS) attacks by statically analyzing the templates and generating optimized code. AOT compilation eliminates the need for the browser to compile templates at runtime, reducing the risk of template injection vulnerabilities.
 
@@ -15145,15 +15331,15 @@ To enable AOT compilation in an Angular application, you can use the ngc command
 ng build --aot
 ```
 
-### Server-side XSS protection
+#### Server-side XSS protection
 
 Server-side XSS protection is a security feature that helps prevent cross-site scripting (XSS) attacks by validating and sanitizing user input on the server before rendering it in the browser. To protect against XSS attacks, you can implement server-side input validation and sanitization to ensure that user input is safe and does not contain malicious content.
 
-### HTTP-level vulnerabilities
+#### HTTP-level vulnerabilities
 
 Angular applications can be vulnerable to various HTTP-level attacks, such as cross-site request forgery (CSRF), cross-site scripting (XSS), and cross-site script inclusion (XSSI). To protect against these vulnerabilities, you can use Angular's built-in security features, such as HttpClient XSRF/CSRF protection, custom cookie/header names, and disabling XSRF protection.
 
-### Cross-site request forgery
+#### Cross-site request forgery
 
 Cross-site request forgery (CSRF) is a security vulnerability that allows attackers to execute unauthorized actions on behalf of authenticated users. To prevent CSRF attacks in Angular applications, you can use Angular's built-in XSRF/CSRF protection mechanism to add a token to HTTP requests and validate it on the server.
 
@@ -15173,7 +15359,7 @@ import { HttpClientXsrfModule } from "@angular/common/http";
 export class AppModule {}
 ```
 
-### HttpClient XSRF/CSRF security
+#### HttpClient XSRF/CSRF security
 
 Angular's HttpClient module provides built-in support for cross-site request forgery (CSRF) protection using the XSRF/CSRF token mechanism. The HttpClientXsrfModule.withOptions method allows you to configure custom cookie and header names for the XSRF/CSRF token.
 
@@ -15193,7 +15379,7 @@ import { HttpClientXsrfModule } from "@angular/common/http";
 export class AppModule {}
 ```
 
-### Configure custom cookie/header names
+#### Configure custom cookie/header names
 
 Angular's HttpClient module allows you to configure custom cookie and header names for the XSRF/CSRF token using the HttpClientXsrfModule.withOptions method. By specifying custom names for the XSRF/CSRF token, you can enhance the security of your application and prevent CSRF attacks.
 
@@ -15213,7 +15399,7 @@ import { HttpClientXsrfModule } from "@angular/common/http";
 export class AppModule {}
 ```
 
-### Disabling XSRF protection
+#### Disabling XSRF protection
 
 Angular's HttpClient module provides built-in support for cross-site request forgery (CSRF) protection using the XSRF/CSRF token mechanism. If you want to disable XSRF protection for specific requests, you can use the { withCredentials: true } option in the HttpClient request.
 
@@ -15225,31 +15411,31 @@ constructor(private http: HttpClient) { }
 this.http.get('/api/data', { withCredentials: true });
 ```
 
-### Cross-site script inclusion (XSSI)
+#### Cross-site script inclusion (XSSI)
 
 Cross-site script inclusion (XSSI) is a security vulnerability that allows attackers to include external scripts in an application and execute malicious code. To prevent XSSI attacks in Angular applications, you can use Angular's built-in security features, such as HttpClient XSSI protection, to validate and sanitize external script responses.
 
-### Auditing Angular applications
+#### Auditing Angular applications
 
 Auditing Angular applications is an essential step to identify and fix security vulnerabilities in the codebase. You can use various tools and techniques to audit Angular applications, such as security scanners, code reviews, penetration testing, and security best practices.
 
 [Back to top⤴️](#table-of-contents)
 
-### DomSanitizer
+#### DomSanitizer
 
 Inject the `DomSanitizer` service to programmatically bypass security checks for trusted values.
 
-### CSP
+#### CSP
 
 Implement Content Security Policy headings or tags to restrict loaded sources.
 
-## Performance
+### 6.6 Performance
 
-### Performance Optimization
+#### Performance Optimization
 
 Performance optimization is an essential part of software development. Angular provides various tools and frameworks to help you optimize your application's performance.
 
-#### OnPush Change Detection
+##### OnPush Change Detection
 
 OnPush change detection is a strategy that Angular uses to optimize performance by only re-rendering components when their inputs change. You can use the `ChangeDetectionStrategy.OnPush` strategy to enable OnPush change detection.
 
@@ -15267,7 +15453,7 @@ export class AppComponent {
 }
 ```
 
-#### Track By Function
+##### Track By Function
 
 Track by function is a technique used to optimize performance by reusing existing DOM elements instead of creating new ones. You can use the track by function to optimize performance.
 
@@ -15288,7 +15474,7 @@ export class AppComponent {
 }
 ```
 
-#### Lazy Loading
+##### Lazy Loading
 
 Lazy loading is a technique used to load modules only when they are needed. This can help reduce the initial load time of the application by loading only the necessary modules.
 
@@ -15463,7 +15649,7 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-#### Tree Shaking
+##### Tree Shaking
 
 Tree shaking is a technique used to remove unused code from your application. Angular CLI automatically performs tree shaking when building for production.
 
@@ -15485,7 +15671,7 @@ import { HttpClient } from "@angular/common/http";
 import * as http from "@angular/common/http";
 ```
 
-#### Preloading Strategies
+##### Preloading Strategies
 
 Preloading strategies allow you to load modules before they are needed. Angular provides several preloading strategies:
 
@@ -15518,7 +15704,7 @@ export class CustomPreloadingStrategy implements PreloadingStrategy {
 }
 ```
 
-#### Virtual Scrolling (CDK)
+##### Virtual Scrolling (CDK)
 
 Virtual scrolling efficiently renders large lists by only rendering visible items. Use Angular CDK's virtual scrolling:
 
@@ -15547,7 +15733,7 @@ export class AppModule {}
 }
 ```
 
-#### Web Workers
+##### Web Workers
 
 Web workers run JavaScript in background threads, keeping the main thread responsive:
 
@@ -15586,18 +15772,18 @@ export class AppComponent {
 
 [Back to top⤴️](#table-of-contents)
 
-### Angular DevTools
+#### Angular DevTools
 
 Angular DevTools is a browser extension that provides debugging and profiling utilities for Angular applications.
 
-#### Installation of Angular DevTools
+##### Installation of Angular DevTools
 
 Install Angular DevTools from the Chrome Web Store or Firefox Add-ons:
 
 - [Chrome Extension](https://chrome.google.com/webstore/detail/angular-devtools/)
 - [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/angular-devtools/)
 
-#### Component Explorer
+##### Component Explorer
 
 The Component Explorer shows the component tree structure and allows you to:
 
@@ -15616,9 +15802,9 @@ export class UserComponent {
 }
 ```
 
-#### Debugging
+##### Debugging
 
-##### Setting Breakpoints
+###### Setting Breakpoints
 
 ```typescript
 export class UserService {
@@ -15629,7 +15815,7 @@ export class UserService {
 }
 ```
 
-##### Console Debugging
+###### Console Debugging
 
 ```typescript
 export class MyComponent implements OnInit {
@@ -15643,7 +15829,7 @@ export class MyComponent implements OnInit {
 }
 ```
 
-##### Using ng.profiler
+###### Using ng.profiler
 
 Enable profiler in development mode:
 
@@ -15658,9 +15844,9 @@ if (!environment.production) {
 }
 ```
 
-#### Profiling
+##### Profiling
 
-##### Change Detection Profiling
+###### Change Detection Profiling
 
 Monitor change detection cycles:
 
@@ -15686,7 +15872,7 @@ export class ProfilingComponent {
 }
 ```
 
-##### Performance Monitoring
+###### Performance Monitoring
 
 ```typescript
 import { Injectable } from "@angular/core";
@@ -15707,7 +15893,7 @@ export class PerformanceService {
 }
 ```
 
-#### Profiler Tab
+##### Profiler Tab
 
 The Profiler tab helps you:
 
@@ -15716,7 +15902,7 @@ The Profiler tab helps you:
 - **Identify performance bottlenecks**: Find slow operations and heavy computations
 - **Memory usage tracking**: Monitor memory consumption patterns
 
-##### Profiling Configuration
+###### Profiling Configuration
 
 ```typescript
 // Enable detailed profiling
@@ -15728,7 +15914,7 @@ if (isDevMode()) {
 }
 ```
 
-#### Router State Inspection
+##### Router State Inspection
 
 DevTools shows router information:
 
@@ -15747,7 +15933,7 @@ export class AppComponent {
 }
 ```
 
-#### Injector Graph
+##### Injector Graph
 
 Visualize dependency injection:
 
@@ -15768,9 +15954,9 @@ export class UserService {
 }
 ```
 
-#### Tips for Effective Debugging
+##### Tips for Effective Debugging
 
-##### Use Meaningful Component Names
+###### Use Meaningful Component Names
 
 ```typescript
 // Good: Descriptive names appear in DevTools
@@ -15788,7 +15974,7 @@ export class UserProfileCardComponent {}
 export class Comp1Component {}
 ```
 
-##### Add Debug Information
+###### Add Debug Information
 
 ```typescript
 import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
@@ -15811,7 +15997,7 @@ export class DebugComponent implements OnInit, OnDestroy {
 }
 ```
 
-##### Enable Source Maps
+###### Enable Source Maps
 
 Ensure source maps are enabled in `angular.json`:
 
@@ -15833,41 +16019,41 @@ Ensure source maps are enabled in `angular.json`:
 
 [Back to top⤴️](#table-of-contents)
 
-### Lazy Loading
+#### Lazy Loading
 
 Load modules or standalone components asynchronously on route changes.
 
-### Deferred Loading
+#### Deferred Loading
 
 Use `@defer` to load template blocks when specific triggers are met (e.g. `on viewport`, `on idle`).
 
-### Image Optimization
+#### Image Optimization
 
 Use the standard `NgOptimizedImage` directive to lazy-load images and prevent layout shifts.
 
-### Change Detection Optimization
+#### Change Detection Optimization
 
 Configure components to use the `OnPush` change detection strategy.
 
-### Signals Performance
+#### Signals Performance
 
 Signals provide fine-grained reactivity, avoiding global change detection cycles.
 
-### Bundle Optimization
+#### Bundle Optimization
 
 Use esbuild, build optimization tools, and tree shaking to shrink compiled bundle files.
 
-### Memory Leak Prevention
+#### Memory Leak Prevention
 
 Unsubscribe from subscriptions using `takeUntil`, functional `DestroyRef`, or `async` pipe.
 
-## Testing
+### 6.7 Testing
 
-### Testing Introduction
+#### Testing Introduction
 
 Testing is an essential part of software development. Angular provides various tools and frameworks to help you write effective tests.
 
-#### Unit Testing
+##### Unit Testing
 
 Unit testing involves testing individual components or services in isolation. Angular provides the Angular TestBed module to create a testing module and configure the component or service before each test.
 
@@ -15890,7 +16076,7 @@ describe("AppComponent", () => {
 });
 ```
 
-#### Integration Testing
+##### Integration Testing
 
 Integration testing involves testing components together with their dependencies. Angular provides the Angular TestBed module to create a testing module and configure the component or service before each test.
 
@@ -15913,7 +16099,7 @@ describe("AppComponent", () => {
 });
 ```
 
-#### End-to-End Testing
+##### End-to-End Testing
 
 End-to-end testing involves testing the entire application as a user would interact with it. Angular provides the Angular TestBed module to create a testing module and configure the component or service before each test.
 
@@ -15936,7 +16122,7 @@ describe("AppComponent", () => {
 });
 ```
 
-#### Testing Services
+##### Testing Services
 
 Services are tested in isolation using dependency injection. You can use the Angular TestBed module to create a testing module and configure the service before each test.
 
@@ -15965,7 +16151,7 @@ describe("DataService", () => {
 });
 ```
 
-#### Testing Components
+##### Testing Components
 
 Components are tested in isolation using dependency injection. You can use the Angular TestBed module to create a testing module and configure the component before each test.
 
@@ -15988,7 +16174,7 @@ describe("AppComponent", () => {
 });
 ```
 
-#### Testing Pipes
+##### Testing Pipes
 
 Pipes are tested in isolation using dependency injection. You can use the Angular TestBed module to create a testing module and configure the pipe before each test.
 
@@ -16015,7 +16201,7 @@ describe("AppComponent", () => {
 });
 ```
 
-#### Testing Directives
+##### Testing Directives
 
 Directives are tested in isolation using dependency injection. You can use the Angular TestBed module to create a testing module and configure the directive before each test.
 
@@ -16038,7 +16224,7 @@ describe("CustomDirectiveDirective", () => {
 });
 ```
 
-#### Mocking Dependencies
+##### Mocking Dependencies
 
 Mocking dependencies is an essential part of testing. Angular provides various tools and frameworks to help you mock dependencies.
 
@@ -16069,271 +16255,51 @@ describe("DataService", () => {
 
 [Back to top⤴️](#table-of-contents)
 
-### Unit Testing
+#### Unit Testing
 
 Unit test components and services using standard test suites (Jasmine/Jest).
 
-### Component Testing
+#### Component Testing
 
 Test component template bindings, lifecycle states, and events.
 
-### Service Testing
+#### Service Testing
 
 Test services, mock dependencies, and isolate business logic.
 
-### HTTP Testing
+#### HTTP Testing
 
 Mock server responses using the `HttpTestingController` utility.
 
-### Router Testing
+#### Router Testing
 
 Test component navigation flows and guards.
 
-### Signals Testing
+#### Signals Testing
 
 Verify writable signal updates and computed derivations.
 
-### Jest
+#### Jest
 
 Configure Jest for faster test execution.
 
-### Cypress
+#### Cypress
 
 Implement End-to-End browser tests using Cypress.
 
-## State Management
+### 6.8 Angular Material
 
-### State Management Introduction
-
-State management is essential for maintaining application state across components and providing a predictable data flow.
-
-#### NgRx
-
-NgRx is a reactive state management library inspired by Redux. It provides a centralized store for all application state.
-
-##### Installing NgRx
-
-```bash
-ng add @ngrx/store
-ng add @ngrx/effects
-ng add @ngrx/store-devtools
-```
-
-##### Setting up NgRx Store
-
-```typescript
-// counter.actions.ts
-import { createAction, props } from "@ngrx/store";
-
-export const increment = createAction("[Counter] Increment");
-export const decrement = createAction("[Counter] Decrement");
-export const reset = createAction("[Counter] Reset");
-```
-
-```typescript
-// counter.reducer.ts
-import { createReducer, on } from "@ngrx/store";
-import { increment, decrement, reset } from "./counter.actions";
-
-export const initialState = 0;
-
-const _counterReducer = createReducer(
-  initialState,
-  on(increment, (state) => state + 1),
-  on(decrement, (state) => state - 1),
-  on(reset, () => 0),
-);
-
-export function counterReducer(state, action) {
-  return _counterReducer(state, action);
-}
-```
-
-```typescript
-// app.module.ts
-import { StoreModule } from "@ngrx/store";
-import { counterReducer } from "./counter.reducer";
-
-@NgModule({
-  imports: [StoreModule.forRoot({ counter: counterReducer })],
-})
-export class AppModule {}
-```
-
-##### Using NgRx in Components
-
-```typescript
-import { Component } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
-import { increment, decrement, reset } from "./counter.actions";
-
-@Component({
-  selector: "app-counter",
-  template: `
-    <div>Current Count: {{ count$ | async }}</div>
-    <button (click)="increment()">+</button>
-    <button (click)="decrement()">-</button>
-    <button (click)="reset()">Reset</button>
-  `,
-})
-export class CounterComponent {
-  count$: Observable<number>;
-
-  constructor(private store: Store<{ counter: number }>) {
-    this.count$ = store.select("counter");
-  }
-
-  increment() {
-    this.store.dispatch(increment());
-  }
-
-  decrement() {
-    this.store.dispatch(decrement());
-  }
-
-  reset() {
-    this.store.dispatch(reset());
-  }
-}
-```
-
-#### NgXS
-
-NgXS is a state management pattern that acts as a single source of truth for your application.
-
-##### Installing NgXS
-
-```bash
-npm install @ngxs/store
-```
-
-##### Setting up NgXS
-
-```typescript
-// counter.state.ts
-import { State, Action, StateContext, Selector } from "@ngxs/store";
-
-export class Increment {
-  static readonly type = "[Counter] Increment";
-}
-
-export class Decrement {
-  static readonly type = "[Counter] Decrement";
-}
-
-export interface CounterStateModel {
-  count: number;
-}
-
-@State<CounterStateModel>({
-  name: "counter",
-  defaults: {
-    count: 0,
-  },
-})
-export class CounterState {
-  @Selector()
-  static getCount(state: CounterStateModel) {
-    return state.count;
-  }
-
-  @Action(Increment)
-  increment(ctx: StateContext<CounterStateModel>) {
-    const state = ctx.getState();
-    ctx.setState({
-      count: state.count + 1,
-    });
-  }
-
-  @Action(Decrement)
-  decrement(ctx: StateContext<CounterStateModel>) {
-    const state = ctx.getState();
-    ctx.setState({
-      count: state.count - 1,
-    });
-  }
-}
-```
-
-#### Akita
-
-Akita is a state management library built on top of RxJS.
-
-```bash
-npm install @datorama/akita
-```
-
-#### Simple State Management
-
-For simple applications, you can use services with BehaviorSubject:
-
-```typescript
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-
-@Injectable({
-  providedIn: "root",
-})
-export class StateService {
-  private countSubject = new BehaviorSubject<number>(0);
-  count$ = this.countSubject.asObservable();
-
-  increment() {
-    this.countSubject.next(this.countSubject.value + 1);
-  }
-
-  decrement() {
-    this.countSubject.next(this.countSubject.value - 1);
-  }
-
-  reset() {
-    this.countSubject.next(0);
-  }
-}
-```
-
-[Back to top⤴️](#table-of-contents)
-
-### What is NgRx?
-
-**NgRx** is a Reactive libraries for Angular. It provides state management, side effects, and route handling. It is inspired by Redux. It is a set of Angular libraries to help manage state at scale in Angular applications.
-
-### What is NgXS?
-
-**NgXS** is a state management pattern + library for Angular. It acts as a single source of truth for your application's state, providing simple rules for predictable state mutations.
-
-[Back to top⤴️](#table-of-contents)
-
-### Signals
-
-Use Angular Signals as simple, reactive, lightweight store options.
-
-### Signal Store
-
-Configure `NgRx SignalStore` for reactive, extensible state management.
-
-### Component Store
-
-Manage component-specific state using `ComponentStore`.
-
-### State Management Patterns
-
-Use actions, reducers, and selectors to enforce unidirectional data flow.
-
-## Angular Material
-
-### Material Basics
+#### Material Basics
 
 Angular Material is a UI component library for Angular applications that provides a set of reusable and customizable components, such as buttons, cards, dialogs, and menus. It is built on top of the Angular CDK (Component Dev Kit) and follows the Material Design guidelines.
 
-#### Installing Angular Material
+##### Installing Angular Material
 
 ```bash
 ng add @angular/material
 ```
 
-#### Importing Angular Material
+##### Importing Angular Material
 
 To use Angular Material in an Angular application, you need to import the required modules in the app.module.ts file.
 
@@ -16351,17 +16317,17 @@ export class AppModule {}
 
 [Back to top⤴️](#table-of-contents)
 
-### Bootstrap
+#### Bootstrap
 
 Bootstrap is a popular front-end framework for building responsive web applications. It provides a set of CSS and JavaScript components that can be used to create modern and mobile-friendly user interfaces.
 
-#### Installing Bootstrap
+##### Installing Bootstrap
 
 ```bash
 npm install bootstrap
 ```
 
-#### Importing Bootstrap
+##### Importing Bootstrap
 
 To use Bootstrap in an Angular application, you need to import the Bootstrap CSS file in the styles array of the angular.json file.
 
@@ -16374,18 +16340,18 @@ To use Bootstrap in an Angular application, you need to import the Bootstrap CSS
 
 [Back to top⤴️](#table-of-contents)
 
-### Tailwind CSS
+#### Tailwind CSS
 
 Tailwind CSS is a utility-first CSS framework that provides a set of pre-built utility classes for styling web applications. It allows you to build custom designs by composing utility classes together, rather than writing custom CSS styles.
 
-#### Installing Tailwind CSS
+##### Installing Tailwind CSS
 
 ```bash
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init
 ```
 
-#### Configure your template paths
+##### Configure your template paths
 
 ```javascript
 // tailwind.config.js
@@ -16399,7 +16365,7 @@ module.exports = {
 };
 ```
 
-#### Importing Tailwind CSS
+##### Importing Tailwind CSS
 
 ```css
 /* styles.css */
@@ -16408,23 +16374,23 @@ module.exports = {
 @tailwind utilities;
 ```
 
-#### Upgrading Tailwind CSS
+##### Upgrading Tailwind CSS
 
 To upgrade Tailwind CSS to the latest version, follow the steps outlined in the [Tailwind CSS Upgrade Guide](https://tailwindcss.com/docs/upgrade-guide). This guide provides detailed instructions on how to update your Tailwind CSS configuration and resolve any breaking changes.
 
 [Back to top⤴️](#table-of-contents)
 
-### PrimeNG
+#### PrimeNG
 
 PrimeNG is a popular UI component library for Angular applications that provides a set of rich and customizable components, such as data tables, calendars, dialogs, and charts. It is built on top of the PrimeFaces library and follows the PrimeNG design guidelines.
 
-#### Installing PrimeNG
+##### Installing PrimeNG
 
 ```bash
 npm install primeng
 ```
 
-#### Importing PrimeNG
+##### Importing PrimeNG
 
 To use PrimeNG in an Angular application, you need to import the required styles and modules in the angular.json file.
 
@@ -16445,39 +16411,39 @@ To use PrimeNG in an Angular application, you need to import the required styles
 
 [Back to top⤴️](#table-of-contents)
 
-### Installation
+#### Installation
 
 Install Angular Material using `ng add @angular/material`.
 
-### Theming
+#### Theming
 
 Define custom styles using the `@use '@angular/material' as mat;` Sass configurations.
 
-### Components
+#### Components
 
 Import and use UI controls like tables, dialogs, buttons, and form-fields.
 
-### CDK Overview
+#### CDK Overview
 
 The Component Dev Kit provides a set of layout and behavior helpers.
 
-## Angular CDK
+### 6.9 Angular CDK
 
-### CDK Basics
+#### CDK Basics
 
 Angular CDK (Component Dev Kit) provides low-level building blocks for creating custom components without Material Design styling.
 
-#### Installation (CDK)
+##### Installation (CDK)
 
 ```bash
 npm install @angular/cdk
 ```
 
-#### Layout
+##### Layout
 
 The Layout module provides utilities for responsive design and managing layouts.
 
-##### Breakpoint Observer
+###### Breakpoint Observer
 
 ```typescript
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
@@ -16496,11 +16462,11 @@ export class ResponsiveComponent {
 }
 ```
 
-#### A11y (Accessibility)
+##### A11y (Accessibility)
 
 Accessibility utilities for focus management and screen reader support.
 
-##### Focus Trap
+###### Focus Trap
 
 ```typescript
 import { FocusTrap, FocusTrapFactory } from "@angular/cdk/a11y";
@@ -16534,7 +16500,7 @@ export class ModalComponent implements AfterViewInit, OnDestroy {
 }
 ```
 
-##### Live Announcer
+###### Live Announcer
 
 ```typescript
 import { LiveAnnouncer } from "@angular/cdk/a11y";
@@ -16552,7 +16518,7 @@ export class NotificationComponent {
 }
 ```
 
-#### Drag and Drop
+##### Drag and Drop
 
 Powerful drag and drop functionality with customizable behavior.
 
@@ -16586,7 +16552,7 @@ export class DragDropComponent {
 }
 ```
 
-##### Multiple Lists
+###### Multiple Lists
 
 ```typescript
 @Component({
@@ -16636,7 +16602,7 @@ export class MultiListComponent {
 }
 ```
 
-#### Portals
+##### Portals
 
 Render components dynamically in different locations.
 
@@ -16672,7 +16638,7 @@ export class PortalExampleComponent {
 }
 ```
 
-#### Overlay
+##### Overlay
 
 Create overlays, tooltips, and modals positioned relative to other elements.
 
@@ -16723,7 +16689,7 @@ export class OverlayExampleComponent {
 }
 ```
 
-#### Virtual Scrolling
+##### Virtual Scrolling
 
 Efficiently render large lists by only rendering visible items.
 
@@ -16751,7 +16717,7 @@ export class VirtualScrollComponent {
 }
 ```
 
-#### Text Field
+##### Text Field
 
 Utilities for working with text inputs and text areas.
 
@@ -16772,7 +16738,7 @@ import { TextFieldModule } from "@angular/cdk/text-field";
 export class AutoResizeTextareaComponent {}
 ```
 
-#### Stepper
+##### Stepper
 
 Create step-by-step workflows.
 
@@ -16803,43 +16769,43 @@ export class CustomStepperComponent extends CdkStepper {
 
 [Back to top⤴️](#table-of-contents)
 
-### Overlay
+#### Overlay
 
 Create dropdowns, overlays, and custom dialogs.
 
-### Portal
+#### Portal
 
 Render dynamic elements outside standard parent elements.
 
-### Drag & Drop
+#### Drag & Drop
 
 Implement custom item dragging and dropping controls.
 
-### Clipboard
+#### Clipboard
 
 Copy values to the clipboard programmatically.
 
-### Virtual Scroll
+#### Virtual Scroll
 
 Render long list elements dynamically inside the viewport.
 
-### Scrolling
+#### Scrolling
 
 Manage page scrolling actions using scroll helpers.
 
-## Progressive Web Apps (PWA)
+### 6.10 Progressive Web Apps (PWA)
 
-### PWA Basics
+#### PWA Basics
 
 Progressive Web Apps (PWAs) are web applications that provide a native app-like experience to users, including offline support, push notifications, and home screen installation. Angular provides built-in support for creating PWAs using the @angular/pwa package.
 
-#### Installing PWA
+##### Installing PWA
 
 ```bash
 ng add @angular/pwa
 ```
 
-#### Configuring PWA
+##### Configuring PWA
 
 To configure the PWA settings, you can modify the ngsw-config.json file in the src/ directory.
 
@@ -16858,7 +16824,7 @@ To configure the PWA settings, you can modify the ngsw-config.json file in the s
 }
 ```
 
-#### Building PWA
+##### Building PWA
 
 To build the PWA, you can run the ng build --prod command with the --configuration=production flag.
 
@@ -16866,11 +16832,11 @@ To build the PWA, you can run the ng build --prod command with the --configurati
 ng build --prod --configuration=production
 ```
 
-#### Service Worker
+##### Service Worker
 
 The service worker is a script that runs in the background of the browser and handles tasks such as caching assets, intercepting network requests, and providing offline support. Angular's service worker is generated automatically when you create a PWA using the @angular/pwa package.
 
-#### Features of PWA
+##### Features of PWA
 
 **Offline Support** - The service worker caches assets and intercepts network requests to provide offline support for the application.
 
@@ -16882,11 +16848,11 @@ The service worker is a script that runs in the background of the browser and ha
 
 [Back to top⤴️](#table-of-contents)
 
-### SPA
+#### SPA
 
 **SPA** (Single Page Application) is a web application that dynamically rewrites the current page instead of loading entire new pages from the server, providing a fluid and responsive user experience.
 
-#### Advantages of SPA
+##### Advantages of SPA
 
 - **Faster Load Times**: Loads the initial page once; subsequent interactions update dynamically.
 - **Better User Experience**: No full page reloads, allowing faster navigation and smoother transitions.
@@ -16898,25 +16864,25 @@ The service worker is a script that runs in the background of the browser and ha
 
 [Back to top⤴️](#table-of-contents)
 
-### Service Workers
+#### Service Workers
 
 Register a browser service worker to cache routes.
 
-### Offline Support
+#### Offline Support
 
 Allow users to browseCached pages when disconnected.
 
-### Web App Manifest
+#### Web App Manifest
 
 Define metadata properties like icons and theme colors inside `manifest.webmanifest`.
 
-### Push Notifications
+#### Push Notifications
 
 Implement push server notification handlers.
 
-## Deployment
+### 6.11 Deployment
 
-### Deploying an Angular Application
+#### Deploying an Angular Application
 
 | DEPLOYMENT TO    | PACKAGE                         |
 | ---------------- | ------------------------------- |
@@ -16929,11 +16895,11 @@ Implement push server notification handlers.
 
 [Back to top⤴️](#table-of-contents)
 
-### Environment Configuration
+#### Environment Configuration
 
 Environment configuration allows you to maintain different settings for development, testing, and production environments.
 
-#### Setting Up Environment Variables
+##### Setting Up Environment Variables
 
 Angular provides environment files to manage configuration:
 
@@ -16945,7 +16911,7 @@ src/
     environment.staging.ts  # Staging environment (optional)
 ```
 
-##### Development Environment (`environment.ts`)
+###### Development Environment (`environment.ts`)
 
 ```typescript
 export const environment = {
@@ -16961,7 +16927,7 @@ export const environment = {
 };
 ```
 
-##### Production Environment (`environment.prod.ts`)
+###### Production Environment (`environment.prod.ts`)
 
 ```typescript
 export const environment = {
@@ -16977,7 +16943,7 @@ export const environment = {
 };
 ```
 
-#### Using Environment Variables
+##### Using Environment Variables
 
 Import and use environment variables in your services:
 
@@ -17004,7 +16970,7 @@ export class ApiService {
 }
 ```
 
-#### Building for Different Environments
+##### Building for Different Environments
 
 Configure build environments in `angular.json`:
 
@@ -17055,7 +17021,7 @@ ng build --configuration=staging
 ng serve --configuration=production
 ```
 
-#### Runtime Environment Configuration
+##### Runtime Environment Configuration
 
 For runtime configuration, create a configuration service:
 
@@ -17112,39 +17078,39 @@ export class AppModule {}
 
 [Back to top⤴️](#table-of-contents)
 
-### Production Build
+#### Production Build
 
 Compile optimized production build artifacts using `ng build`.
 
-### Docker
+#### Docker
 
 Build and package applications inside container files.
 
-### Nginx
+#### Nginx
 
 Configure routing and serve compiled files using Nginx.
 
-### Firebase
+#### Firebase
 
 Deploy hosting applications using Firebase CLI tools.
 
-### Vercel
+#### Vercel
 
 Host and deploy applications on Vercel.
 
-### Netlify
+#### Netlify
 
 Host and deploy applications on Netlify.
 
-## Best Practices
+### 6.12 Best Practices
 
-### Best Practices Overview
+#### Best Practices Overview
 
 Following Angular best practices ensures maintainable, scalable, and performant applications.
 
-#### Code Organization
+##### Code Organization
 
-##### Feature Modules
+###### Feature Modules
 
 Organize your application into feature modules:
 
@@ -17172,7 +17138,7 @@ src/
         product-routing.module.ts
 ```
 
-##### Barrel Exports
+###### Barrel Exports
 
 Use barrel exports (index.ts files) to simplify imports:
 
@@ -17186,7 +17152,7 @@ export * from "./directives";
 import { LoaderComponent, ConfirmDialogComponent } from "../shared";
 ```
 
-#### Naming Conventions
+##### Naming Conventions
 
 Follow Angular's style guide for consistent naming:
 
@@ -17219,9 +17185,9 @@ export interface User {
 }
 ```
 
-#### Performance Best Practices
+##### Performance Best Practices
 
-##### Use OnPush Change Detection
+###### Use OnPush Change Detection
 
 ```typescript
 @Component({
@@ -17234,7 +17200,7 @@ export class UserListComponent {
 }
 ```
 
-##### Implement TrackBy Functions
+###### Implement TrackBy Functions
 
 ```typescript
 @Component({
@@ -17251,7 +17217,7 @@ export class ListComponent {
 }
 ```
 
-##### Lazy Load Feature Modules
+###### Lazy Load Feature Modules
 
 ```typescript
 const routes: Routes = [
@@ -17263,7 +17229,7 @@ const routes: Routes = [
 ];
 ```
 
-##### Unsubscribe from Observables
+###### Unsubscribe from Observables
 
 ```typescript
 import { Component, OnInit, OnDestroy } from "@angular/core";
@@ -17289,7 +17255,7 @@ export class ComponentWithSubscription implements OnInit, OnDestroy {
 }
 ```
 
-##### Use Async Pipe
+###### Use Async Pipe
 
 ```html
 <!-- Instead of manual subscription -->
@@ -17298,9 +17264,9 @@ export class ComponentWithSubscription implements OnInit, OnDestroy {
 </div>
 ```
 
-#### Security Best Practices
+##### Security Best Practices
 
-##### Sanitize User Input
+###### Sanitize User Input
 
 ```typescript
 import { DomSanitizer } from '@angular/platform-browser';
@@ -17312,7 +17278,7 @@ sanitizeHtml(html: string) {
 }
 ```
 
-##### Use HTTPS
+###### Use HTTPS
 
 ```typescript
 // environment.prod.ts
@@ -17322,7 +17288,7 @@ export const environment = {
 };
 ```
 
-##### Implement Authentication Guards
+###### Implement Authentication Guards
 
 ```typescript
 @Injectable()
@@ -17342,7 +17308,7 @@ export class AuthGuard implements CanActivate {
 }
 ```
 
-##### Validate Forms
+###### Validate Forms
 
 ```typescript
 export class UserFormComponent {
@@ -17355,9 +17321,9 @@ export class UserFormComponent {
 }
 ```
 
-#### Component Best Practices
+##### Component Best Practices
 
-##### Keep Components Small and Focused
+###### Keep Components Small and Focused
 
 ```typescript
 // Good: Single responsibility
@@ -17379,7 +17345,7 @@ export class UserEverythingComponent {
 }
 ```
 
-##### Use Smart and Dumb Components
+###### Use Smart and Dumb Components
 
 ```typescript
 // Smart (Container) Component
@@ -17414,9 +17380,9 @@ export class UserListComponent {
 }
 ```
 
-#### Service Best Practices
+##### Service Best Practices
 
-##### Use Injectable ProvidedIn Root
+###### Use Injectable ProvidedIn Root
 
 ```typescript
 @Injectable({
@@ -17427,7 +17393,7 @@ export class UserService {
 }
 ```
 
-##### Handle Errors Consistently
+###### Handle Errors Consistently
 
 ```typescript
 @Injectable()
@@ -17445,7 +17411,7 @@ export class UserService {
 }
 ```
 
-##### Use RxJS Operators Efficiently
+###### Use RxJS Operators Efficiently
 
 ```typescript
 // Good: Combine operators efficiently
@@ -17468,7 +17434,7 @@ searchUsers(term: string): Observable<User[]> {
 
 [Back to top⤴️](#table-of-contents)
 
-### Folder Structure
+#### Folder Structure
 
 Align directories logically under core, shared, and features layout structures:
 
@@ -17479,65 +17445,140 @@ src/app/
 └── features/     # feature pages / modules
 ```
 
-### Coding Standards
+#### Coding Standards
 
 Adhere strictly to official style guide directives (naming files with hyphenation, keeping templates small).
 
-### Naming Conventions
+#### Naming Conventions
 
 Use standardized suffixes: `.component.ts`, `.service.ts`, `.directive.ts`, `.pipe.ts`.
 
-### Error Handling
+#### Error Handling
 
 Handle component failures using `ErrorHandler` services.
 
-### Performance
+#### Performance
 
 Optimize page performance using OnPush and trackby.
 
-### Accessibility
+#### Accessibility
 
 Ensure screen-reader accessibility using correct semantic elements and ARIA controls.
 
-### Security
+#### Security
 
 Sanitize user input and enforce Trusted Types.
 
-### Code Organization
+#### Code Organization
 
 Keep components lean by delegating logical actions to services.
 
-## Design Patterns
+### 6.13 Design Patterns
 
-### MVVM
+#### MVVM
 
 **MVVM** stands for Model-View-ViewModel. It is a design pattern that separates the user interface (View) from the business logic (Model) using a ViewModel. The ViewModel acts as an intermediary between the View and the Model, providing data binding and event handling.
 
-### MVC
+#### MVC
 
 **MVC** stands for Model-View-Controller. It is a design pattern that separates the user interface (View) from the business logic (Model) using a Controller. The Controller acts as an intermediary between the View and the Model, handling user input and updating the Model.
 
-### Smart vs Presentational Components
+#### Smart vs Presentational Components
 
 Separate components into data fetching (smart) and presentation layout (presentational) targets.
 
-### Container Pattern
+#### Container Pattern
 
 Let parent container components fetch data and pass inputs to child presenter components.
 
-### Facade Pattern
+#### Facade Pattern
 
 Hide complex service operations behind a simple API facade interface.
 
-### Repository Pattern
+#### Repository Pattern
 
 Abstract data storage access routines from component consumers.
 
-### Dependency Injection Pattern
+#### Dependency Injection Pattern
 
 Delegate dependency resolution tasks dynamically using Angular's DI systems.
 
 ---
+
+## 20. Angular v20 → v21 → v22 Platform Updates & Migration Masterclass
+
+> **Advanced masterclass track.** Sections 20 to 28 follow Stage 6 and come before the Stage 7 interview handbook. Each one deepens one of the core stages; the [roadmap](#️-7-stage-pedagogical-roadmap) table shows which. Sections 20 to 28 cover the v20 to v22 platform changes, and later sections build on them.
+
+### 20.1 Platform Evolution: From v20 to v22
+The Angular platform underwent a foundational modernization cycle across versions 20, 21, and 22, completing the transition from Zone.js-dependent class architectures to a fine-grained, signal-driven, zoneless-ready, and AI-enabled web framework:
+
+```mermaid
+timeline
+    title Angular Modernization Roadmap (v20 - v22)
+    section Angular v20 (Nov 2024)
+      Route-Level Render Modes (RenderMode.Server / Prerender / Client) : Hybrid Rendering Stable
+      Experimental Signal Forms : Signal-driven form primitives
+      LinkedSignal & Resource API : Fine-grained async primitives
+    section Angular v21 (May 2025)
+      Vitest Default Test Runner : Stable ng test with Vitest
+      Standalone Migration Complete : Legacy NgModule fully deprecated
+      provideAppInitializer Stable : Legacy APP_INITIALIZER replaced
+    section Angular v22 (Active)
+      OnPush as Default Strategy : Default strategy deprecated in favor of Eager
+      httpResource() Stable : First-class reactive HTTP resource primitive
+      Experimental WebMCP : AI-agent tool integration for Claude & Gemini
+      @angular/aria Primitives : Headless WAI-ARIA 1.2 components
+```
+
+---
+
+### 20.2 Official Compatibility Matrix (Angular v20 – v22)
+
+| Angular Version | Release Date | Node.js Supported Ranges | TypeScript Supported | RxJS Supported | Default Change Detection | Primary Test Runner |
+|---|---|---|---|---|---|---|
+| **Angular v20** | November 2024 | `^18.19.0 \|\| ^20.9.0 \|\| ^22.0.0` | `~5.5.0 \|\| ~5.6.0` | `^7.8.0` | `Default` (Zone.js) | Karma / Vitest (Exp) |
+| **Angular v21** | May 2025 | `^20.11.0 \|\| ^22.0.0` | `~5.6.0 \|\| ~5.7.0` | `^7.8.0` | `Default` / Zoneless Opt-in | **Vitest** (Stable) |
+| **Angular v22** | November 2025 / Active | `^20.18.0 \|\| ^22.11.0 \|\| ^24.0.0` | `~5.7.0 \|\| ~5.8.0 \|\| ~5.9.0` | `^7.8.0 \|\| ^8.0.0` | **`OnPush`** (Default) | **Vitest** (Primary) |
+
+---
+
+### 20.3 Migration Guide: v20 → v21 → v22 Automated CLI Recipes
+
+#### Step 1: Upgrading to Angular v21
+```bash
+# Update core framework packages, CLI, and Angular Material to v21
+ng update @angular/core@21 @angular/cli@21 @angular/material@21
+
+# Migrate automated unit test runner from Karma to Vitest
+ng update @angular/core@21 --migrate-only karma-to-vitest
+
+# Migrate legacy APP_INITIALIZER providers to provideAppInitializer()
+ng update @angular/core@21 --migrate-only app-initializer
+```
+
+#### Step 2: Upgrading to Angular v22
+```bash
+# Update core framework packages and CLI to v22
+ng update @angular/core@22 @angular/cli@22 @angular/material@22
+
+# Automated migration: Flip component change detection strategy to OnPush
+ng update @angular/core@22 --migrate-only change-detection-onpush
+
+# Automated migration: Migrate stable httpResource primitives
+ng update @angular/core@22 --migrate-only http-resource-stable
+```
+
+---
+
+### 20.4 Deprecations & Breaking Changes Catalog (v20 – v22)
+
+| Version | Deprecated API | Replacement API | Breaking Change Details |
+|---|---|---|---|
+| **v22** | `ChangeDetectionStrategy.Default` | `ChangeDetectionStrategy.Eager` or `OnPush` | `Default` is formally deprecated. Components without explicit strategy now default to **`OnPush`**. |
+| **v22** | `@angular/animations` DSL triggers | Native CSS `@keyframes` & `animate.enter` / `animate.leave` | Browser View Transitions and native CSS transitions are the primary animation engine. |
+| **v21** | Karma & Jasmine test runners | **Vitest** (`@angular/build:unit-test`) | Karma is removed from new CLI projects; Vitest is the primary runner. |
+| **v21** | `APP_INITIALIZER` injection token | `provideAppInitializer()` | Class-based multi-providers replaced with functional initializer callbacks. |
+| **v20** | `NgModule` application bootstrapping | `bootstrapApplication(RootComponent, appConfig)` | Standalone APIs are the sole recommended architecture. |
 
 ## 21. Angular v22 Change Detection Architecture & Zoneless Traversal
 
@@ -19065,30 +19106,28 @@ export class TradingOrderbookComponent implements OnInit, OnDestroy {
 }
 ```
 
-
-
 ## 7. Stage 7: Staff Angular Architect Interview Handbook & Cheatsheet
 
 ### 7.1 40 Core Staff Architect Technical Interview Q&As
 
-### Angular Interview Questions
+#### Angular Interview Questions
 
 1. **What are Standalone components?**
    Components that don't require `NgModule` declaration.
 2. **What is OnPush Change Detection?**
    An optimization that only runs template change detection when input references change.
 
-### Signals Interview Questions
+#### Signals Interview Questions
 
 1. **What is the difference between computed and effect?**
    `computed` derives state read-only, whereas `effect` performs write or side-effect actions.
 
-### RxJS Interview Questions
+#### RxJS Interview Questions
 
 1. **What are Observables?**
    Streams of values emitted asynchronously over time.
 
-### Scenario-based Questions
+#### Scenario-based Questions
 
 1. **How to fix memory leaks?**
    Use `DestroyRef.register()` or `takeUntil` operators to clean up active subscriptions.
