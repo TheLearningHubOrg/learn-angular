@@ -25899,7 +25899,7 @@ Secondary outlets are written in parentheses after the primary path, for example
 
 The Stage 5 forms chapters cover the building blocks: `FormGroup`, typed forms, a first `ControlValueAccessor`, sync and async validators, and config-driven dynamic forms. Chapter [22](#22-signal-forms-complete-masterclass) introduces Signal Forms. This chapter covers what happens when those pieces meet a large production app: when validation actually runs, how state moves up and down the control tree, how to cancel stale async checks, how to build controls and sub-forms that other teams can reuse, and how to get clean data out of a form and server errors back into it.
 
-All APIs here were checked against `@angular/forms` 22.2. Reactive Forms are stable. Signal Forms (`@angular/forms/signals`) are marked `@publicApi 22.0` in the v22 typings, so they are stable in v22; the only experimental piece is the `experimentalWebMcpTool` form option, which this chapter does not use.
+Examples in this chapter target `@angular/forms` 22.2. Reactive Forms are stable. Signal Forms (`@angular/forms/signals`) are marked `@publicApi 22.0`, so they are stable in v22; the only experimental piece is the `experimentalWebMcpTool` form option, which this chapter does not use.
 
 ---
 
@@ -27252,7 +27252,7 @@ Wrap the save in `submit(form, { action })`. The action returns `undefined` on s
 
 The HTTP chapters earlier in this guide cover the everyday API: `provideHttpClient()`, `get`/`post`, interceptors, `observe` and `responseType`, upload progress and cancellation. Chapter [23](#23-resource-api--httpresource-deep-dive) introduces `httpResource()` and chapter [26.1](#261-modern-http-engine-withfetch-streaming--resilient-token-refresh) shows `withFetch()` and a token-refresh interceptor. This chapter goes one level down and one level out. Down: what actually happens between `http.get()` and the network, and how to test it. Out: the patterns real apps build on top of `HttpClient` (deduplication, optimistic updates, pagination), the transports that are not plain request/response (WebSockets, Server-Sent Events), and how to keep the client in sync with the API contract (GraphQL, OpenAPI, runtime validation).
 
-All APIs here were checked against `@angular/common` 22.2. Two v22 facts change older advice, so they come first:
+Examples in this chapter target `@angular/common` 22.2. Two v22 facts change older advice, so they come first:
 
 - **`FetchBackend` is the default backend.** `withFetch()` still compiles but is marked `@deprecated` because it no longer does anything. Use `withXhr()` only when you need upload progress events.
 - **XHR on the server is deprecated.** The `withXhr()` typings warn against using it in SSR and say server-side XHR support is meant to be removed in Angular 23.
@@ -28576,7 +28576,7 @@ When data flows only from server to client (notifications, progress, live dashbo
 
 The RxJS chapter earlier in this guide introduces Observables, Observers, the Subject family, the main operator groups and the ways to unsubscribe in Angular. This chapter goes one level down. It explains when values are delivered and in what order, what really happens when you subscribe and unsubscribe, how sharing works, which flattening and combination operator to pick, where to put `catchError`, how to rate-limit streams, how to find subscription leaks, how to test streams with virtual time, and how to move between Observables and signals without surprises.
 
-Angular 22 accepts `rxjs` `^6.5.3 || ^7.4.0` as a peer dependency. Every example here targets RxJS 7.8 and was checked against the 7.8.2 typings; the marble diagrams were produced by running the code under `TestScheduler`. Since RxJS 7.2 all operators can be imported from `'rxjs'` directly, so this chapter does not use `'rxjs/operators'`. The interop APIs come from `@angular/core/rxjs-interop` and were checked against `@angular/core` 22.2.
+Angular 22 accepts `rxjs` `^6.5.3 || ^7.4.0` as a peer dependency. Every example here targets RxJS 7.8, and each marble diagram shows what `TestScheduler` reports for the code next to it. Since RxJS 7.2 all operators can be imported from `'rxjs'` directly, so this chapter does not use `'rxjs/operators'`. The interop APIs come from `@angular/core/rxjs-interop` in `@angular/core` 22.2.
 
 ---
 
@@ -29767,7 +29767,7 @@ Reproduce it: open and close the route several times, force garbage collection, 
 
 Stage 6 introduces SSR, `provideClientHydration()`, event replay and incremental hydration. Chapter [25.1](#251-server-routing--route-level-rendering-rendermode) shows a first `app.routes.server.ts`. This chapter picks up where those stop: how a request actually flows through `@angular/ssr`, how to split code between server and browser, how to read cookies and set status codes, how redirects and errors behave on the server, why server memory leaks happen, how to tune the HTTP transfer cache, how to debug hydration mismatches, and how to deploy the result to Node, serverless and edge runtimes.
 
-Everything here was checked against `@angular/core` 22.2, `@angular/ssr` 22.2 and `@angular/build` 22.2. Two v22 changes matter throughout:
+Examples in this chapter target `@angular/core`, `@angular/ssr` and `@angular/build` 22.2. Two v22 changes matter throughout:
 
 - `provideClientHydration()` now turns on **incremental hydration by default**, and incremental hydration installs event replay for you. `withIncrementalHydration()` still compiles but is deprecated (since v22.0, removal planned for v24). Use `withNoIncrementalHydration()` to opt out.
 - `CommonEngine` from `@angular/ssr/node` is deprecated since v22. New and migrated apps should use `AngularNodeAppEngine` (Node) or `AngularAppEngine` (any runtime with the Fetch API).
@@ -30907,7 +30907,7 @@ Build with `ssr.platform: 'neutral'` so the bundle avoids Node built-ins, use `A
 
 The Testing chapter introduces `TestBed`, and section [27.1](#271-vitest-as-primary-test-runner-in-angular) shows a first Vitest setup. This chapter goes further. It covers how tests run in a v22 workspace, how `ComponentFixture` behaves when there is no Zone.js, how to control time, and how to test the pieces modern apps are built from: functional guards and interceptors, signals and effects, SignalStore, component harnesses. It then moves outward to integration, accessibility, visual, contract and end-to-end tests, and finishes with coverage gates and CI speed.
 
-All Angular APIs here were checked against the v22.2 typings of `@angular/core`, `@angular/common`, `@angular/router`, `@angular/cdk` and `@angular/build`, plus `@ngrx/signals` 22.0. Third-party tools (Vitest 5, Playwright, axe-core, Pact) are named with the version they were checked against where it matters.
+Angular examples in this chapter target the 22.2 releases of `@angular/core`, `@angular/common`, `@angular/router`, `@angular/cdk` and `@angular/build`, plus `@ngrx/signals` 22.0. Third-party tools (Vitest 5, Playwright, axe-core, Pact) are named with a version where it matters.
 
 ---
 
@@ -32155,7 +32155,7 @@ It guarantees a minimum share of statements, branches, functions and lines *exec
 
 Earlier chapters show the building blocks: standalone components, DI, routing, interceptors, a Feature-Sliced Design folder map (28.3) and a token-refresh interceptor (26.1). This chapter is about what happens when twenty teams and half a million lines of code share those blocks. It covers how to split the code (Nx, DDD, FSD, clean and hexagonal layers), how to split the deployment (micro frontends, plugins), how one build serves many customers and environments (multi-tenant, feature flags, runtime config), how access rules reach the UI (RBAC, enterprise auth), and how to keep a large codebase moving (incremental migrations, backward compatibility for internal libraries).
 
-Framework APIs in this chapter were checked against `@angular/core`, `@angular/common` and `@angular/router` 22.2. Third-party tools (Nx, Native Federation, Module Federation 2) release on their own schedules; their commands are shown in the form used by current releases, so check each tool's docs for the version that matches your Angular major.
+Framework examples in this chapter target `@angular/core`, `@angular/common` and `@angular/router` 22.2. Third-party tools (Nx, Native Federation, Module Federation 2) release on their own schedules; their commands are shown in the form used by current releases, so check each tool's docs for the version that matches your Angular major.
 
 ```mermaid
 flowchart LR
@@ -33555,7 +33555,7 @@ Add the replacement in a minor release and mark the old input `@deprecated` with
 
 The Performance chapter earlier in this guide lists the main techniques: `OnPush`, `track`, lazy routes, preloading, virtual scrolling and Web Workers. The Angular DevTools section explains the component explorer and the profiler tab, and chapter [21](#21-angular-v22-change-detection-architecture--zoneless-traversal) explains how change detection decides what to check. This chapter is about the engineering around those techniques: how to measure what users actually experience, how to find the cause in a profile, how to stop regressions from shipping, and how to tune the pieces (images, fonts, CSS, lists, workers, memory) that most often decide whether a page feels fast.
 
-Everything here was checked against Angular 22.2 (`@angular/core`, `@angular/common`, `@angular/router`, `@angular/build`) and `@angular/cdk` 22.2. Three related topics live in other chapters and are only cross-referenced here: custom preloading strategies (Advanced Routing chapter, [section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing)), subscription leaks (RxJS chapter, [section 36](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing)) and injector-lifetime leaks (DI chapter, [section 32](#32-dependency-injection-masterclass-injection-context-environment-injectors-provider-scopes--memory)).
+Examples in this chapter target Angular 22.2 (`@angular/core`, `@angular/common`, `@angular/router`, `@angular/build`) and `@angular/cdk` 22.2. Three related topics live in other chapters and are only cross-referenced here: custom preloading strategies (Advanced Routing chapter, [section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing)), subscription leaks (RxJS chapter, [section 36](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing)) and injector-lifetime leaks (DI chapter, [section 32](#32-dependency-injection-masterclass-injection-context-environment-injectors-provider-scopes--memory)).
 
 ---
 
@@ -34832,7 +34832,7 @@ The Security chapter earlier in this guide explains Angular's built-in XSS model
 - authentication and authorization for a single-page app: OAuth 2 / OIDC with PKCE, refresh-token rotation, cookie vs token sessions, the BFF pattern and role-based route guards;
 - the API boundary (CORS, SSRF in SSR), file uploads, and the supply chain your `node_modules` brings in.
 
-Everything Angular-specific here was checked against Angular 22.2 (`@angular/core`, `@angular/common`, `@angular/router`, `@angular/build`, `@angular/ssr`).
+Angular-specific examples in this chapter target Angular 22.2 (`@angular/core`, `@angular/common`, `@angular/router`, `@angular/build`, `@angular/ssr`).
 
 ---
 
@@ -35985,7 +35985,7 @@ Some neighbours are already covered elsewhere, and this chapter links to them in
 - The full table of `strictTemplates` flags and extended diagnostics: Advanced Components & Templates Masterclass ([section 30](#30-advanced-component-architecture-views-dynamic-rendering--template-performance), template type checking subsection).
 - Lockfiles, `npm audit`, install scripts and provenance: Security Masterclass ([section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain), supply-chain subsection).
 
-Versions in this chapter were checked against `@angular-devkit/schematics` and `@schematics/angular` 22.2, `@angular/compiler-cli` 22.2, `ng-packagr` 22.2, `@angular-eslint/*` 22.6, `@typescript-eslint/utils` 8.x and TypeScript 6.0 (Angular 22 requires `typescript >=6.0 <6.1`). Third-party release tools (Husky, commitlint, Changesets, semantic-release, Renovate, Dependabot) release on their own schedules; check their docs for exact option names.
+Examples in this chapter target `@angular-devkit/schematics` and `@schematics/angular` 22.2, `@angular/compiler-cli` 22.2, `ng-packagr` 22.2, `@angular-eslint/*` 22.6, `@typescript-eslint/utils` 8.x and TypeScript 6.0 (Angular 22 requires `typescript >=6.0 <6.1`). Third-party release tools (Husky, commitlint, Changesets, semantic-release, Renovate, Dependabot) release on their own schedules; check their docs for exact option names.
 
 ```mermaid
 flowchart LR
@@ -37316,7 +37316,7 @@ Group all Angular packages so they move together, disable bot updates for Angula
 
 The earlier CDK, i18n, PWA and Elements chapters show how to install each piece and the first API you touch. This chapter is about what you need once the feature ships: positioning and scroll behaviour for overlays, custom form controls with real keyboard support, right-to-left layouts, controlling view transitions, an extraction workflow translators can live with, runtime translations, service worker updates, offline-first data, push notifications, browser storage, consuming Web Components and wrapping third-party JavaScript libraries.
 
-APIs were checked against `@angular/core`, `@angular/common`, `@angular/router`, `@angular/service-worker` and `@angular/localize` 22.2.4, and `@angular/cdk` 22.2.5. Browser APIs (View Transitions, Push, Storage) depend on the browser, so each subsection says where support matters.
+Examples in this chapter target `@angular/core`, `@angular/common`, `@angular/router`, `@angular/service-worker`, `@angular/localize` and `@angular/cdk` 22.2. Browser APIs (View Transitions, Push, Storage) depend on the browser, so each subsection says where support matters.
 
 ```mermaid
 flowchart LR
