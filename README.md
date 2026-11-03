@@ -25720,7 +25720,8 @@ export class KeepAliveStrategy extends BaseRouteReuseStrategy {
   }
 
   // lets withAutoCleanupInjectors() know which injectors are still needed
-  override retrieveStoredRouteHandles(): DetachedRouteHandle[] {
+  // not declared on BaseRouteReuseStrategy (optional RouteReuseStrategy member), so no `override`
+  retrieveStoredRouteHandles(): DetachedRouteHandle[] {
     return [...this.handles.values()];
   }
 }
@@ -28909,7 +28910,8 @@ export class DataService {
 With `share({ resetOnRefCountZero: () => timer(n) })`, a subscriber that arrives during the grace period re-uses the same source subscription. Verified with virtual time: subscriber 1 leaves at frame 2, subscriber 2 joins at 4 and leaves at 6, and the source is unsubscribed at frame 9 (6 + 3):
 
 ```typescript
-const shared = cold('a-b-c-d-e-f-g-h|').pipe(share({ resetOnRefCountZero: () => timer(3) }));
+const source = cold('a-b-c-d-e-f-g-h|');
+const shared = source.pipe(share({ resetOnRefCountZero: () => timer(3) }));
 expectObservable(shared, '^-!').toBe('a-');
 expectObservable(shared, '----^-!').toBe('----c-');
 expectSubscriptions(source.subscriptions).toBe('^--------!');
