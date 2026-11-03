@@ -45,7 +45,7 @@ flowchart LR
 | [**Stage 4**](#4-stage-4-hierarchical-dependency-injection--routing) | **Hierarchical DI & Routing** | Tree-shakeable providers, `inject()`, `EnvironmentInjector`, functional guards (`CanActivateFn`) and resolvers, lazy loading. | [4.1 Dependency Injection Architecture](#41-dependency-injection-architecture)<br/>[4.2 Functional APIs](#42-functional-apis)<br/>[4.3 Routing](#43-routing) | [25. Route-Level Rendering, Modern Router, View Transitions & Native CSS Animations](#25-route-level-rendering-modern-router-view-transitions--native-css-animations)<br/>[32. Dependency Injection Masterclass](#32-dependency-injection-masterclass-injection-context-environment-injectors-provider-scopes--memory)<br/>[33. Advanced Routing](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing) |
 | [**Stage 5**](#5-stage-5-enterprise-reactive-forms--http-client) | **Reactive Forms & HTTP Engine** | Strongly-typed `FormGroup`, Signal Forms, async validators, `HttpClient` with functional interceptors (`HttpInterceptorFn`), RxJS operators. | [5.1 Reactive Forms Architecture](#51-reactive-forms-architecture)<br/>[5.2 HTTP](#52-http)<br/>[5.3 RxJS](#53-rxjs) | [22. Signal Forms Complete Masterclass](#22-signal-forms-complete-masterclass)<br/>[26. Modern HTTP Engine, Advanced DI, SSR Hydration & @defer Deep Dive](#26-modern-http-engine-advanced-di-ssr-hydration--defer-deep-dive)<br/>[34. Advanced Forms Architecture](#34-advanced-forms-architecture)<br/>[35. HTTP Internals, Data Fetching Patterns & Real-Time Networking](#35-http-internals-data-fetching-patterns--real-time-networking)<br/>[36. RxJS Masterclass](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing) |
 | [**Stage 6**](#6-stage-6-server-side-rendering-ssr-deferrable-views--performance) | **SSR, @defer & Enterprise Performance** | Hydration and event replay, `@defer` triggers, rendering, animations, i18n, security, performance, testing, Material/CDK, PWA, deployment, best practices and design patterns. | [6.1 Server-Side Rendering & Hydration](#61-server-side-rendering--hydration)<br/>[6.2 Rendering](#62-rendering)<br/>[6.3 Animations](#63-animations)<br/>[6.4 Internationalization (i18n)](#64-internationalization-i18n)<br/>[6.5 Security](#65-security)<br/>[6.6 Performance](#66-performance)<br/>[6.7 Testing](#67-testing)<br/>[6.8 Angular Material](#68-angular-material)<br/>[6.9 Angular CDK](#69-angular-cdk)<br/>[6.10 Progressive Web Apps (PWA)](#610-progressive-web-apps-pwa)<br/>[6.11 Deployment](#611-deployment)<br/>[6.12 Best Practices](#612-best-practices)<br/>[6.13 Design Patterns](#613-design-patterns) | [27. Vitest Testing, Library Development, Compiler Internals & Web Workers](#27-vitest-testing-library-development-compiler-internals--web-workers)<br/>[28. Advanced Security, Accessibility, Enterprise State & Flagship Blueprints](#28-advanced-security-accessibility-enterprise-state--flagship-blueprints)<br/>[37. Advanced SSR & Deployment](#37-advanced-ssr--deployment)<br/>[38. Testing Masterclass](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond)<br/>[40. Advanced Performance Engineering](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning)<br/>[41. Application Security in Depth](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain)<br/>[43. Web Platform Integration](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop) |
-| [**Stage 7**](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet) | **Staff Architect Interview Handbook** | Staff-level interview Q&As, scenario questions and architecture trade-offs; read after the masterclasses that deepen Stages 1 to 6. | [7.1 40 Core Staff Architect Technical Interview Q&As](#71-40-core-staff-architect-technical-interview-qas) | [39. Enterprise Architecture Masterclass](#39-enterprise-architecture-masterclass)<br/>[44. Practical System Design](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) |
+| [**Stage 7**](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet) | **Staff Architect Interview Handbook** | Staff-level interview Q&As, scenario questions and architecture trade-offs; read after the masterclasses that deepen Stages 1 to 6. | [7.1 Core Staff Architect Technical Interview Q&As](#71-core-staff-architect-technical-interview-qas)<br/>[7.2 Interview Questions by Chapter](#72-interview-questions-by-chapter) | [39. Enterprise Architecture Masterclass](#39-enterprise-architecture-masterclass)<br/>[44. Practical System Design](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) |
 
 The numbered sections from 20 to 44 form the **advanced masterclass track**. They sit after Stage 6 and before the Stage 7 interview handbook, and each one deepens the stage listed in the table above. Work through a stage first, then read its deep dives, or come back to them once all six stages are done.
 
@@ -750,11 +750,12 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
 **Part III: Interview handbook (Stage 7)**
 
 - [7. Stage 7: Staff Angular Architect Interview Handbook & Cheatsheet](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet)
-  - [7.1 40 Core Staff Architect Technical Interview Q&As](#71-40-core-staff-architect-technical-interview-qas)
+  - [7.1 Core Staff Architect Technical Interview Q&As](#71-core-staff-architect-technical-interview-qas)
     - Angular Interview Questions
     - Signals Interview Questions
     - RxJS Interview Questions
     - Scenario-based Questions
+  - [7.2 Interview Questions by Chapter](#72-interview-questions-by-chapter)
 
 **Appendices**
 
@@ -40086,19 +40087,19 @@ The server is the only enforcement point; the UI hides what the user cannot do s
 
 ## 7. Stage 7: Staff Angular Architect Interview Handbook & Cheatsheet
 
-### 7.1 40 Core Staff Architect Technical Interview Q&As
+### 7.1 Core Staff Architect Technical Interview Q&As
 
 #### Angular Interview Questions
 
 1. **What are Standalone components?**
    Components that don't require `NgModule` declaration.
 2. **What is OnPush Change Detection?**
-   An optimization that only runs template change detection when input references change.
+   A strategy where a component is checked only when it is marked dirty: an input reference changes, a signal read in its template changes, an event fires in its template, or `markForCheck()` (or the `async` pipe) flags it. Since v22 it is the default for components that do not set `changeDetection`.
 
 #### Signals Interview Questions
 
 1. **What is the difference between computed and effect?**
-   `computed` derives state read-only, whereas `effect` performs write or side-effect actions.
+   `computed` derives a read-only value from other signals, lazily and with memoization. `effect` runs side effects (logging, syncing to `localStorage`, calling a non-signal API) after its dependencies change. Prefer `computed` or `linkedSignal` whenever the goal is derived state.
 
 #### RxJS Interview Questions
 
@@ -40115,6 +40116,31 @@ The server is the only enforcement point; the UI hides what the user cannot do s
    Their old bundle requests lazy chunks that the new deploy removed. Keep previous hashed assets on the CDN for a while, keep API changes backward compatible, reload once on chunk-load errors in `withNavigationErrorHandler()`, and with the service worker offer a reload on `VERSION_READY`.
 4. **How do you know whether a release made the app worse for users?**
    Real-user monitoring tagged with the release: crash-free sessions, LCP and INP at p75, journey success. Compare against SLOs and alert on error-budget burn rate, so a bad release pages someone within the hour.
+
+### 7.2 Interview Questions by Chapter
+
+Chapters 29 to 44 each end with eight longer interview questions that go past the one-line answers above. They are grouped here by topic so you can revise one area at a time.
+
+| Topic | Questions |
+| :--- | :--- |
+| Platform & Architecture | [29.14 Interview Questions](#2914-interview-questions-platform--architecture) |
+| Advanced Components & Templates | [30.13 Interview Questions](#3013-interview-questions-advanced-components--templates) |
+| Signals & Reactivity | [31.15 Interview Questions](#3115-interview-questions-signals--reactivity) |
+| Advanced Dependency Injection | [32.12 Interview Questions](#3212-interview-questions-advanced-dependency-injection) |
+| Advanced Routing | [33.12 Interview Questions](#3312-interview-questions-advanced-routing) |
+| Advanced Forms | [34.14 Interview Questions](#3414-interview-questions-advanced-forms) |
+| HTTP and Networking | [35.13 Interview Questions](#3513-interview-questions-http-and-networking) |
+| RxJS | [36.12 Interview Questions](#3612-interview-questions-rxjs) |
+| Advanced SSR & Deployment | [37.14 Interview Questions](#3714-interview-questions-advanced-ssr--deployment) |
+| Testing | [38.17 Interview Questions](#3817-interview-questions-testing) |
+| Enterprise Architecture | [39.16 Interview Questions](#3916-interview-questions-enterprise-architecture) |
+| Performance Engineering | [40.14 Interview Questions](#4014-interview-questions-performance-engineering) |
+| Security | [41.14 Interview Questions](#4114-interview-questions-security) |
+| Developer Ecosystem | [42.17 Interview Questions](#4217-interview-questions-developer-ecosystem) |
+| Web Platform Integration | [43.13 Interview Questions](#4313-interview-questions-web-platform-integration) |
+| Practical System Design | [44.15 Interview Questions](#4415-interview-questions-practical-system-design) |
+
+[Back to top⤴️](#table-of-contents)
 
 ## Example Projects
 
