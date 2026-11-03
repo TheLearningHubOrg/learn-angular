@@ -29642,7 +29642,7 @@ sequenceDiagram
     T->>O: unsubscribe()
 ```
 
-- **Eager subscription.** `toSignal()` subscribes when it is called, not when the signal is first read. A `toSignal(http.get(...))` field sends its request during construction even if the template never shows it. Wrap conditional data in `rxResource()` (covered in the Signals and Reactivity chapter ([section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture))) or only create the signal where it is needed.
+- **Eager subscription.** `toSignal()` subscribes when it is called, not when the signal is first read. A `toSignal(http.get(...))` field sends its request during construction even if the template never shows it. Wrap conditional data in `rxResource()` (covered in the Signals and Reactivity chapter, [section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture)) or only create the signal where it is needed.
 - **Errors throw on read.** If the source errors, the next read of the signal throws that error, which in a template means the error reaches `ErrorHandler` during rendering. Handle errors in the pipe (`catchError` into a value) before converting.
 - **Completion keeps the last value.** The signal simply stops changing.
 - **One subscription per call.** Calling `toSignal()` inside a method or getter creates a new subscription every time. Create it once, in a field.
@@ -34513,7 +34513,7 @@ For charts or image processing that draw to a canvas, `canvas.transferControlToO
 
 - Creating a worker per call. Startup (fetch, parse, initialise) costs tens of milliseconds. Create workers once and reuse them.
 - Never terminating. A worker lives until `terminate()` or page unload. Tie it to a `DestroyRef`.
-- Assuming workers exist on the server. Guard with `isPlatformBrowser` (see the Signals chapter ([section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture)) for a full SSR-safe client).
+- Assuming workers exist on the server. Guard with `isPlatformBrowser` (see the Signals chapter, [section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture) for a full SSR-safe client).
 
 ---
 
@@ -35820,7 +35820,7 @@ export class UploadComponent {
 }
 ```
 
-Upload progress events need the XHR backend. Since v22 makes fetch the default, add `withXhr()` to the `provideHttpClient()` that serves this route if you want the progress bar (see the HTTP chapter ([section 35](#35-http-internals-data-fetching-patterns--real-time-networking))).
+Upload progress events need the XHR backend. Since v22 makes fetch the default, add `withXhr()` to the `provideHttpClient()` that serves this route if you want the progress bar (see the HTTP chapter, [section 35](#35-http-internals-data-fetching-patterns--real-time-networking)).
 
 #### Server-side rules the client depends on
 
@@ -36896,7 +36896,7 @@ Ranges consumers write:
 
 Prereleases sort before the release (`6.0.0-next.1 < 6.0.0-rc.0 < 6.0.0`) and are never matched by a plain range: `^5.0.0` does not install `6.0.0-next.1`, and `^6.0.0-next.1` matches later `6.0.0` prereleases plus every `6.x` release. That is why Angular publishes `next` versions people opt into with `@next`.
 
-Align with Angular's cadence: Angular ships a major roughly every six months. A common library policy is "library major N supports Angular major N" (as Angular Material and the CDK do), with a peer range like `"@angular/core": "^22.0.0"`. A range spanning two Angular majors (`">=21.0.0 <23.0.0"`) is possible when the library is built in partial mode with the oldest supported version (see the Platform & Architecture Masterclass ([section 29](#29-platform--architecture-masterclass-compiler-ivy-runtime-bootstrap-injectors-elements-builders--monorepos))), but you must then test against both.
+Align with Angular's cadence: Angular ships a major roughly every six months. A common library policy is "library major N supports Angular major N" (as Angular Material and the CDK do), with a peer range like `"@angular/core": "^22.0.0"`. A range spanning two Angular majors (`">=21.0.0 <23.0.0"`) is possible when the library is built in partial mode with the oldest supported version (see the Platform & Architecture Masterclass, [section 29](#29-platform--architecture-masterclass-compiler-ivy-runtime-bootstrap-injectors-elements-builders--monorepos)), but you must then test against both.
 
 #### Pitfalls
 
@@ -39083,7 +39083,7 @@ The trade-offs to state out loud:
 | Mode | You gain | You pay |
 |------|----------|---------|
 | Prerender | Fastest TTFB, CDN-cacheable, no server at request time | Build time grows with page count; stale until next build |
-| Server | Fresh, per-request HTML; good LCP and SEO | A Node runtime to operate, scale and monitor; per-request memory hygiene (see the SSR chapter ([section 37](#37-advanced-ssr--deployment)) on per-request state) |
+| Server | Fresh, per-request HTML; good LCP and SEO | A Node runtime to operate, scale and monitor; per-request memory hygiene (see [37.9](#379-server-memory-per-request-state-vs-per-process-state)) |
 | Client | Simplest ops, static hosting | Blank-until-JS first paint; poor for SEO and link previews |
 
 Hydration matters for every SSR or prerendered route. In v22, `provideClientHydration()` enables incremental hydration by default (`withIncrementalHydration()` is deprecated), so `@defer (hydrate on viewport)` blocks are the main tool for keeping time-to-interactive low on long pages.
@@ -39202,7 +39202,7 @@ flowchart LR
 
 | Layer | Good for | Invalidation |
 |-------|----------|--------------|
-| SSR transfer cache | Avoiding the double fetch during hydration | Automatic: used once, then cleared (see the HTTP and SSR chapter ([section 37](#37-advanced-ssr--deployment))s for options) |
+| SSR transfer cache | Avoiding the double fetch during hydration | Automatic: used once, then cleared (see [35.5](#355-configuring-the-ssr-http-transfer-cache) and [37.10](#3710-customizing-the-http-transfer-cache) for options) |
 | In-memory query cache | Dedupe, instant back navigation, stale-while-revalidate | Explicit, by key, after mutations |
 | Service worker | App shell, offline reads, static assets | New app version; `dataGroups` strategy (`freshness` or `performance`) |
 | HTTP cache | Public reference data, images, hashed bundles | `max-age`, `ETag`/`304`, hashed filenames |
@@ -39349,7 +39349,7 @@ Users keep tabs open for days. After a deploy, their old `main.js` asks for lazy
 
 - keep at least the previous release's hashed assets available on the CDN for a few days;
 - version APIs or make changes additive, so an old client keeps working;
-- handle chunk failures in `withNavigationErrorHandler()` (the Advanced Routing chapter ([section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing)) has a reload-once pattern);
+- handle chunk failures in `withNavigationErrorHandler()` (the Advanced Routing chapter, [section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing) has a reload-once pattern);
 - if you use the Angular service worker, listen to `SwUpdate.versionUpdates` for `VERSION_READY` and offer a reload, and to `SwUpdate.unrecoverable` to force one.
 
 **Pitfalls**
@@ -39758,7 +39758,7 @@ export class CartBadge {
 
 In a real component you would read a computed from the store after a browser-only `loaded` flag flips, rather than copying once; the point is that the server never renders a user-specific number into shared HTML.
 
-**Cart mutations** use optimistic updates with rollback (the HTTP chapter ([section 35](#35-http-internals-data-fetching-patterns--real-time-networking)) has the pattern), and every add-to-cart request carries an idempotency key so a retry cannot add the item twice.
+**Cart mutations** use optimistic updates with rollback (the HTTP chapter, [section 35](#35-http-internals-data-fetching-patterns--real-time-networking) has the pattern), and every add-to-cart request carries an idempotency key so a retry cannot add the item twice.
 
 **Failure modes.**
 
