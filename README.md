@@ -543,7 +543,7 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [31.12 NgRx SignalStore Beyond the Basics](#3112-ngrx-signalstore-beyond-the-basics)
   - [31.13 SignalStore vs NgRx Store: Choosing Deliberately](#3113-signalstore-vs-ngrx-store-choosing-deliberately)
   - [31.14 Signals with Web Workers: Correlation, Cancellation & SSR Safety](#3114-signals-with-web-workers-correlation-cancellation--ssr-safety)
-  - [31.15 Signals & Reactivity Interview Questions](#3115-signals--reactivity-interview-questions)
+  - [31.15 Interview Questions: Signals & Reactivity](#3115-interview-questions-signals--reactivity)
 - [32. Dependency Injection Masterclass: Injection Context, Environment Injectors, Provider Scopes & Memory](#32-dependency-injection-masterclass-injection-context-environment-injectors-provider-scopes--memory)
   - [32.1 Injection Context: Where inject() Is Allowed](#321-injection-context-where-inject-is-allowed)
   - [32.2 runInInjectionContext() in Depth](#322-runininjectioncontext-in-depth)
@@ -569,7 +569,7 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [33.9 Title Strategy](#339-title-strategy)
   - [33.10 Route Reuse Strategy](#3310-route-reuse-strategy)
   - [33.11 Testing Routes with RouterTestingHarness](#3311-testing-routes-with-routertestingharness)
-  - [33.12 Advanced Routing Interview Questions](#3312-advanced-routing-interview-questions)
+  - [33.12 Interview Questions: Advanced Routing](#3312-interview-questions-advanced-routing)
 - [34. Advanced Forms Architecture](#34-advanced-forms-architecture)
   - [34.1 The Validation Lifecycle: What updateValueAndValidity() Really Does](#341-the-validation-lifecycle-what-updatevalueandvalidity-really-does)
   - [34.2 Status and State: FormControlStatus, Propagation and Unified events](#342-status-and-state-formcontrolstatus-propagation-and-unified-events)
@@ -598,7 +598,7 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [35.10 Server-Sent Events (SSE) and Streaming Responses](#3510-server-sent-events-sse-and-streaming-responses)
   - [35.11 GraphQL over HttpClient](#3511-graphql-over-httpclient)
   - [35.12 API Contract Typing: OpenAPI Codegen and Runtime Validation](#3512-api-contract-typing-openapi-codegen-and-runtime-validation)
-  - [Interview Questions: HTTP and Networking](#interview-questions-http-and-networking)
+  - [35.13 Interview Questions: HTTP and Networking](#3513-interview-questions-http-and-networking)
 - [36. RxJS Masterclass: Execution Model, Multicasting, Flattening, Errors, Rate Limiting, Leaks & Marble Testing](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing)
   - [36.1 The Execution Model: Sync vs Async Emission, Cold vs Hot, Schedulers](#361-the-execution-model-sync-vs-async-emission-cold-vs-hot-schedulers)
   - [36.2 Subscription Internals and Teardown](#362-subscription-internals-and-teardown)
@@ -626,7 +626,7 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [37.11 Lazy Hydration vs @defer Without hydrate](#3711-lazy-hydration-vs-defer-without-hydrate)
   - [37.12 Debugging Hydration Mismatches](#3712-debugging-hydration-mismatches)
   - [37.13 SSR Deployment: Node, Serverless and Edge](#3713-ssr-deployment-node-serverless-and-edge)
-  - [Interview Questions: Advanced SSR & Deployment](#interview-questions-advanced-ssr--deployment)
+  - [37.14 Interview Questions: Advanced SSR & Deployment](#3714-interview-questions-advanced-ssr--deployment)
 - [38. Testing Masterclass: Modern Angular Testing with Vitest, Zoneless TestBed and Beyond](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond)
   - [38.1 The v22 Test Stack: ng test and the Built-in Vitest Runner](#381-the-v22-test-stack-ng-test-and-the-built-in-vitest-runner)
   - [38.2 Standalone Components in Depth](#382-standalone-components-in-depth)
@@ -644,7 +644,7 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [38.14 Visual Regression Testing](#3814-visual-regression-testing)
   - [38.15 Contract Testing with Pact](#3815-contract-testing-with-pact)
   - [38.16 Coverage Gates and CI Test Speed](#3816-coverage-gates-and-ci-test-speed)
-  - [38.17 Interview Questions](#3817-interview-questions)
+  - [38.17 Interview Questions: Testing](#3817-interview-questions-testing)
 - [39. Enterprise Architecture Masterclass](#39-enterprise-architecture-masterclass)
   - [39.1 Nx Monorepos: Libraries, Tags and Enforced Boundaries](#391-nx-monorepos-libraries-tags-and-enforced-boundaries)
   - [39.2 Domain-Driven Design for the Frontend](#392-domain-driven-design-for-the-frontend)
@@ -21086,27 +21086,35 @@ Multiple apps or many libraries, several teams in one repo, CI time that grows w
 ### 29.14 Interview Questions: Platform & Architecture
 
 #### Q: What does the Angular compiler do between your `.ts` file and the emitted JavaScript?
+
 `ngtsc` analyses decorators and parses templates, resolves which directives and pipes each template can use, generates type-check blocks so `tsc` can type-check templates, and finally replaces decorators with static definition fields (`ɵcmp`, `ɵfac`) whose template functions call runtime instructions. Applications use `full` mode; published libraries use `partial` mode so the consuming app's linker can finish compilation for its own Angular version.
 
 #### Q: What are the creation and update blocks in a compiled template?
+
 The template function takes render flags. With `rf & 1` it runs once per view instance and creates DOM nodes, listeners and containers at fixed slot indices. With `rf & 2` it runs on each refresh, walks the bindings with `ɵɵadvance`, compares each value with the one stored in the `LView` binding slots, and updates the DOM only where a value changed.
 
 #### Q: Explain `TView`, `LView` and `TNode`.
+
 A `TView` is the shared, static blueprint of one template (template function, consts, list of `TNode`s, hook tables). A `TNode` describes one node statically: type, tag, attributes, matched directives. An `LView` is the per-instance array: a header (host, parent, context, flags, injector, reactive consumer) followed by the instance's DOM nodes, directive instances and binding values. Ten instances of a component share one `TView` and own ten `LView`s.
 
 #### Q: In what order does `bootstrapApplication` run things, and what happens if an initializer fails?
+
 The platform injector is created or reused (platform initializers run), then the root environment injector is created from `appConfig.providers` (environment initializers run synchronously), then every `provideAppInitializer` function is called in order and their promises/observables are awaited together. Only after all succeed is the root component created through `ApplicationRef.bootstrap`. Any failure rejects the promise returned by `bootstrapApplication` and the root component is never rendered, so the `.catch()` must handle it.
 
 #### Q: Two app initializers both return promises. Does the second wait for the first?
+
 No. They are invoked in provider order, but their results are awaited in parallel. If B needs A's result, put both steps in one initializer and `await` them in sequence, capturing all `inject()` calls before the first `await`.
 
 #### Q: What is the difference between `EnvironmentInjector` and `ElementInjector`?
+
 Environment injectors form the application-level tree (platform, root, lazy routes, manually created scopes), accept environment providers such as `provideRouter()`, and live until destroyed. Element injectors are created per element that hosts a component or directive, are configured by `providers`/`viewProviders`, and die with the element. Resolution walks the element chain first, then the environment chain. `Injector` is the shared base interface, not a legacy alternative.
 
 #### Q: How do inputs and outputs map when a component becomes a custom element?
+
 Each input is observable as a dash-cased attribute (strings only, so use `numberAttribute`/`booleanAttribute` transforms) and as a camelCase property (any value). Each output is dispatched as a DOM `CustomEvent` named after the output, with the emitted value in `event.detail`. The component is created on connect and destroyed shortly after disconnect.
 
 #### Q: Why should a library declare `@angular/core` as a peer dependency, and which Angular version should build it?
+
 A peer dependency makes the application supply a single shared copy; two copies of Angular break DI, tokens and change detection. Build the library in partial mode with the **oldest** Angular major you support, because newer Angular linkers can process older partial declarations but not the reverse.
 
 [Back to top⤴️](#table-of-contents)
@@ -22281,27 +22289,35 @@ Use it for below-the-fold widgets, heavy third-party components and rarely opene
 ### 30.13 Interview Questions: Advanced Components & Templates
 
 #### Q: What is the difference between `ViewContainerRef.detach()` and `remove()`?
+
 Both take the view out of the container and the DOM. `remove()` also destroys it (lifecycle hooks, `DestroyRef` callbacks, listeners). `detach()` keeps the view alive so it can be re-inserted with `insert()`, preserving its state. A detached view is not change-detected and must eventually be destroyed manually, or it leaks.
 
 #### Q: How do you pass inputs to a dynamically created component in v22, and which approach keeps it reactive?
+
 Use the `bindings` option with `inputBinding('name', signalOrGetter)`. The getter is re-read on every check, like a template binding. `twoWayBinding()` connects a `model()` input to a writable signal, and `outputBinding()` registers a listener that is cleaned up with the component. `setInput()` still works but is imperative, so you have to call it on every change. Assigning to `instance.prop` does not work for signal inputs.
 
 #### Q: Why does `<ng-content>` inside `@if` not make projected content lazy?
+
 The parent's template owns projected content and creates it when the parent's view is created, before the child decides whether to show it. `@if` only controls whether the nodes are attached to the DOM. For lazy content, the parent passes an `<ng-template>` (usually marked with a directive and read via `contentChild`) and the child renders it with `ngTemplateOutlet` only when needed.
 
 #### Q: When would you choose `NgComponentOutlet` over `ViewContainerRef.createComponent()`?
+
 `NgComponentOutlet` suits declarative cases where the template picks one component from configuration and passes inputs, such as CMS blocks or table cells. It cannot bind outputs and manages only one component per outlet. `ViewContainerRef.createComponent()` gives you outputs, directives with bindings, ordering and several components per container, at the cost of imperative code.
 
 #### Q: What is `ngTemplateContextGuard` and why does it matter?
+
 It is a static method on a structural directive that tells the template type checker the type of the context object its template receives. Without it, every `let-` variable in that template is `any`, even under `strictTemplates`. With it, the compiler checks property access on context variables and catches typos in microsyntax keys.
 
 #### Q: A component's output listener keeps firing after the listening component was destroyed. Why, and how do you fix it?
+
 Angular removes output listeners automatically when the component that *owns* the output is destroyed. If the emitter outlives the listener (for example a panel created by a service, subscribed to by a routed page), the subscription stays. Keep the `OutputRefSubscription` returned by `subscribe()` and call `unsubscribe()` from the listener's `DestroyRef.onDestroy()`, or use `outputToObservable(...).pipe(takeUntilDestroyed())`.
 
 #### Q: How do pure pipes, `computed()` and template method calls differ in cost?
+
 A method call runs on every check of the view. A pure pipe re-runs only when its input references change, and remembers only the last call per binding. A `computed()` caches until one of its signal dependencies changes and can be shared by many bindings. All three rely on immutable updates to notice changes.
 
 #### Q: When would you write a custom `RendererFactory2`, and what are the risks?
+
 To target a non-DOM platform or to instrument the DOM renderer, for example counting DOM operations in tests or dev builds. The wrapper must delegate every method faithfully. Wrapping the browser renderer means injecting the private `ɵDomRendererFactory2`, which can change between releases, and only one factory provider wins, so other features that replace the factory can be silently bypassed. Keep it out of production and SSR builds.
 
 [Back to top⤴️](#table-of-contents)
@@ -23563,7 +23579,7 @@ Libraries such as Comlink hide this id-and-pending-map bookkeeping behind a prox
 
 ---
 
-### 31.15 Signals & Reactivity Interview Questions
+### 31.15 Interview Questions: Signals & Reactivity
 
 #### Q: Writing to a signal does not recompute its dependents immediately. How does Angular still guarantee correct values?
 
@@ -25840,7 +25856,7 @@ it('authGuard returns a RedirectCommand when logged out', () => {
 
 [Back to top⤴️](#table-of-contents)
 
-### 33.12 Advanced Routing Interview Questions
+### 33.12 Interview Questions: Advanced Routing
 
 #### Q: What is the order of router events for a navigation to a lazy route with a guard and a resolver?
 
@@ -28517,7 +28533,7 @@ this.http.get('/api/orders/42').pipe(validate(OrderSchema, '/api/orders/42'));
 
 ---
 
-### Interview Questions: HTTP and Networking
+### 35.13 Interview Questions: HTTP and Networking
 
 #### Q: In what order do interceptors run, and where do the built-in ones sit?
 
@@ -30848,7 +30864,7 @@ export default { fetch: reqHandler };
 
 ---
 
-### Interview Questions: Advanced SSR & Deployment
+### 37.14 Interview Questions: Advanced SSR & Deployment
 
 #### Q: In v22 SSR, are `providedIn: 'root'` services shared between users?
 
@@ -32096,7 +32112,7 @@ jobs:
 
 ---
 
-### 38.17 Interview Questions
+### 38.17 Interview Questions: Testing
 
 #### Q: Why can't you use `fakeAsync` with the Angular CLI's Vitest runner, and what do you use instead?
 
@@ -33499,27 +33515,35 @@ Regex rewrites are fine for simple attribute renames; for TypeScript API changes
 ### 39.16 Interview Questions: Enterprise Architecture
 
 #### Q: Why doesn't `@angular-architects/module-federation` work with a new Angular CLI project, and what would you use instead?
+
 It is a webpack plugin integration, while new Angular projects use the esbuild-based `application` builder, which has no webpack plugin pipeline. The options are Native Federation, which wraps the esbuild builder and shares dependencies through import maps, or Module Federation 2 on Rspack/webpack if the team already runs that toolchain or must interoperate with other MF-based frameworks.
 
 #### Q: Two micro frontends need different Angular majors. What are your options?
+
 Sharing `@angular/core` as a singleton requires one version on the page, so the clean answer is to upgrade in lockstep with a coordinated release. If that is impossible, isolate the lagging remote: let it bundle its own Angular and expose it as a Web Component through `@angular/elements`. That works but costs extra download size, two framework instances and no shared DI or router, so treat it as temporary.
 
 #### Q: How do Nx module boundaries differ from TypeScript path aliases?
+
 Path aliases only make imports resolvable; any library can still import any other. Nx tags plus `@nx/enforce-module-boundaries` encode *who may depend on whom* (by scope and by type) and fail lint when the rule is broken. The project graph also powers `nx affected`, so CI only runs work for projects a change could influence.
 
 #### Q: Where does a port live in a hexagonal Angular app, and how is the adapter chosen?
+
 The port is an abstract class (or an `InjectionToken` with an interface) in the application layer, next to the use cases that need it. The composition root, `app.config.ts` or a lazy route's `providers`, binds it to an adapter with `{ provide: OrderRepository, useClass: HttpOrderRepository }`. Tests bind an in-memory adapter instead, so use cases are tested without HTTP.
 
 #### Q: A product manager asks you to hide the "Delete" button from non-admins. Is that enough?
+
 No. Hiding is UX, not security: the API is still callable with DevTools or curl. The backend must authorise every request. In the UI, check a permission (`users:delete`) rather than a role name, use `canMatch` so forbidden lazy routes are not downloaded, and make sure permissions are loaded before guards run.
 
 #### Q: How do you give one Angular build different API URLs per environment?
+
 Build once and move environment values out of `environment.ts` into a runtime `config.json` written at deploy time. Fetch and validate it in `main.ts` before `bootstrapApplication`, provide it as an `InjectionToken` value, and serve it with `no-store` caching and outside the service worker's asset groups. This keeps the tested artifact identical to the deployed one.
 
 #### Q: What is the safest order to migrate a large NgModule and Zone.js app to modern Angular?
+
 Add lint guardrails first, then run the standalone, `inject` and control-flow schematics library by library, then the signal input, output and query migrations, then make components OnPush and fix what breaks, and only then switch to `provideZonelessChangeDetection()` and remove `zone.js`. Each step is shippable on its own, and standalone and NgModule code interoperate during the transition.
 
 #### Q: How do you remove an input from a design-system library used by 30 apps without breaking them?
+
 Add the replacement in a minor release and mark the old input `@deprecated` with the replacement and removal version, keeping both working. Ship an `ng update` migration with the next major that rewrites usages automatically, document the change, and use an API report in CI so unplanned public API changes are caught in review.
 
 [Back to top⤴️](#table-of-contents)
@@ -37252,27 +37276,35 @@ New `ng new` workspaces already generate a `.vscode/` folder with the Angular ex
 ### 42.17 Interview Questions: Developer Ecosystem
 
 #### Q: Why does a schematic work on a `Tree` instead of writing files directly?
+
 The `Tree` stages every change in memory and the CLI commits them only if the whole schematic succeeds. That gives you atomic runs (an exception leaves the workspace untouched), `--dry-run` for free, conflict detection when two rules touch the same file, and fast in-memory unit tests with `SchematicTestRunner`. Writing with `fs` loses all four.
 
 #### Q: How does `ng update @acme/ui` know which migrations to run?
+
 It reads `ng-update.migrations` from the newly installed package's `package.json`, opens that migrations collection, and runs every schematic whose `version` is greater than the installed version and less than or equal to the target version, in version order. `packageGroup` makes related packages update together. `--migrate-only --from --to` re-runs a range without changing versions.
 
 #### Q: When would you write a builder rather than a schematic?
+
 When the job happens on every build or deploy and its output is not committed: wrapping a tool, post-processing `dist/`, deploying. Schematics are for changes to source code that a developer runs once and commits. If the job needs nothing from `angular.json`, a plain npm script is simpler than either.
 
 #### Q: A v22 workspace's `tsconfig.json` has no `"strict": true` and no `"strictTemplates": true`. Is strict mode off?
+
 No. TypeScript 6 enables `strict` by default and the Angular 22 compiler defaults `strictTemplates` to `true`, so the strict `ng new` template leaves both out. The non-strict template writes `"strict": false` and `"strictTemplates": false` explicitly. Absence of a flag means the default, and both defaults are strict.
 
 #### Q: Why do Angular workspaces use `module: "preserve"` and `isolatedModules`?
+
 The application builder uses esbuild, which transpiles each file separately and bundles ES modules itself. `preserve` keeps import syntax as written and implies bundler-style resolution, so package `exports` maps work. `isolatedModules` makes TypeScript reject code that a per-file transpiler cannot handle correctly, so `tsc` errors and the real build agree.
 
 #### Q: What is the difference between an ESLint rule for `.ts` files and one for templates in angular-eslint?
+
 TypeScript rules walk the ESTree AST from `@typescript-eslint/parser`. Template rules run on the AST from `@angular-eslint/template-parser`, which is produced by Angular's compiler and has nodes like `Element`, `BoundAttribute` and `BoundEvent`; they report locations with `convertNodeSourceSpanToLoc`. Inline templates are extracted by `processInlineTemplates`, so the same template rules cover both inline and external templates.
 
 #### Q: Your library makes an optional input required. Minor or major?
+
 Major. Every consumer template that omits the input stops compiling under `strictTemplates`. The same goes for narrowing an input type, removing a selector, or raising the minimum Angular peer version. Ship a deprecation first, then the change in a major, ideally with an `ng update` migration.
 
 #### Q: How do you stop Renovate or Dependabot from breaking an Angular app?
+
 Group all Angular packages so they move together, disable bot updates for Angular majors (humans run `ng update` so migrations execute), cap TypeScript at the range the installed Angular supports, add a short release-age delay, and only auto-merge when CI runs a production AOT build plus tests.
 
 [Back to top⤴️](#table-of-contents)
@@ -38899,27 +38931,35 @@ export class ScriptLoader {
 ### 43.13 Interview Questions: Web Platform Integration
 
 #### Q: Why does a CDK overlay need its direction passed explicitly, and what else breaks because it lives under `<body>`?
+
 The overlay pane is attached to a container that is a child of `<body>`, not of your component, so it does not inherit the `dir` attribute or `Directionality` provided by an ancestor `[dir]`. Pass `direction` in the config (or use `CdkConnectedOverlay`, which reads it where it is declared). The same move affects styling of the pane itself (use `panelClass` and global styles), z-index relative to other fixed elements, and focus order, so the overlay must move focus in and restore it on close.
 
 #### Q: When would you choose the reposition, close and block scroll strategies?
+
 Reposition for panels tied to a trigger that the user may scroll with, such as dropdowns and popovers, often with `autoClose` so the panel closes when the trigger leaves the viewport. Close for lightweight, transient panels like context menus and hover cards, where following the page would be distracting. Block for modals, where the background should not move while the dialog is open.
 
 #### Q: After `SwUpdate` reports `VERSION_READY`, why reload instead of just calling `activateUpdate()`?
+
 `activateUpdate()` switches the service worker to serve the new version for this tab, but the JavaScript already in memory is the old version. The next lazy chunk would come from the new build and may not match the old main bundle. Reloading makes the whole app consistent. `unrecoverable` is a separate case: the cached version is missing files and cannot be served, so the user must reload.
 
 #### Q: Compare build-time and runtime localization in Angular. What is the main ordering rule for runtime translations?
+
 Build-time localization inlines translations and outputs one bundle per locale: fastest at runtime, but N deployments and URL-based switching. Runtime localization ships one bundle and calls `loadTranslations()` with a JSON file before the app runs. The rule is that translations must be loaded before any code that calls `$localize` is evaluated, so `main.ts` loads translations first and then imports the app dynamically, since static imports are hoisted. Locale data for pipes is registered separately with `registerLocaleData`.
 
 #### Q: What does `CUSTOM_ELEMENTS_SCHEMA` actually turn off, and how do you limit the risk?
+
 It lets the compiler accept unknown elements whose names contain a dash and any property binding on them, which also means misspelled Angular component selectors and inputs in that template stop being errors. Limit it to one thin wrapper component per custom element and expose a typed Angular API (`input`, `model`, `output`) to the rest of the app.
 
 #### Q: localStorage or IndexedDB for an offline order queue? What about SSR?
+
 IndexedDB: it is asynchronous, stores structured data, supports transactions, ordered auto-increment keys and indexes, and holds far more than a few megabytes. `localStorage` is synchronous on the main thread, strings only and small, which suits preferences only. Neither exists on the server, so access must be guarded to the browser, and values that change the first render should come from a cookie or be applied after hydration to avoid a mismatch.
 
 #### Q: How do you make an offline outbox safe against duplicate submissions?
+
 Each queued mutation gets a client-generated idempotency key when it is enqueued, sent as a header on every retry. The server records processed keys and returns the stored result for repeats, so a request whose response was lost is not applied twice. The client replays in order, stops on network or 5xx errors to preserve ordering, and moves permanent 4xx failures to a list the user can resolve.
 
 #### Q: Why use `afterNextRender` plus `afterRenderEffect` to wrap a chart library instead of `ngOnInit` and `effect`?
+
 `afterNextRender` runs once after the DOM exists and never on the server, so it is the right place to create the instance (and lazy-load the library). `afterRenderEffect` re-runs when its signals change and runs after Angular has updated the DOM, so updates see a laid-out element; its phased form keeps DOM reads and writes batched. `ngOnInit` runs before the view is rendered and also runs during SSR, and a plain `effect` is not tied to the render phase.
 
 [Back to top⤴️](#table-of-contents)
