@@ -15294,23 +15294,22 @@ export class OptimizedViewComponent {
 
 Historically, Angular relied on `zone.js` to patch asynchronous APIs (like events, promises, and timers) and trigger automatic global change detection. Beginning in Angular 18, you can construct fully **Zoneless** applications. Zoneless Angular does not load `zone.js`, resulting in smaller bundle sizes, faster startup speeds, and easier debugging. Instead, it relies on Signals, event handlers, and explicit CD notifications to refresh the UI.
 
-To bootstrap an application without `zone.js`, configure `provideExperimentalZonelessChangeDetection()` in your `ApplicationConfig`:
+Since v21, new applications are zoneless by default: the CLI no longer adds `zone.js` to the polyfills, and Angular schedules change detection from signals, template event handlers, `markForCheck()` and similar notifications. The provider is stable (since v20.2) and is named `provideZonelessChangeDetection()`; the old `provideExperimentalZonelessChangeDetection()` name no longer exists. Listing it explicitly is optional in v22, but it documents the intent:
 
 ```typescript
-import {
-  ApplicationConfig,
-  provideExperimentalZonelessChangeDetection,
-} from "@angular/core";
+import { ApplicationConfig, provideZonelessChangeDetection } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { routes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalZonelessChangeDetection(), // Enables Zoneless Change Detection
+    provideZonelessChangeDetection(), // the v22 default; shown for clarity
     provideRouter(routes),
   ],
 };
 ```
+
+An app that still depends on Zone.js opts back in with `provideZoneChangeDetection()` and keeps `zone.js` in its polyfills.
 
 #### Pending Tasks
 
