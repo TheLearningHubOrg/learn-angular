@@ -18856,55 +18856,71 @@ sequenceDiagram
     WebMCP-->>Agent: Tool Output JSON
 ```
 
+> [!NOTE]
+> Both WebMCP APIs are **experimental** in v22 and are exported from `@angular/core` (there is no `@angular/core/ai` entry point). Tools are described by a `ToolDescriptor`: `name`, `description`, a JSON Schema `inputSchema`, an `execute(args, client)` function and optional `annotations` (`readOnlyHint`, `consequentialHint`, `untrustedContentHint`). The browser must expose WebMCP for agents to see the tools.
+
 ```typescript
-// app.config.ts (Registering WebMCP AI Tool Registry)
-import { ApplicationConfig } from '@angular/core';
-import { provideExperimentalWebMcpTools } from '@angular/core/ai';
+// app.config.ts: tools that live as long as the root injector
+import { ApplicationConfig, inject, provideExperimentalWebMcpTools } from '@angular/core';
+import { AuditLogApi } from './audit-log.api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalWebMcpTools({
-      agentName: 'EnterpriseConsoleAgent',
-      capabilities: ['form-inspection', 'data-export', 'workflow-automation'],
-    }),
+    provideExperimentalWebMcpTools([
+      {
+        name: 'searchAuditLogs',
+        description: 'Searches the audit log of the current organization and returns matching entries as JSON.',
+        inputSchema: {
+          type: 'object',
+          properties: { query: { type: 'string', description: 'Free-text search term' } },
+          required: ['query'],
+        },
+        annotations: { readOnlyHint: true },
+        // Runs in the root injection context, so inject() works here
+        execute: async ({ query }) => JSON.stringify(await inject(AuditLogApi).search(query)),
+      },
+    ]),
   ],
 };
 ```
 
 ```typescript
-// services/billing-mcp-tools.service.ts
-import { Injectable, inject } from '@angular/core';
-import { declareExperimentalWebMcpTool } from '@angular/core/ai';
+// billing-tools.ts: a tool tied to a component's lifetime
+import { Component, declareExperimentalWebMcpTool, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
-export class BillingMcpToolsService {
+@Component({ selector: 'app-billing-page', template: `...` })
+export class BillingPage {
   private http = inject(HttpClient);
 
-  // Expose a typed tool callable by AI agents interacting with the Angular browser tab
-  readonly updateBillingTool = declareExperimentalWebMcpTool({
-    name: 'updateBillingTier',
-    description: 'Upgrades or downgrades the current enterprise organization subscription tier',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        organizationId: { type: 'string', description: 'Unique organization UUID' },
-        tier: { type: 'string', enum: ['STARTER', 'PRO', 'ENTERPRISE'] },
+  constructor() {
+    // Registered now, unregistered automatically when this component is destroyed
+    declareExperimentalWebMcpTool({
+      name: 'updateBillingTier',
+      description: 'Changes the subscription tier of an organization the user administers',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          organizationId: { type: 'string', description: 'Organization UUID' },
+          tier: { type: 'string', enum: ['STARTER', 'PRO', 'ENTERPRISE'] },
+        },
+        required: ['organizationId', 'tier'],
       },
-      required: ['organizationId', 'tier'],
-    },
-    handler: async ({ organizationId, tier }) => {
-      console.log(`[WebMCP Invocation] Upgrading ${organizationId} to ${tier}`);
-      const result = await fetch(`/api/organizations/${organizationId}/billing`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier }),
-      });
-      return result.json();
-    },
-  });
+      annotations: { consequentialHint: true },
+      execute: async ({ organizationId, tier }, client) => {
+        // client.signal aborts if the agent cancels the call
+        const res = await firstValueFrom(
+          this.http.post<{ tier: string }>(`/api/organizations/${organizationId}/billing`, { tier }),
+        );
+        return client.signal.aborted ? 'Cancelled' : `Tier is now ${res.tier}`;
+      },
+    });
+  }
 }
 ```
+
+Treat every tool as a public API endpoint: the server still has to authorize the call, because an agent acts with the user's session and can be steered by content it reads.
 
 
 ---
