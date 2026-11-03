@@ -975,6 +975,11 @@ Key configuration blocks in `angular.json`:
     - **`serve`**: Configures options for the development server (e.g., host, port, proxy configuration).
     - **`test`**: Configures choices for running unit tests.
 
+- **`cli.schematicCollections`**: the collections `ng generate` searches, in order, when you omit a collection name (for example `["@acme/schematics", "@schematics/angular"]`).
+- **`schematics`**: default options per generator, such as `"@schematics/angular:component": { "changeDetection": "OnPush" }`.
+
+Each target names a **builder**, for example `"builder": "@angular/build:application"` for `build`. Builders are Node packages that the CLI's Architect layer loads; you can write your own ([section 29.10](#2910-custom-builders-angular-cli-architect)). For multi-project workspaces and monorepo layering, see [section 29.12](#2912-workspace-and-monorepo-architecture) and [section 29.13](#2913-nx-for-angular-monorepos).
+
 [Back to top⤴️](#table-of-contents)
 
 ##### Standalone Applications
@@ -1024,7 +1029,7 @@ Key tools and processes for Angular migration:
 
 Bootstrapping is the process that initializes and starts the Angular application. Angular supports two bootstrapping methods:
 
-###### 1. Standalone Bootstrapping (Modern - Angular v17+)
+###### 1. Standalone Bootstrapping (stable since v15, CLI default since v17)
 Bootstrapping is done using the `bootstrapApplication` function from `@angular/platform-browser`. It loads a standalone component as the root of the application, bypassing the need for an NgModule.
 
 `main.ts`:
@@ -1036,6 +1041,8 @@ import { appConfig } from './app/app.config';
 bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));
 ```
+
+`bootstrapApplication` returns a `Promise<ApplicationRef>`. Keep the `.catch()`: if any `provideAppInitializer()` function fails, the promise rejects and the root component is never created. For what happens between this call and the first render (platform injector, root injector, initializers, `ApplicationRef.bootstrap`), see [section 29.6](#296-app-lifecycle-and-bootstrap-internals).
 
 ###### 2. NgModule Bootstrapping (Legacy)
 Bootstrapping is done using the `platformBrowserDynamic` function to compile and launch a root module (usually `AppModule`).
@@ -1072,6 +1079,9 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
+> [!NOTE]
+> Since v21, applications are zoneless by default. Including `provideZoneChangeDetection()` opts the app back into `zone.js`-based change detection and needs `zone.js` in `polyfills`. A new v22 app usually lists neither `provideZoneChangeDetection()` nor `provideZonelessChangeDetection()`.
+
 [Back to top⤴️](#table-of-contents)
 
 ##### Environment Providers
@@ -1082,6 +1092,8 @@ Environment providers are typically registered inside `appConfig.providers` duri
 
 - **Helper Functions**: Angular provides functional helper APIs to set up global configurations, such as `provideRouter()`, `provideHttpClient()`, and `provideAnimations()`.
 - **Custom Services**: You can configure custom services as environment providers by using `{ providedIn: 'root' }` in the `@Injectable()` decorator.
+
+Environment providers (`provideRouter()`, `provideHttpClient()`, anything built with `makeEnvironmentProviders()`) can only be registered in environment injectors: `appConfig.providers`, route `providers`, or `createEnvironmentInjector()`. Putting them in a component's `providers` array is an error. [Section 29.8](#298-environmentinjector-vs-elementinjector) compares environment and element injectors.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -1155,6 +1167,8 @@ Check version
 ```bash
 ng version
 ```
+
+Angular 22 requires TypeScript `>=6.0 <6.1` and a current Node.js LTS line (the v22 CLI packages declare `^22.22.3 || ^24.15.0 || >=26.0.0`). `ng version` prints the installed versions of each.
 
 Create a new Angular project: (Replace `[PROJECT NAME]` with your project name)
 
@@ -3002,6 +3016,8 @@ export class ChildBtnComponent {
 }
 ```
 
+`output()` returns an `OutputEmitterRef`, whose `subscribe()` returns an `OutputRefSubscription` with an `unsubscribe()` method. Angular removes listeners automatically when the component that owns the output is destroyed. If the listener can be destroyed first (for example a routed page listening to a panel owned by a service), call `unsubscribe()` from the listener's `DestroyRef.onDestroy()`, or use `outputToObservable(ref).pipe(takeUntilDestroyed())`. See [section 30.6](#306-output-subscriptions-and-cleanup).
+
 [Back to top⤴️](#table-of-contents)
 
 #### Siblings to Siblings Communication
@@ -3431,6 +3447,8 @@ import { TooltipDirective } from './tooltip.directive';
 export class CompositionCardComponent {}
 ```
 
+For patterns beyond `hostDirectives` (compound components coordinated through an injection token, typed slot templates and headless components), see [section 30.9](#309-advanced-composition-patterns).
+
 [Back to top⤴️](#table-of-contents)
 
 #### Standalone Components
@@ -3767,6 +3785,9 @@ Load and create components programmatically at runtime.
 
 ###### Using ComponentFactory (Deprecated)
 
+> [!WARNING]
+> `ComponentFactoryResolver` is no longer exported from `@angular/core` in v22, so the example below does not compile on current versions. It is kept for reading older code. Pass the component class straight to `ViewContainerRef.createComponent()` (next example), and see [section 30.4](#304-dynamic-components-with-the-modern-apis) for creation-time `bindings` (`inputBinding`, `outputBinding`, `twoWayBinding`).
+
 ```typescript
 import {
   ComponentFactoryResolver,
@@ -3824,6 +3845,8 @@ export class DynamicHostComponent {
   }
 }
 ```
+
+In current code, prefer the signal query `viewChild.required('dynamicHost', { read: ViewContainerRef })` over `@ViewChild`, type the parameter as `Type<T>` instead of `any`, and keep the `ComponentRef` so you can call `destroy()` on it. Assigning to `componentRef.instance.data` does not work for signal inputs; use `setInput()` or `inputBinding()`.
 
 ###### Dynamic Component Service
 
@@ -3904,6 +3927,23 @@ export class AppModule {
 }
 ```
 
+> [!NOTE]
+> The example above uses `entryComponents`, which has not been needed since Ivy (v9) and is no longer part of the API. In a standalone v22 project, create the element from an application injector instead of an NgModule:
+
+```typescript
+// main.ts (standalone, no NgModule)
+import { createApplication } from '@angular/platform-browser';
+import { createCustomElement } from '@angular/elements';
+import { PopupComponent } from './app/popup.component';
+
+createApplication({ providers: [] }).then((app) => {
+  const PopupElement = createCustomElement(PopupComponent, { injector: app.injector });
+  customElements.define('app-popup', PopupElement);
+});
+```
+
+Signal inputs (`input()`) become element properties the same way `@Input()` did, and `output()` events are dispatched as DOM `CustomEvent`s with the value in `event.detail`. For attribute vs property inputs, zoneless elements, single-file bundles and running several bundles on one page, see [section 29.9](#299-angular-elements-advanced). For the reverse direction, using third-party custom elements inside Angular templates with `CUSTOM_ELEMENTS_SCHEMA`, see [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
+
 ###### Using Angular Elements
 
 ```html
@@ -3920,6 +3960,8 @@ export class AppModule {
 ##### Angular Schematics
 
 Create custom code generators and transformers.
+
+The generator below copies template files. For schematics that edit existing code, `ng add` installers that register providers with `addRootProvider()`, `ng update` migrations for your own library, and testing with `SchematicTestRunner`, see the schematics parts of [section 42](#42-developer-ecosystem--tooling-masterclass-schematics-compiler-config-linting-packaging-releases).
 
 ###### Creating a Schematic
 
@@ -3980,6 +4022,8 @@ import { Component } from '@angular/core';
 export class <%= classify(name) %>Component {}
 ```
 
+**Naming note:** since v20 the CLI generates `user-card.ts` with class `UserCard` (no `.component` suffix) by default. If your schematic should match what `ng generate component` produces in a v22 workspace, follow the same style, or read the workspace's `@schematics/angular:component` defaults from `angular.json`.
+
 ##### Custom Libraries
 
 Create reusable Angular libraries.
@@ -4005,6 +4049,8 @@ projects/
     package.json
 ```
 
+Libraries generated in v22 are standalone and have no NgModule file. Keep an NgModule only if you still support NgModule-based consumers.
+
 ###### Public API
 
 ```typescript
@@ -4017,10 +4063,13 @@ export * from "./lib/my-lib.module";
 ###### Building and Publishing
 
 ```bash
-ng build my-lib
+ng build my-lib --configuration production   # partial compilation for publishing
 cd dist/my-lib
-npm publish
+npm pack --dry-run                           # check the file list first
+npm publish                                  # always from dist/, never from projects/my-lib
 ```
+
+Bump the version in `projects/my-lib/package.json`, not in `dist/`, which is regenerated on every build. Registries, dist-tags for prereleases, and CI publishing with npm trusted publishing are covered in [section 42](#42-developer-ecosystem--tooling-masterclass-schematics-compiler-config-linting-packaging-releases).
 
 ###### Secondary Entry Points
 
@@ -4039,6 +4088,9 @@ export * from './src/test-utils';
 ##### Micro Frontends
 
 Split large applications into smaller, manageable pieces.
+
+> [!NOTE]
+> **Builder note:** `@angular-architects/module-federation` hooks into webpack, so it only works with the legacy webpack-based builders. Projects created with the Angular CLI since v17 use the esbuild-based `application` builder. For those, use Native Federation (`@angular-architects/native-federation`) or Module Federation 2 on Rspack. Both, plus shared-dependency and version-skew rules, are covered in the micro frontends part of [section 39](#39-enterprise-architecture-masterclass).
 
 ###### Module Federation Setup
 
@@ -4136,6 +4188,9 @@ export class CardComponent {}
 
 ###### Conditional Content Projection
 
+> [!CAUTION]
+> Wrapping `<ng-content>` in `*ngIf` (or `@if`) hides the projected content but does **not** prevent it from being created. The parent always instantiates projected components, runs their lifecycle hooks and keeps them alive. Use this pattern only for cheap content. For lazy content, have the parent pass an `<ng-template>` and render it with `ngTemplateOutlet` ([section 30.8](#308-content-projection-edge-cases)).
+
 ```typescript
 @Component({
   selector: "app-conditional-wrapper",
@@ -4153,6 +4208,26 @@ export class ConditionalWrapperComponent {
 }
 ```
 
+The same component with built-in control flow, a signal input and default fallback content (since v18):
+
+```typescript
+@Component({
+  selector: 'app-conditional-wrapper',
+  template: `
+    @if (showContent()) {
+      <ng-content />
+    } @else {
+      <ng-content select="[slot=placeholder]">
+        <p class="placeholder">Nothing here yet.</p>
+      </ng-content>
+    }
+  `,
+})
+export class ConditionalWrapperComponent {
+  readonly showContent = input(true);
+}
+```
+
 [Back to top⤴️](#table-of-contents)
 
 #### Component Styles
@@ -4165,7 +4240,19 @@ Angular checks component state changes to update the view. By default, it uses t
 
 #### Dynamic Components
 
-Components can be loaded dynamically at runtime using a `ViewContainerRef` and `ComponentRef`.
+Components can be created at runtime in three ways:
+
+- `ViewContainerRef.createComponent(Type, { bindings })` inserts the component at an anchor in your template.
+- The standalone `createComponent(Type, { environmentInjector, hostElement })` creates it outside any container, for toasts and third-party DOM. Attach it with `ApplicationRef.attachView()`.
+- `NgComponentOutlet` (`*ngComponentOutlet`) picks the component declaratively from the template.
+
+```typescript
+const ref: ComponentRef<AlertComponent> = this.vcr.createComponent(AlertComponent, {
+  bindings: [inputBinding('message', this.message), outputBinding('closed', (): void => ref.destroy())],
+});
+```
+
+[Section 30.4](#304-dynamic-components-with-the-modern-apis) to [section 30.7](#307-ngcomponentoutlet-declarative-dynamic-components) cover all three in depth.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -4652,6 +4739,8 @@ Example:
 </ng-template>
 ```
 
+The outlet also takes `[ngTemplateOutletContext]` (see [Template Context](#template-context)) and `[ngTemplateOutletInjector]`. The injector becomes the parent injector for anything inside the rendered template; in v22 it also accepts the string `'outlet'`, which makes the template inherit the injector of the place where the outlet sits instead of where the template was declared.
+
 [Back to top⤴️](#table-of-contents)
 
 #### Template Context
@@ -4672,6 +4761,8 @@ Example:
 ```typescript
 myContext = { title: 'Card Title', $implicit: 'This is the card body text.' };
 ```
+
+To get type checking on `let-` variables in your own structural directives, add a static `ngTemplateContextGuard(dir, ctx): ctx is MyContext` method to the directive. Without it, every context variable is typed `any`, even with `strictTemplates`. [Section 30.3](#303-templateref-embedded-views-and-typed-contexts) has a full example.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -4744,6 +4835,8 @@ Example:
   }
 </ul>
 ```
+
+`track $index` is only safe for lists that never reorder or insert items. When an item is added at the top, every index shifts and every row is re-rendered. Also avoid `track item` (object identity) for data refreshed from an API: new objects on every response mean every row is destroyed and recreated.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -5686,7 +5779,7 @@ Specify slots using the `select` attribute (e.g. `<ng-content select="[header]">
 
 #### Conditional Projection
 
-Conditionally render projected templates using programmatic checks or `@if` directives.
+`@if` around `<ng-content>` controls only whether projected nodes are attached to the DOM. The content is still created by the parent. For content that should be created only on demand, accept an `<ng-template>` (via `contentChild`) and render it with `ngTemplateOutlet`. See [section 30.8](#308-content-projection-edge-cases) for this pattern, `ngProjectAs`, default fallback content and the `controlFlowPreventingContentProjection` diagnostic.
 
 ### 2.6 Pipes
 
@@ -6356,10 +6449,12 @@ flowchart LR
     SourceSignal["signal(value) (State Node)"] --> ComputedSignal["computed(() => fn()) (Derived Node)"]
     ComputedSignal --> EffectNode["effect(() => sideEffect()) (Consumer Node)"]
     SourceSignal --> TemplateView["Template View Binding (Reactive UI)"]
-    Note over SourceSignal,EffectNode: Fine-grained tracking: only dependent nodes re-evaluate!
+    Tip["Fine-grained tracking: only dependent nodes re-evaluate"] -.-> ComputedSignal
 ```
 
 ### 3.1 Signals Internals & Reactive Primitives
+
+This stage covers the public primitives. For how the graph propagates changes internally (producer and consumer nodes, version counters, push/pull dirty marking, dynamic dependencies and effect scheduling), see [section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture).
 
 #### Signals Introduction
 
@@ -6426,6 +6521,17 @@ effect(() => {
 count.set(5); // Triggers the effect, logging "Count changed to: 5"
 ```
 
+The effect function receives an `onCleanup` callback. Anything registered with it runs before the next run and when the effect is destroyed:
+
+```typescript
+effect((onCleanup) => {
+  const id = setInterval(() => console.log('tick', count()), 1000);
+  onCleanup(() => clearInterval(id));
+});
+```
+
+Since v19, writing to signals inside an effect is allowed by default. The old `allowSignalWrites: true` option is deprecated and does nothing; remove it ([section 31.6](#316-migrating-away-from-allowsignalwrites)).
+
 Here is an example of using Angular Signals in an Angular component:
 
 ```typescript
@@ -6472,7 +6578,7 @@ export class AppComponent implements OnInit {
 
 ##### Signal Equality
 
-When you update a signal's value, it notifies its dependencies only if the new value is different from the previous value (based on strict equality `===`).
+When you update a signal's value, it notifies its dependents only if the new value is different from the previous one. The default comparison is `Object.is`, which behaves like `===` except that `NaN` equals `NaN` and `+0` does not equal `-0`. Because the check is by reference for objects, mutating an object or array in place and returning the same reference does **not** notify anyone. Return a new object instead.
 
 You can customize this check by providing a custom equality function when creating the signal:
 
@@ -6496,6 +6602,8 @@ const point = signal<Coordinate>(
 point.set({ x: 0, y: 0 });
 ```
 
+`computed()`, `linkedSignal()`, `resource()` and `toSignal()` accept the same `equal` option. `input()` does not; wrap it in a `computed` with `equal`. See [section 31.4](#314-equality-functions-across-the-signal-apis).
+
 ##### untracked()
 
 By default, reading a signal inside a computed derivation or an effect registers it as a dependency. If you want to read a signal's value _without_ creating a dependency, use the `untracked` function.
@@ -6516,6 +6624,8 @@ effect(() => {
 count.set(1); // Triggers the effect
 currentUser.set("Alice"); // Does NOT trigger the effect
 ```
+
+`untracked()` also returns the value of the function you pass, so `const draft = untracked(() => this.draft());` is a common way to take a snapshot inside an effect. More patterns (calling services that read signals internally, creating components inside effects) are in [section 31.7](#317-untracked-patterns).
 
 [Back to top⤴️](#table-of-contents)
 
@@ -7492,12 +7602,12 @@ export class UserComponent {
   userId = signal(1);
 
   user = resource({
-    request: () => this.userId(),
+    params: () => this.userId(),
 
-    loader: async ({ request }) => {
+    loader: async ({ params }) => {
       return {
-        id: request,
-        name: `User ${request}`,
+        id: params,
+        name: `User ${params}`,
       };
     },
   });
@@ -7565,14 +7675,14 @@ export class ProductComponent {
   productId = signal(1);
 
   product = resource({
-    request: () => this.productId(),
+    params: () => this.productId(),
 
-    loader: async ({ request }) => {
+    loader: async ({ params }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       return {
-        id: request,
-        name: `Product ${request}`,
+        id: params,
+        name: `Product ${params}`,
       };
     },
   });
@@ -7610,6 +7720,11 @@ resource.hasValue();
 ```
 
 Returns `true` if a value exists.
+
+`status()` returns one of `'idle'`, `'loading'`, `'reloading'`, `'resolved'`, `'error'` or `'local'`. In v22, reading `value()` while the status is `'error'` throws, so check `hasValue()` or `status()` first. The difference between `loading` and `reloading`, and what `set()` / `update()` do (`'local'`), is explained in [section 31.8](#318-resource-internals-cancellation-races--local-overrides).
+
+> [!NOTE]
+> The option that feeds the loader is called `params` (it was named `request` before v20). Older snippets that use `request: () => ...` and `loader: ({ request })` do not compile on v22.
 
 ##### Reloading a Resource
 
@@ -7993,6 +8108,8 @@ export const TasksStore = signalStore(
 );
 ```
 
+Beyond `withState` / `withComputed` / `withMethods`, SignalStore offers `withEntities()` for normalized collections, `rxMethod()` for RxJS-based side effects, `withHooks()` for init and destroy logic, `signalState()` for lightweight component state, and `signalStoreFeature()` for reusable features. See [section 31.12](#3112-ngrx-signalstore-beyond-the-basics), and [section 31.13](#3113-signalstore-vs-ngrx-store-choosing-deliberately) for a comparison with the classic NgRx Store.
+
 [Back to top⤴️](#table-of-contents)
 
 #### toSignal()
@@ -8003,6 +8120,10 @@ Key characteristics:
 - **Injection Context**: Must be called within an active injection context (e.g. constructor or field initializer) unless an environment injector is explicitly passed.
 - **Subscription Management**: Automatically subscribes to the source Observable immediately and unsubscribes when the hosting component/service is destroyed.
 - **Initial Values**: Since Observables are asynchronous, you can specify an `initialValue` options parameter.
+- **Synchronous sources**: pass `requireSync: true` for sources that emit on subscribe (such as a `BehaviorSubject`). The signal type then has no `undefined`, and Angular throws `NG0601` if the source does not emit synchronously.
+- **Outside an injection context**: pass `{ injector }`; the subscription is cleaned up with that injector's `DestroyRef`. `manualCleanup: true` skips `DestroyRef` entirely.
+- **Errors**: if the source errors, reading the signal throws that error. Handle errors in the pipe with `catchError` first.
+- **Eager**: it subscribes as soon as `toSignal()` is called, not when the signal is first read.
 
 Example:
 ```typescript
@@ -8039,7 +8160,7 @@ The `toObservable()` helper function (from `@angular/core/rxjs-interop`) convert
 
 Key characteristics:
 - **Injection Context**: Must be called within an injection context (constructor or field initializer).
-- **Asynchronous Propagation**: Emits values asynchronously (using the microtask queue) to prevent synchronous feedback loops.
+- **Asynchronous Propagation**: Values are pushed from an `effect`, so they arrive when Angular runs effects, not synchronously on `set()`. Several `set()` calls before the effect runs produce one emission with the latest value. Late subscribers receive the current value immediately (it is replayed). Outside an injection context, pass `{ injector }`.
 
 Example:
 ```typescript
@@ -8071,18 +8192,22 @@ export class LiveSearchComponent {
 }
 ```
 
+For outputs, the same package has `outputFromObservable()` (turn an Observable into a component output) and `outputToObservable()` (consume an output as an Observable). For async loading with Observables, use `rxResource()` instead of `toSignal()` when you need loading and error statuses. Both are covered in [section 31.9](#319-rxresource-resources-backed-by-observables) and [section 31.10](#3110-outputfromobservable--outputtoobservable).
+
 [Back to top⤴️](#table-of-contents)
 
 #### Signal Best Practices
 
 - Always read signal values in templates using function call syntax: `{{ value() }}`
-- Keep effects focused on side effects (like logging, DOM manipulation) rather than changing state
+- Keep effects for side effects that leave the signal graph (storage, logging, third-party APIs). For DOM reads and writes after rendering, prefer `afterRenderEffect()`. For derived values, use `computed()` or `linkedSignal()` instead of writing one signal from an effect.
 - Use `computed` for derived state instead of manual updates inside effects
 
 #### Signals vs RxJS
 
 - **Signals**: Best for synchronous state management, template bindings, and local reactivity.
 - **RxJS**: Best for asynchronous operations, event streams, timers, HTTP calls, and complex data flows.
+
+- **Bridges**: `toSignal()` / `toObservable()` for values, `rxResource()` for Observable-backed async loading, `outputFromObservable()` / `outputToObservable()` for component outputs (all in `@angular/core/rxjs-interop`).
 
 ### 3.2 State Management
 
@@ -8290,11 +8415,11 @@ export class StateService {
 
 #### Signals
 
-Use Angular Signals as simple, reactive, lightweight store options.
+Use services that hold private writable signals, expose them with `asReadonly()`, derive values with `computed()`, and change state only through methods. For server data, prefer `resource()`, `httpResource()` or `rxResource()`. A full example and scaling rules are in [section 31.11](#3111-signal-based-state-architecture-without-a-library).
 
 #### Signal Store
 
-Configure `NgRx SignalStore` for reactive, extensible state management.
+NgRx SignalStore (`@ngrx/signals`) builds feature stores from composable functions such as `withState`, `withComputed`, `withMethods`, `withEntities` and `withHooks`. See [section 31.12](#3112-ngrx-signalstore-beyond-the-basics) for advanced features and [section 31.13](#3113-signalstore-vs-ngrx-store-choosing-deliberately) for when to choose it over the classic NgRx Store.
 
 #### Component Store
 
@@ -8323,13 +8448,15 @@ Services are used to encapsulate reusable functionality that can be shared acros
 ```ts
 import { Injectable } from "@angular/core";
 
-@Injectable
+@Injectable({ providedIn: 'root' })
 export class DataService {
   getData() {
     return "Data from the service";
   }
 }
 ```
+
+`providedIn: 'root'` registers the service in the application's root injector and lets the build drop it if nothing injects it. Without `providedIn`, the class must appear in some `providers` array before it can be injected.
 
 ```ts
 import { Component } from "@angular/core";
@@ -8358,7 +8485,7 @@ The `@Injectable` decorator is used to define a service class that can be inject
 ```ts
 import { Injectable } from "@angular/core";
 
-@Injectable
+@Injectable({ providedIn: 'root' })
 export class DataService {
   getData() {
     return "Data from the service";
@@ -8375,7 +8502,7 @@ Dependency injection is a design pattern used to create objects and manage their
 ```ts
 import { Injectable } from "@angular/core";
 
-@Injectable
+@Injectable({ providedIn: 'root' })
 export class DataService {
   getData() {
     return "Data from the service";
@@ -8445,6 +8572,16 @@ import { DataService } from "./data.service";
 export class AppModule {}
 ```
 
+In standalone applications (the default), the same providers go in `app.config.ts`:
+
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [DataService],
+};
+```
+
+Providers can also be declared on a route (`Route.providers`), a component or directive (`providers` / `viewProviders`), or a custom injector. Which one wins when several match is covered in [section 32.7](#327-provider-precedence-providers-vs-viewproviders-host-boundaries-and-override-order).
+
 ##### Provider Types
 
 Angular provides different ways to define how a dependency token is resolved. When configuring a provider, you can use the following options:
@@ -8477,6 +8614,16 @@ Angular provides different ways to define how a dependency token is resolved. Wh
    }
    ```
 
+5. **`multi: true` (Multi Provider)**: Combined with any of the four forms above, it adds a value to an array instead of replacing the previous registration. Injecting the token returns every registered value in order. Angular's own `HTTP_INTERCEPTORS`, `NG_VALIDATORS` and `NG_VALUE_ACCESSOR` tokens work this way.
+
+   ```typescript
+   { provide: EXPORTERS, multi: true, useClass: CsvExporter },
+   { provide: EXPORTERS, multi: true, useClass: PdfExporter },
+   // inject(EXPORTERS) -> [CsvExporter, PdfExporter]
+   ```
+
+   See [section 32.6](#326-multi-providers) for scoping rules and pitfalls.
+
 ##### Hierarchical DI
 
 Angular has a **Hierarchical Dependency Injection** system, meaning the application has a tree of injectors that mirrors the component tree structure.
@@ -8490,6 +8637,8 @@ When a dependency is requested, Angular resolves it by traversing the injector t
 3. **PlatformInjector**: Configured for platform-wide services (e.g., shared across multiple Angular apps running on the same page).
 4. **NullInjector**: The top of the hierarchy. If a dependency lookup reaches this injector, Angular throws a "No provider found" error (unless the dependency is marked with `@Optional()`).
 
+Resolution walks the whole element-injector chain first (from the requesting element up to the root component), and only then the environment chain (lazy route injector, root injector, platform injector). Resolution modifiers such as `inject(Token, { skipSelf: true })` and `{ host: true }` only affect the element part of that walk.
+
 ###### Resolution Rules & Decorators
 
 You can modify the traversal behavior using resolution decorators:
@@ -8498,6 +8647,15 @@ You can modify the traversal behavior using resolution decorators:
 - **`@SkipSelf()`**: Instructs the injector to start the search from the _parent_ component's ElementInjector, bypassing the current one.
 - **`@Optional()`**: Prevents the application from crashing if a provider is not found, returning `null` instead.
 - **`@Host()`**: Restricts the search within the current component's host element.
+
+With `inject()`, the same rules are options: `inject(Logger, { self: true })`, `{ skipSelf: true }`, `{ optional: true }` and `{ host: true }`.
+
+Two details that the list above leaves out:
+
+- **`providers` vs `viewProviders`:** `viewProviders` on a component are visible to its own template only, not to content projected into it with `<ng-content>`.
+- **`@Host()` stops at the host element** and, at that boundary, sees the host component's `viewProviders`, not its `providers`. It never falls back to route or root injectors.
+
+Details and examples: [section 32.7](#327-provider-precedence-providers-vs-viewproviders-host-boundaries-and-override-order).
 
 [Back to top⤴️](#table-of-contents)
 
@@ -8790,26 +8948,26 @@ export class HomeComponent {
 ##### Creating a Child Environment Injector
 
 ```typescript
-import {
-  createEnvironmentInjector,
-  EnvironmentInjector,
-  inject,
-} from "@angular/core";
-
-import { UserService } from "./user.service";
+import { Component, DestroyRef, EnvironmentInjector, createEnvironmentInjector, inject } from '@angular/core';
+import { UserService } from './user.service';
 
 @Component({
-  selector: "app-home",
+  selector: 'app-home',
   template: `Home`,
 })
 export class HomeComponent {
   private parentInjector = inject(EnvironmentInjector);
 
-  childInjector = createEnvironmentInjector([UserService], this.parentInjector);
+  childInjector = createEnvironmentInjector([UserService], this.parentInjector, 'HomeChild');
+
+  constructor() {
+    // The creator owns the injector: destroy it with the component
+    inject(DestroyRef).onDestroy(() => this.childInjector.destroy());
+  }
 }
 ```
 
-The child injector inherits providers from the parent while allowing additional providers.
+The child injector inherits providers from the parent while allowing additional providers. Destroying it runs `ngOnDestroy` on the services it created. Destroying the parent does **not** destroy children created with `createEnvironmentInjector()`.
 
 ---
 
@@ -8872,7 +9030,17 @@ export const routes = [
 ];
 ```
 
-Angular internally creates a separate environment injector for lazy-loaded routes.
+Lazy loading by itself does not create a new injector. The router creates a route `EnvironmentInjector` only when the route has a `providers` array (or `loadChildren` returns an NgModule):
+
+```typescript
+{
+  path: 'admin',
+  providers: [AdminApi], // this creates the route injector
+  loadComponent: () => import('./admin.component').then((m) => m.AdminComponent),
+}
+```
+
+Route injectors are kept after navigating away unless you enable `withAutoCleanupInjectors()` (since v22.2). See [section 32.8](#328-lazy-route-level-providers-routeproviders-semantics).
 
 ---
 
@@ -8911,13 +9079,14 @@ The dynamically created notification receives all required dependencies through 
 
 ##### EnvironmentInjector vs Injector
 
-| EnvironmentInjector         | Injector          |
-| --------------------------- | ----------------- |
-| Modern API                  | Traditional API   |
-| Standalone-first            | NgModule-based    |
-| Better lazy-loading support | Limited           |
-| Dynamic component friendly  | Supported         |
-| Recommended                 | Legacy-compatible |
+`Injector` is not a legacy API: it is the base interface that every injector implements, and `EnvironmentInjector` extends it.
+
+| `EnvironmentInjector` | `Injector` |
+| --- | --- |
+| Abstract subclass of `Injector` used for application-level scopes (root, lazy routes, `createEnvironmentInjector()`) | Base interface implemented by every injector, including element injectors |
+| Accepts environment providers such as `provideRouter()` and `provideHttpClient()` | `Injector.create()` accepts plain providers only |
+| Has `destroy()`, `runInContext()` and runs environment initializers | Has `get()`; element injectors are destroyed with their element |
+| Inject it when you need to create components or child scopes at application level | Inject it when you need "the injector at this point in the tree", e.g. for `runInInjectionContext()` |
 
 ---
 
@@ -8958,17 +9127,16 @@ Reuse existing injectors whenever possible.
 
 ---
 
-❌ Using `Injector.create()`
+❌ Using `Injector.create()` where an environment injector is required
 
 ```typescript
-Injector.create(...)
+// Type error: Injector.create() is not an EnvironmentInjector
+viewContainer.createComponent(UserCardComponent, {
+  environmentInjector: Injector.create({ providers: [] }),
+});
 ```
 
-Prefer
-
-```typescript
-createEnvironmentInjector(...)
-```
+Use `createEnvironmentInjector()` for environment scopes (it accepts `provideHttpClient()` and similar), and `Injector.create()` for small per-instance values passed as `elementInjector`. Both return injectors you must `destroy()` yourself. See [section 32.3](#323-creating-injectors-yourself-createenvironmentinjector-injectorcreate-and-destroy).
 
 ---
 
@@ -9011,27 +9179,25 @@ viewContainer.createComponent(UserCardComponent, {
 The DestroyRef provider is a utility that allows Angular components to register cleanup callbacks that are executed when the component is destroyed. This is useful for cleaning up resources, such as subscriptions, timers, or other resources that need to be released when the component is no longer in use.
 
 ```typescript
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { DestroyRef } from "@angular/core/testing";
+import { Component, DestroyRef, inject } from '@angular/core';
 
 @Component({
-  selector: "my-component",
-  templateUrl: "./my-component.component.html",
-  styleUrls: ["./my-component.component.css"],
+  selector: 'my-component',
+  template: `...`,
 })
-export class MyComponent implements OnInit, OnDestroy {
-  constructor(private destroyRef: DestroyRef) {}
+export class MyComponent {
+  constructor() {
+    const id = setInterval(() => console.log('tick'), 1000);
 
-  ngOnInit() {}
+    // Register cleanup once, at construction time
+    const unregister = inject(DestroyRef).onDestroy(() => clearInterval(id));
 
-  ngOnDestroy() {
-    // Register a destroy callback with the DestroyRef provider.
-    this.destroyRef.register(() => {
-      // Do any cleanup tasks here.
-    });
+    // Optional: cancel the callback early with unregister()
   }
 }
 ```
+
+`DestroyRef` injected in a component or directive fires when that component or directive is destroyed. Injected in a service, it fires when the service's injector is destroyed (for root services, when the app is destroyed). `destroyRef.destroyed` tells you whether that already happened.
 
 ### 4.2 Functional APIs
 
@@ -9306,6 +9472,9 @@ constructor(private router: Router) {
 }
 ```
 
+> [!NOTE]
+> A navigation always ends with exactly one of `NavigationEnd`, `NavigationCancel`, `NavigationError` or `NavigationSkipped`. Code that only listens for `NavigationEnd` (for example a loading spinner) gets stuck when a guard rejects or a newer navigation cancels the current one. In modern code, subscribe with `inject(Router)` and `takeUntilDestroyed()` instead of a constructor parameter, or read the `router.currentNavigation()` signal for a simple "is navigating" flag. See [section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing) for the full event order and cancellation codes.
+
 [Back to top⤴️](#table-of-contents)
 
 ##### Router Guards
@@ -9345,6 +9514,14 @@ const routes: Routes = [];
 })
 export class AppRoutingModule {}
 ```
+
+> [!TIP]
+> Class-based `CanActivate` guards still work but are the legacy style. Prefer a functional `CanActivateFn` and return a `UrlTree` or `new RedirectCommand(router.parseUrl('/login'))` instead of calling `router.navigate()` and returning `false`. Returning the redirect keeps it in one navigation and avoids races.
+>
+> ```typescript
+> export const authGuard: CanActivateFn = () =>
+>   inject(AuthService).isLoggedIn() || inject(Router).parseUrl('/login');
+> ```
 
 [Back to top⤴️](#table-of-contents)
 
@@ -9875,6 +10052,9 @@ export class AuthGuard implements CanLoad {
   }
 }
 ```
+
+> [!TIP]
+> For role or permission checks, write a guard factory such as `canMatchPermission({ anyOf: ['invoices:read'] })` so each route declares its requirement, and await the session load inside the guard so a hard refresh does not bounce logged-in users to `/login`. Guards are UX only; the API must enforce the same rule. [Section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain) has the full pattern with a matching `*appIfPermission` directive.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -10470,7 +10650,7 @@ Signal Forms provide a modern, signal-based approach to building forms in Angula
 
 Signal Forms automatically track field values, validation state, dirty state, touched state, and form validity using Signals.
 
-> **Note:** Signal Forms are a newer Angular API. Check the Angular documentation for the current stability status in your Angular version.
+> **Note:** In Angular v22, Signal Forms (`@angular/forms/signals`) are a stable public API. The examples in this subsection use plain `signal()`s to show the idea; the real API (`form()`, `[formField]`, schema rules) is covered in [section 22](#22-signal-forms-complete-masterclass) and [section 34](#34-advanced-forms-architecture).
 
 ##### Why use Signal Forms?
 
@@ -11162,6 +11342,8 @@ Always register the component as a value accessor.
 - Fully compatible with Reactive Forms and Template-driven Forms.
 - Continues to be the recommended integration mechanism for custom controls.
 - Can be combined with Signals for internal component state management while exposing the standard Angular Forms API.
+- Forms directives call `setDisabledState()` on registration even when the control is enabled (since v15), so implement it idempotently. `ReactiveFormsModule.withConfig({ callSetDisabledState: 'whenDisabledForLegacyCode' })` restores the old behaviour.
+- To read the control's errors inside the component, inject `NgControl` (`{ self: true, optional: true }`) and assign `ngControl.valueAccessor = this` instead of providing `NG_VALUE_ACCESSOR`.
 
 ###### Official Documentation
 
@@ -12092,6 +12274,8 @@ Returns validation errors.
 - Return `null` for valid values.
 - Keep Async Validators focused on validation only.
 - Reuse validators across forms.
+- Make sure the returned Observable completes (`HttpClient` and `timer` do; for anything else add `take(1)`). Angular combines async validators with `forkJoin`, so a never-completing stream leaves the control `PENDING`.
+- `debounceTime` inside the validator has no effect, because Angular creates a new Observable for every value. Debounce with `timer(ms).pipe(switchMap(...))`; see [section 34](#34-advanced-forms-architecture).
 
 ---
 
@@ -12508,7 +12692,7 @@ import { HttpClientModule } from "@angular/common/http";
 export class AppModule {}
 ```
 
-In the angular v17 and above, the `HttpClientModule` has been deprecated. Instead, you can use the `provideHttpClient` function to provide the `HttpClient` service in your application. Here is an example of how to use the `provideHttpClient` function to provide the `HttpClient` service in your application:
+Since Angular v18, `HttpClientModule` is deprecated. Use `provideHttpClient()` instead (with `withInterceptorsFromDi()` if you still have class-based interceptors). You can use the `provideHttpClient` function to provide the `HttpClient` service in your application. Here is an example of how to use the `provideHttpClient` function to provide the `HttpClient` service in your application:
 
 ```ts
 import { ApplicationConfig, provideZoneChangeDetection } from "@angular/core";
@@ -12896,6 +13080,9 @@ export class FileUploadComponent {
 }
 ```
 
+> [!WARNING]
+> Upload progress (`HttpEventType.UploadProgress`) needs the XHR backend. Since fetch became the default backend in v22, add `withXhr()` to the `provideHttpClient()` call that serves your upload requests, ideally only on the upload route's providers. Without it you still get the final response and download progress, but no upload percentages.
+
 ##### Progress Events
 
 To monitor the progress of uploading or downloading large files, configure the request with `reportProgress: true` and `observe: 'events'`. This returns an Observable that emits events of type `HttpEvent`, which can be filtered using `HttpEventType`.
@@ -12961,6 +13148,9 @@ export class UploadProgressComponent {
 }
 ```
 
+> [!NOTE]
+> With the default fetch backend, `DownloadProgress` events for `responseType: 'text'` include a cumulative `partialText`. This lets you render a streamed response (for example a server that writes `text/event-stream` to a POST) as it arrives. Upload progress events require `withXhr()`.
+
 ##### Request Cancellation
 
 HTTP requests in Angular are represented by RxJS Observables, which are cold by default. The actual request is sent only when you call `.subscribe()`. You can cancel an active request simply by unsubscribing from the corresponding Subscription. In modern Angular applications, you can manage this efficiently using RxJS declarative operators like `takeUntil` or `takeUntilDestroyed`.
@@ -13009,6 +13199,9 @@ export class CancellationDemoComponent implements OnInit {
   }
 }
 ```
+
+> [!NOTE]
+> Unsubscribing really aborts the network call (`AbortController.abort()` with the fetch backend), but the server may already have processed it. Cancellation is safe for reads. For writes, prefer `concatMap` or `exhaustMap` over `switchMap`, so a newer click does not abandon a save that may have succeeded. `httpResource()` cancels automatically whenever its request signal changes.
 
 ### 5.3 RxJS
 
@@ -13177,6 +13370,8 @@ Higher-order mapping operators map outer observable values to inner observables 
 - **`concatMap`**: Queues inner observables and runs them one by one sequentially. Order is guaranteed. Good for sequential operations like DB operations.
 - **`exhaustMap`**: Ignores new outer values while the current inner observable is still executing. Useful to prevent duplicate submissions (e.g., clicking a submit button multiple times).
 
+**Writes need care:** cancelling an HTTP request with `switchMap` only stops the browser waiting for it; the server may already have applied a `POST` or `PUT`. Use `concatMap` (ordered) or `exhaustMap` (ignore repeats) for writes, and give `mergeMap` a concurrency limit as its second argument, for example `mergeMap(upload, 3)`. Marble comparisons and a decision diagram are in [section 36](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing).
+
 ```typescript
 import { fromEvent, of } from "rxjs";
 import {
@@ -13221,6 +13416,10 @@ unreliableStream$
   .subscribe((response) => console.log("Data:", response));
 ```
 
+**Placement matters.** A `catchError` on the outer pipe of a `switchMap` stream runs after the error has already ended the outer stream, so the fallback is the last value ever emitted. Put `catchError` (and `retry`) on the inner Observable to keep the outer stream alive.
+
+**`retryWhen` is deprecated** (RxJS 7, removal planned). Use the config form of `retry`: `retry({ count: 3, delay: 1000 })`, or `retry({ count: 3, delay: (err, n) => timer(2 ** n * 200) })` for backoff. Return `throwError(() => err)` from `delay` to stop retrying for errors that should not be retried, such as 4xx responses.
+
 ##### Combination Operators
 
 Combination operators merge multiple streams into a single Observable stream.
@@ -13229,6 +13428,9 @@ Combination operators merge multiple streams into a single Observable stream.
 - **`forkJoin`**: Waits for all input Observables to complete, then emits a single object/array containing their final values. (Equivalent to `Promise.all`).
 - **`withLatestFrom`**: Combines the source Observable with values from other Observables, but only triggers when the source Observable emits.
 - **`merge`**: Concurrently blends multiple Observables, forwarding all emissions directly to the output stream.
+- **`zip`**: Pairs values by index: the first value of every input, then the second of every input, and so on. Fast inputs buffer values in memory while they wait for slower ones.
+
+**Pitfall:** `forkJoin` only emits when every input completes. With an input that never completes (`valueChanges`, a store selector, a Subject) it never emits; with an input that completes without a value (`EMPTY`) it completes with no output at all.
 
 ```typescript
 import { forkJoin, combineLatest, of, delay } from "rxjs";
@@ -13250,8 +13452,8 @@ forkJoin({
 
 By default, Observables are cold and unicast. Multicasting operators share a single subscription execution among multiple observers.
 
-- **`share()`**: Transforms a cold observable into a hot observable that multicasts emissions to active subscribers.
-- **`shareReplay()`**: Shares the stream and caches/replays a specified number of emitted values to late subscribers, keeping the source observable alive.
+- **`share()`**: Shares one source subscription through a plain `Subject`. Late subscribers only get future values. By default it unsubscribes from the source when the last subscriber leaves (`resetOnRefCountZero: true`); `share({ resetOnRefCountZero: () => timer(5000) })` adds a grace period.
+- **`shareReplay()`**: Shares through a `ReplaySubject` and replays cached values to late subscribers. Defaults are `bufferSize: Infinity` and `refCount: false`, so `shareReplay()` with no arguments caches every value and keeps the source subscribed after all subscribers leave. Pass the config object explicitly, as in the example below.
 
 ```typescript
 import { interval } from "rxjs";
@@ -13341,6 +13543,29 @@ observable.subscribe({
 #### Unsubscribe in Angular
 
 In Angular, managing subscriptions is crucial to avoid memory leaks and improve the performance of your application. Here are five ways to unsubscribe in Angular:
+
+**Recommended in current Angular:** `takeUntilDestroyed()` from `@angular/core/rxjs-interop` (stable since v19) completes the stream when the surrounding component, directive or service is destroyed, so you do not need a `Subject` or `ngOnDestroy`. Call it without arguments in an injection context (field initializer or constructor), or pass a `DestroyRef` elsewhere. Keep it as the **last** operator in the pipe, so inner subscriptions created by `switchMap` or `combineLatest` are closed too.
+
+```typescript
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { interval } from 'rxjs';
+
+@Component({ selector: 'app-example', template: '' })
+export class ExampleComponent {
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    interval(1000).pipe(takeUntilDestroyed()).subscribe((n) => console.log(n));
+  }
+
+  startLater() {
+    interval(500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
+}
+```
+
+Teardown order, `Subscription.add()` and how to find leaks are covered in [section 36](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing). The older techniques below still work:
 
 1. Using the takeUntil operator:
 
@@ -13487,7 +13712,12 @@ In Angular, managing subscriptions is crucial to avoid memory leaks and improve 
 
 #### Subjects
 
-A `Subject` is a special type of Observable that allows values to be multicasted to many Observers.
+A `Subject` is a special type of Observable that allows values to be multicasted to many Observers. The Subject family is explained with examples in [RxJS Introduction](#rxjs-introduction). Behavior worth remembering:
+
+- A Subject that has completed or errored stays that way: later subscribers immediately receive the same `complete` or `error`, and `next()` is ignored. (A `ReplaySubject` replays its buffer first.)
+- Expose `subject.asObservable()` from services, so only the owner can call `next()`.
+- `BehaviorSubject.getValue()` reads the current value synchronously, but for template state a `signal()` is usually the better fit.
+- `subject.observed` (RxJS 7) tells you whether anyone is subscribed; `subject.observers` is deprecated.
 
 #### BehaviorSubject
 
@@ -13511,7 +13741,7 @@ Server-Side Rendering (SSR) is the process of rendering pages on the server and 
 
 #### provideServerRendering()
 
-Configures provider dependencies required for rendering Angular application pages on the server.
+Configures the providers needed to render the application on the server. In CLI apps, import it from `@angular/ssr` and pass the server routes: `provideServerRendering(withRoutes(serverRoutes))` in `app.config.server.ts`, merged with the browser config through `mergeApplicationConfig()`. An optional `withAppShell(Component)` feature generates an app shell. (`@angular/platform-server` exports a lower-level function with the same name that takes no route features.) See [section 37.1](#371-the-v22-ssr-request-pipeline) and [section 37.2](#372-server-routes-in-depth-status-headers-and-fallbacks).
 
 #### provideClientHydration()
 
@@ -13692,6 +13922,8 @@ Click event replayed
 
 This prevents lost user interactions during startup.
 
+**Configuration:** in v22 event replay comes with the default `provideClientHydration()` setup, because incremental hydration (on by default) depends on it. If you opt out with `withNoIncrementalHydration()` and still want replay, add `withEventReplay()` explicitly.
+
 ---
 
 #### Real-world Example
@@ -13819,6 +14051,12 @@ Server and client should produce matching HTML to avoid hydration mismatches.
 
 ---
 
+❌ Ignoring `NG0500`-series errors
+
+Each code points to a specific cause (invalid HTML nesting, direct DOM changes, stripped comment nodes, an app that never becomes stable). Use `ngSkipHydration` on a component host only as a last resort. The full table and a debugging workflow are in [section 37.12](#3712-debugging-hydration-mismatches).
+
+---
+
 ❌ Disabling hydration unnecessarily
 
 Hydration generally provides better performance than re-rendering the entire application.
@@ -13833,6 +14071,8 @@ Hydration generally provides better performance than re-rendering the entire app
 - Supports Incremental Hydration.
 - Supports Event Replay during application startup.
 - Integrates seamlessly with standalone applications.
+- Since v22, `provideClientHydration()` enables incremental hydration by default, and incremental hydration installs event replay. You no longer need `withIncrementalHydration()` (deprecated in v22, removal planned for v24) or `withEventReplay()`. Opt out with `withNoIncrementalHydration()`.
+- The HTTP transfer cache is also on by default; tune it with `withHttpTransferCacheOptions()` or turn it off with `withNoHttpTransferCache()` (see [section 37.10](#3710-customizing-the-http-transfer-cache)).
 
 ##### Official Documentation
 
@@ -13928,6 +14168,8 @@ Each section becomes interactive independently.
 Angular can hydrate these sections independently instead of waiting for the entire page.
 
 ---
+
+**v22 setup:** incremental hydration needs no extra provider; `provideClientHydration()` turns it on. Older guides show `provideClientHydration(withIncrementalHydration())`; that function is deprecated in v22. For how `hydrate` triggers differ from plain `@defer` triggers (placeholder vs full server HTML), see [section 37.11](#3711-lazy-hydration-vs-defer-without-hydrate).
 
 #### Hydration Triggers
 
@@ -14121,6 +14363,8 @@ Incremental Hydration requires Angular SSR and is not currently supported in Sta
 #### Hybrid Rendering
 
 Combines pre-rendering and server-side rendering strategies to dynamically render routes.
+
+Hybrid rendering is configured per route in `app.routes.server.ts` with `RenderMode.Prerender`, `RenderMode.Server` and `RenderMode.Client`, and built with `"outputMode": "server"` in `angular.json` (use `"static"` when every route is prerendered or client-rendered). See [section 25.1](#251-server-routing--route-level-rendering-rendermode), [section 37.2](#372-server-routes-in-depth-status-headers-and-fallbacks) and [section 37.3](#373-prerendering-ssg-in-practice).
 
 #### Rendering Strategies
 
@@ -14820,6 +15064,8 @@ Useful when integrating libraries such as:
 - Monaco Editor
 - CodeMirror
 
+The snippet assumes `chart` already exists. In practice, create the instance in `afterNextRender` (browser only, after the DOM exists), keep it in a signal so `afterRenderEffect` re-runs once it is ready, and call `destroy()` from `DestroyRef.onDestroy`. A complete Chart.js wrapper, a script-tag loader with CSP nonce support, and notes on zoneless versus `runOutsideAngular` are in the third-party libraries part of [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
+
 ##### Working with Functional Queries
 
 ```typescript
@@ -15122,9 +15368,11 @@ export class ExampleComponent {
 }
 ```
 
+Each component's `Renderer2` comes from a `RendererFactory2`. Replacing or wrapping that factory changes how every component renders, which is useful for instrumentation in dev builds and for non-DOM render targets. [Section 30.10](#3010-custom-render-strategies-wrapping-rendererfactory2) shows a delegating factory and its risks.
+
 #### JIT
 
-**Just-in-Time** (JIT) is a type of compilation that compiles your app in the browser at runtime. This is the default compilation mode for Angular applications.
+**Just-in-Time** (JIT) is a type of compilation that compiles your app in the browser at runtime. Angular CLI builds no longer use it: `ng build` and `ng serve` both compile ahead of time (AOT) by default, and have done so since v9. JIT only happens when `@angular/compiler` is loaded at runtime, for example in some test setups. See [section 29.1](#291-compiler-internals-the-ngtsc-pipeline) for the compiler pipeline.
 
 ##### Advantages of JIT
 
@@ -15156,6 +15404,8 @@ export class ExampleComponent {
 | Development           | More difficult | Easier  |
 | Performance           | Better         | Worse   |
 
+In current Angular, "JIT vs AOT" is mostly historical. Development and production builds both use AOT, and source maps make AOT output easy to debug, so the "Debugging: more difficult" row no longer applies in practice. [Section 29.3](#293-reading-compiled-output-ɵcmp-ɵfac-creation-and-update-blocks) shows how to read the compiled output.
+
 #### Deferrable Views
 
 Deferrable views can be used in component template to defer the loading of select dependencies within that template.
@@ -15167,6 +15417,28 @@ Deferrable views can be used in component template to defer the loading of selec
 ```
 
 ### 6.3 Animations
+
+> [!WARNING]
+> **Legacy API.** `@angular/animations` (`trigger`, `state`, `transition`, `animate`, `BrowserAnimationsModule`, `provideAnimations`) is deprecated since v20.2, and the typings state an intent to remove it in v23. New code should use native CSS with `animate.enter` / `animate.leave` ([section 25.4](#254-modern-angular-animations-animateenter--animateleave)). The examples below are kept for maintaining existing code.
+
+The fade example below, migrated:
+
+```html
+<button (click)="show.set(!show())">Toggle</button>
+@if (show()) {
+  <div animate.enter="fade-in" animate.leave="fade-out">
+    <h1>Angular Animation Example</h1>
+  </div>
+}
+```
+
+```css
+.fade-in  { animation: fade 1s ease-out; }
+.fade-out { animation: fade 1s ease-in reverse; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+```
+
+Angular adds the `animate.enter` class when the element is inserted and removes it when the animation ends. For `animate.leave` it adds the class and waits for the animation to finish before removing the element. No package install or provider is needed.
 
 #### Angular Animations Overview
 
@@ -15395,6 +15667,8 @@ export class I18nService {
 }
 ```
 
+This service only redirects to a separately built locale. To keep one build and load translations at startup, use `loadTranslations()` from `@angular/localize` in `main.ts` before importing the app, plus `registerLocaleData()` and a `LOCALE_ID` provider. See the runtime localization part of [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
+
 ##### Date and Currency Pipes with i18n
 
 ```html
@@ -15480,23 +15754,23 @@ Angular provides the following security contexts for sanitization:
 
 #### Sanitization example
 
+A plain `[innerHTML]` binding is already sanitized, so untrusted HTML needs no sanitizer call at all:
+
 ```typescript
 import { Component } from "@angular/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
   selector: "app-root",
-  template: `<div [innerHTML]="safeHtml"></div>`,
+  template: `<div [innerHTML]="untrustedHtml"></div>`,
 })
 export class AppComponent {
-  safeHtml: SafeHtml;
-
-  constructor(private sanitizer: DomSanitizer) {
-    const untrustedHtml = "<img src=x onerror=alert(1)>";
-    this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(untrustedHtml);
-  }
+  // Angular's sanitizer strips the onerror handler and logs a dev-mode warning
+  untrustedHtml = "<img src=x onerror=alert(1)>";
 }
 ```
+
+> [!WARNING]
+> `bypassSecurityTrustHtml` does not sanitize. It marks a value as already checked, so passing the string above through it would render the payload and run the `onerror` handler. Never call it on data you did not produce yourself. See [section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain) for a reviewed bypass pattern.
 
 #### Direct use of the DOM APIs and explicit sanitization calls
 
@@ -15514,6 +15788,9 @@ this.renderer.setProperty(div, 'innerHTML', sanitizedContent);
 document.body.appendChild(div);
 ```
 
+> [!NOTE]
+> `Renderer2` is not a sanitizer. `renderer.setProperty(el, 'innerHTML', value)` and `elementRef.nativeElement.innerHTML = value` both write the string unchanged, which is why the example calls `sanitizer.sanitize(...)` first. Prefer `textContent` for text, and a template `[innerHTML]` binding for HTML. [Section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain) lists the common DOM XSS sinks and an ESLint configuration that flags them.
+
 #### Trusting safe values
 
 Angular provides a mechanism to trust safe values and bypass the built-in sanitization mechanisms when rendering trusted content. To trust a safe value, you can use the bypassSecurityTrustHtml, bypassSecurityTrustStyle, bypassSecurityTrustScript, bypassSecurityTrustUrl, and bypassSecurityTrustResourceUrl methods provided by the DomSanitizer service.
@@ -15521,6 +15798,9 @@ Angular provides a mechanism to trust safe values and bypass the built-in saniti
 ```typescript
 const safeHtml = this.sanitizer.bypassSecurityTrustHtml("<b>Safe Content</b>");
 ```
+
+> [!TIP]
+> Keep every `bypassSecurityTrust*` call in one service that runs a real sanitizer first, requires a documented reason, and is the only file your linter allows to call these methods. Expose it to templates through a pure pipe (`[innerHTML]="body | trustedHtml: 'cms-article-body'"`). [Section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain) has the full service, pipe and lint rule.
 
 #### Content security policy
 
@@ -15532,48 +15812,27 @@ To enable CSP in an Angular application, you can add a Content-Security-Policy h
 Content-Security-Policy: default-src 'self'; script-src 'self' https://example.com; style-src 'self' https://example.com; img-src 'self' https://example.com; font-src 'self' https://example.com;
 ```
 
+> [!NOTE]
+> A host allowlist like the one above is easy to bypass (JSONP endpoints and script gadgets on allowed hosts). Prefer a strict policy based on a per-response nonce: `script-src 'nonce-...' 'strict-dynamic'; object-src 'none'; base-uri 'self'`. Angular reads the nonce from the `CSP_NONCE` token or, if it is not provided, from the `ngCspNonce` attribute on the root element, and the CLI copies `ngCspNonce` onto the script and style tags it emits. For static hosting, the experimental `security.autoCsp` build option generates a hash-based policy instead. See [section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain) for SSR nonce injection.
+
 #### Enforcing Trusted Types
 
 Trusted Types is a new web platform feature that helps prevent DOM-based cross-site scripting (XSS) attacks by enforcing strict type checking on DOM APIs. Angular applications can use Trusted Types to ensure that only trusted values are passed to DOM APIs, preventing script injection and other security vulnerabilities.
 
-To enable Trusted Types in an Angular application, you can configure the Trusted Types policy using the TrustedTypesConfig token provided by Angular. The policy can specify which types of values are considered trusted and enforce strict type checking on DOM APIs.
+Angular has no Trusted Types configuration token to provide: it creates its Trusted Types policies automatically when the browser supports them. (A user-defined token such as `TRUSTED_TYPES_CONFIG` is never read by Angular, so providing one has no effect.) Enforcement is switched on by the server, with a response header:
 
-```typescript
-import { InjectionToken } from "@angular/core";
-
-export const TRUSTED_TYPES_CONFIG = new InjectionToken("TRUSTED_TYPES_CONFIG");
-
-const trustedTypesConfig = {
-  createPolicy: (name, policy) => {
-    return policy;
-  },
-};
+```text
+Content-Security-Policy: require-trusted-types-for 'script'; trusted-types angular angular#unsafe-bypass
 ```
 
-```typescript
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { AppComponent } from "./app.component";
-import { TRUSTED_TYPES_CONFIG } from "./trusted-types.config";
-
-@NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule],
-  providers: [{ provide: TRUSTED_TYPES_CONFIG, useValue: trustedTypesConfig }],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
-```
+> [!NOTE]
+> Angular uses the `angular` policy for values it sanitized or produced itself, and `angular#unsafe-bypass` for values passed through `bypassSecurityTrust*`. Leave `angular#unsafe-bypass` out of the header to make any bypass throw. Code of your own that writes HTML needs its own named policy added to the list.
 
 #### Use the AOT template compiler
 
 The Angular Ahead-of-Time (AOT) template compiler compiles Angular templates at build time, which helps prevent cross-site scripting (XSS) attacks by statically analyzing the templates and generating optimized code. AOT compilation eliminates the need for the browser to compile templates at runtime, reducing the risk of template injection vulnerabilities.
 
-To enable AOT compilation in an Angular application, you can use the ngc command to compile the application ahead of time. AOT compilation is recommended for production builds to improve performance, security, and compatibility with Content Security Policy (CSP) restrictions.
-
-```bash
-ng build --aot
-```
+AOT is the default for `ng build` and `ng serve` (since Angular v9), so there is nothing to enable and `ng build --aot` is redundant. What matters for security is not to combine templates with user input at runtime (for example by compiling components from strings), because that reintroduces template injection.
 
 #### Server-side XSS protection
 
@@ -15588,39 +15847,35 @@ Angular applications can be vulnerable to various HTTP-level attacks, such as cr
 Cross-site request forgery (CSRF) is a security vulnerability that allows attackers to execute unauthorized actions on behalf of authenticated users. To prevent CSRF attacks in Angular applications, you can use Angular's built-in XSRF/CSRF protection mechanism to add a token to HTTP requests and validate it on the server.
 
 ```typescript
-import { HttpClientModule } from "@angular/common/http";
-import { HttpClientXsrfModule } from "@angular/common/http";
+// app.config.ts
+import { provideHttpClient, withXsrfConfiguration } from "@angular/common/http";
 
-@NgModule({
-  imports: [
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: "XSRF-TOKEN",
-      headerName: "X-XSRF-TOKEN",
-    }),
+export const appConfig = {
+  providers: [
+    provideHttpClient(
+      withXsrfConfiguration({ cookieName: "XSRF-TOKEN", headerName: "X-XSRF-TOKEN" }),
+    ),
   ],
-})
-export class AppModule {}
+};
 ```
+
+`HttpClientModule` and `HttpClientXsrfModule` are deprecated in favor of this provider API.
+
+> [!NOTE]
+> The built-in interceptor adds the header only to mutating requests (not `GET` or `HEAD`) whose URL has the same origin as the page. It skips cross-origin URLs so the token never leaks to other hosts. The XSRF cookie must be readable by script (not `HttpOnly`); the session cookie should be `HttpOnly`, `Secure` and `SameSite=Lax` or `Strict`.
 
 #### HttpClient XSRF/CSRF security
 
-Angular's HttpClient module provides built-in support for cross-site request forgery (CSRF) protection using the XSRF/CSRF token mechanism. The HttpClientXsrfModule.withOptions method allows you to configure custom cookie and header names for the XSRF/CSRF token.
+Angular's HttpClient module provides built-in support for cross-site request forgery (CSRF) protection using the XSRF/CSRF token mechanism. `withXsrfConfiguration()` configures custom cookie and header names for the XSRF/CSRF token (it replaces the deprecated `HttpClientXsrfModule.withOptions()`).
 
 ```typescript
-import { HttpClientModule } from "@angular/common/http";
-import { HttpClientXsrfModule } from "@angular/common/http";
+import { provideHttpClient, withXsrfConfiguration } from "@angular/common/http";
 
-@NgModule({
-  imports: [
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: "XSRF-TOKEN",
-      headerName: "X-XSRF-TOKEN",
-    }),
+export const appConfig = {
+  providers: [
+    provideHttpClient(withXsrfConfiguration({ cookieName: "XSRF-TOKEN", headerName: "X-XSRF-TOKEN" })),
   ],
-})
-export class AppModule {}
+};
 ```
 
 #### Configure custom cookie/header names
@@ -15645,15 +15900,13 @@ export class AppModule {}
 
 #### Disabling XSRF protection
 
-Angular's HttpClient module provides built-in support for cross-site request forgery (CSRF) protection using the XSRF/CSRF token mechanism. If you want to disable XSRF protection for specific requests, you can use the { withCredentials: true } option in the HttpClient request.
+Angular's HttpClient module provides built-in support for cross-site request forgery (CSRF) protection using the XSRF/CSRF token mechanism. To turn off the built-in XSRF interceptor for an `HttpClient` configuration, use `withNoXsrfProtection()`:
 
 ```typescript
-import { HttpClient } from '@angular/common/http';
-
-constructor(private http: HttpClient) { }
-
-this.http.get('/api/data', { withCredentials: true });
+provideHttpClient(withNoXsrfProtection());
 ```
+
+`withNoXsrfProtection()` and `withXsrfConfiguration()` cannot be combined. Note that `{ withCredentials: true }` does **not** disable XSRF protection; it tells the browser to send cookies on cross-origin requests.
 
 #### Cross-site script inclusion (XSSI)
 
@@ -15697,6 +15950,9 @@ export class AppComponent {
 }
 ```
 
+> [!NOTE]
+> Since Angular v22, `OnPush` is the default change detection strategy, so new components do not need the `changeDetection` line. The old "check always" behaviour is now called `ChangeDetectionStrategy.Eager`, and `ChangeDetectionStrategy.Default` is a deprecated alias for it. See [section 21](#21-angular-v22-change-detection-architecture--zoneless-traversal) for how this works and the change-detection profiling part of [section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) for how to find components that are checked too often.
+
 ##### Track By Function
 
 Track by function is a technique used to optimize performance by reusing existing DOM elements instead of creating new ones. You can use the track by function to optimize performance.
@@ -15717,6 +15973,9 @@ export class AppComponent {
   }
 }
 ```
+
+> [!TIP]
+> With the built-in control flow, write the identity directly in the template: `@for (item of items(); track item.id) { ... }`. `trackBy` functions are only needed for `*ngFor` and for `*cdkVirtualFor`.
 
 ##### Lazy Loading
 
@@ -15891,6 +16150,9 @@ export class AppComponent {
 <router-outlet></router-outlet>
 ```
 
+> [!TIP]
+> Routes are not the only thing you can lazy-load. A plain `await import('./pdf/export')` inside a click handler splits a heavy library into its own chunk, and since v22 `injectAsync(() => import('./x').then(m => m.Service), { prefetch: onIdle })` lazy-loads a root service. A module only becomes lazy if nothing else imports it statically, so check the result with `ng build --stats-json`. Details in [section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning).
+
 [Back to top⤴️](#table-of-contents)
 
 ##### Tree Shaking
@@ -15918,6 +16180,19 @@ import * as http from "@angular/common/http";
 ##### Preloading Strategies
 
 Preloading strategies allow you to load modules before they are needed. Angular provides several preloading strategies:
+
+In a standalone app, register the strategy through the router feature function instead of `RouterModule.forRoot`:
+
+```typescript
+// app.config.ts
+import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+
+export const appConfig = {
+  providers: [provideRouter(routes, withPreloading(PreloadAllModules))],
+};
+```
+
+Preloading covers both `loadChildren` and `loadComponent` routes and starts after the first navigation. The NgModule form, still found in older apps:
 
 ```typescript
 import { PreloadAllModules, RouterModule } from "@angular/router";
@@ -15948,6 +16223,9 @@ export class CustomPreloadingStrategy implements PreloadingStrategy {
 }
 ```
 
+> [!WARNING]
+> `PreloadAllModules` downloads every lazy route after startup, including rarely used ones, on the user's data plan. On larger apps prefer a selective strategy (route `data` flags, network-aware checks). [Section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing) has flag-based, network-aware and on-demand strategies.
+
 ##### Virtual Scrolling (CDK)
 
 Virtual scrolling efficiently renders large lists by only rendering visible items. Use Angular CDK's virtual scrolling:
@@ -15965,6 +16243,8 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
 export class AppModule {}
 ```
 
+In a standalone component, add `ScrollingModule` to the component's own `imports` array instead of an NgModule.
+
 ```html
 <cdk-virtual-scroll-viewport itemSize="50" class="viewport">
   <div *cdkVirtualFor="let item of items">{{item}}</div>
@@ -15976,6 +16256,9 @@ export class AppModule {}
   height: 200px;
 }
 ```
+
+> [!IMPORTANT]
+> `itemSize` must equal the real rendered row height in pixels, including borders and margins, or the scrollbar and `scrollToIndex()` drift. For smoother fast scrolling raise `minBufferPx` / `maxBufferPx` (defaults 100 / 200), and always pass `trackBy` when the data array is replaced. Variable-height rows need the `autosize` strategy from the experimental `@angular/cdk-experimental/scrolling` package. See [section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) for tuning rules.
 
 ##### Web Workers
 
@@ -16013,6 +16296,11 @@ export class AppComponent {
   }
 }
 ```
+
+Pass `{ type: 'module' }` when creating the worker, as `ng generate web-worker` does: `new Worker(new URL('./app.worker', import.meta.url), { type: 'module' })`. Also guard against server rendering with `isPlatformBrowser()` rather than `typeof Worker`, and call `worker.terminate()` when the owner is destroyed.
+
+> [!TIP]
+> A worker pays off for work over roughly 50 ms whose data can be transferred (typed arrays, `ImageBitmap`) rather than cloned. See [section 27.4](#274-web-workers-with-signals--transferable-objects), [section 31.14](#3114-signals-with-web-workers-correlation-cancellation--ssr-safety) for an RPC client, and [section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) for when offloading is worth it and a small worker pool.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -16088,6 +16376,20 @@ if (!environment.production) {
 }
 ```
 
+> [!WARNING]
+> The `(window as any).ng = require("@angular/core")` line above does not enable a profiler and would break an ESM build. Use `enableProfiling()` instead:
+
+```typescript
+// main.ts (development only)
+import { enableProfiling, isDevMode } from '@angular/core';
+
+if (isDevMode()) {
+  enableProfiling(); // since v21: adds an "Angular" track to the Chrome DevTools Performance panel
+}
+```
+
+The older `ng.profiler.timeChangeDetection()` console helper still exists, but only after calling `enableDebugTools(appRef.components[0])` from `@angular/platform-browser`. It times forced full `ApplicationRef.tick()` passes, which overstates cost in a zoneless app. In a dev build you can also type `ng.enableProfiling()` in the console.
+
 ##### Profiling
 
 ###### Change Detection Profiling
@@ -16136,6 +16438,9 @@ export class PerformanceService {
   }
 }
 ```
+
+> [!NOTE]
+> `console.time()` around `detectChanges()` measures only that component's synchronous check, and `NgZone.runOutsideAngular` has no effect in a zoneless app (the v22 default). For real profiling, record the interaction in the Chrome DevTools Performance panel with `enableProfiling()` turned on and read the Angular track next to the main thread. [Section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) walks through the workflow.
 
 ##### Profiler Tab
 
@@ -16273,7 +16578,13 @@ Use `@defer` to load template blocks when specific triggers are met (e.g. `on vi
 
 #### Image Optimization
 
-Use the standard `NgOptimizedImage` directive to lazy-load images and prevent layout shifts.
+Use `NgOptimizedImage` (from `@angular/common`) by writing `ngSrc` instead of `src`, together with `width` and `height` (or `fill`). Images are lazy-loaded by default. Add `priority` to the image that is likely to be the Largest Contentful Paint element: it switches to eager loading, sets `fetchpriority="high"` and, with SSR, adds a preload link to `<head>`. Configure an image loader (`provideImgixLoader`, `provideCloudinaryLoader`, a custom `IMAGE_LOADER`, ...) to get an automatic `srcset`, and add `sizes` for responsive images.
+
+```html
+<img ngSrc="hero.jpg" width="1600" height="900" priority sizes="100vw" alt="Product hero" />
+```
+
+See [section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) for `fill`, loaders, placeholders and the common pitfalls.
 
 #### Change Detection Optimization
 
@@ -16287,9 +16598,14 @@ Signals provide fine-grained reactivity, avoiding global change detection cycles
 
 Use esbuild, build optimization tools, and tree shaking to shrink compiled bundle files.
 
+> [!TIP]
+> Add `budgets` to the production configuration in `angular.json` (at least `initial`, `anyScript` and `anyComponentStyle`) so `ng build` fails when a bundle grows past a limit. When one fails, run `ng build --stats-json` and open `browser-stats.json` in the esbuild bundle analyzer to see which import pulled the code in. Production builds also inline critical CSS (`optimization.styles.inlineCritical`) and Google/Adobe font stylesheets (`optimization.fonts.inline`) by default.
+
 #### Memory Leak Prevention
 
 Unsubscribe from subscriptions using `takeUntil`, functional `DestroyRef`, or `async` pipe.
+
+Subscriptions are only one source. Also clean up, in `DestroyRef.onDestroy`: listeners on `window` / `document` (or register them with an `AbortController` signal and abort it), `setInterval` timers, `ResizeObserver` / `IntersectionObserver` / `MutationObserver` instances, third-party widgets (call their `destroy()`), and components you created manually with `createComponent()`. Avoid root-service caches that hold component instances or DOM nodes. To confirm a leak, compare heap snapshots in Chrome DevTools after repeating the action several times. [Section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) has the step-by-step workflow and automated detection with memlab.
 
 ### 6.7 Testing
 
@@ -16320,9 +16636,12 @@ describe("AppComponent", () => {
 });
 ```
 
+> [!NOTE]
+> **Standalone note:** `AppComponent` in a v22 app is standalone, so it goes in `imports`, not `declarations`: `TestBed.configureTestingModule({ imports: [AppComponent] })`. Putting a standalone component in `declarations` throws. The same applies to the Testing Components, Testing Pipes and Testing Directives examples below. For a directive without a host component, v22.2 adds `TestBed.createDirective(MyDirective)`. See "Standalone Components in Depth" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond).
+
 ##### Integration Testing
 
-Integration testing involves testing components together with their dependencies. Angular provides the Angular TestBed module to create a testing module and configure the component or service before each test.
+Integration testing exercises several real units together, such as a routed page with its child components, store and guards, while faking only the network with `HttpTestingController`. The example below shows the TestBed setup; for a full feature-flow example using `RouterTestingHarness`, see "Integration Tests" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond).
 
 ```typescript
 import { TestBed } from "@angular/core/testing";
@@ -16346,6 +16665,9 @@ describe("AppComponent", () => {
 ##### End-to-End Testing
 
 End-to-end testing involves testing the entire application as a user would interact with it. Angular provides the Angular TestBed module to create a testing module and configure the component or service before each test.
+
+> [!NOTE]
+> The snippet below is a `TestBed` unit test. Real end-to-end tests drive a browser against a served build with a tool such as Playwright or Cypress; the Angular CLI does not ship one, and `ng e2e` offers to add a package. See "End-to-End Testing with Playwright" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond).
 
 ```typescript
 import { TestBed } from "@angular/core/testing";
@@ -16497,6 +16819,17 @@ describe("DataService", () => {
 });
 ```
 
+To replace a dependency, provide a fake under the real token:
+
+```typescript
+TestBed.configureTestingModule({
+  imports: [DashboardComponent],
+  providers: [{ provide: DataService, useValue: { getData: () => 'stub data' } }],
+});
+```
+
+If the component lists the service in its own `providers`, use `TestBed.overrideComponent(DashboardComponent, { set: { providers: [...] } })` instead, because a component-level provider wins over the testing module.
+
 [Back to top⤴️](#table-of-contents)
 
 #### Unit Testing
@@ -16513,23 +16846,56 @@ Test services, mock dependencies, and isolate business logic.
 
 #### HTTP Testing
 
-Mock server responses using the `HttpTestingController` utility.
+Use `provideHttpClient()` followed by `provideHttpClientTesting()` (`HttpClientTestingModule` is deprecated). The order matters: the testing backend must come second. Inject `HttpTestingController`, answer requests with `expectOne(...).flush(body, { status, statusText })` or `.error(new ProgressEvent('error'))`, and call `verify()` in `afterEach`.
+
+```typescript
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { firstValueFrom } from 'rxjs';
+
+TestBed.configureTestingModule({
+  providers: [provideHttpClient(), provideHttpClientTesting()],
+});
+const http = TestBed.inject(HttpTestingController);
+const api = TestBed.inject(OrdersApi);
+
+const result = firstValueFrom(api.list(1));
+http.expectOne((r) => r.url === '/api/orders').flush([{ id: 'a1', total: 40 }]);
+expect(await result).toHaveLength(1);
+http.verify(); // no unexpected or unanswered requests
+```
+
+Full coverage: "HttpTestingController in Depth" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond). Interceptor and `httpResource()` tests are in [section 35](#35-http-internals-data-fetching-patterns--real-time-networking).
 
 #### Router Testing
 
-Test component navigation flows and guards.
+Test functional guards and resolvers by calling them inside `TestBed.runInInjectionContext(...)`, and test route wiring with `RouterTestingHarness` from `@angular/router/testing` together with `provideRouter(routes)`. `RouterTestingModule` is deprecated.
+
+```typescript
+it('shows the order page', async () => {
+  TestBed.configureTestingModule({
+    providers: [provideRouter([{ path: 'orders/:id', component: OrderDetail }], withComponentInputBinding())],
+  });
+  const harness = await RouterTestingHarness.create();
+  const cmp = await harness.navigateByUrl('/orders/7', OrderDetail);
+  expect(cmp.id()).toBe('7');
+});
+```
+
+[Section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing) covers guards, redirects and isolated guard tests, and [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond) covers `RouterTestingHarness` in a full test suite.
 
 #### Signals Testing
 
-Verify writable signal updates and computed derivations.
+`signal` and `computed` can be tested by setting and reading them directly. Effects are scheduled: flush service-level effects with `TestBed.tick()` (`TestBed.flushEffects()` is deprecated) and component effects with `fixture.detectChanges()` or `await fixture.whenStable()`. Set signal inputs with `fixture.componentRef.setInput()` or `TestBed.createComponent(Cmp, { bindings: [inputBinding('name', sig)] })`. See "Testing Signals and Effects" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond).
 
 #### Jest
 
-Configure Jest for faster test execution.
+The default `ng test` runner in v22 is Vitest via `@angular/build:unit-test`. Existing Jest suites can keep running with `jest-preset-angular`, which loads Zone.js, so `fakeAsync`/`tick` still work there. New projects should prefer the built-in Vitest runner. See "Coverage Gates and CI Test Speed" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond).
 
 #### Cypress
 
-Implement End-to-End browser tests using Cypress.
+Cypress drives a real browser against `ng serve` or a production build. Mock the network with `cy.intercept`, select elements by role or label, and keep the suite to critical journeys. [Section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond) shows the same patterns with Playwright, including accessibility (`@axe-core/playwright`) and screenshot comparison.
 
 ### 6.8 Angular Material
 
@@ -16933,6 +17299,8 @@ export class OverlayExampleComponent {
 }
 ```
 
+The overlay needs the CDK structural styles: add `@import '@angular/cdk/overlay-prebuilt.css';` to `styles.css` (Material themes include them already). The example above also needs `CdkOverlayOrigin` in the component's `imports`. For positioning fallbacks, scroll strategies (`reposition`, `close`, `block`, `noop`), RTL direction, focus handling and a complete popover, see the CDK Overlay part of [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
+
 ##### Virtual Scrolling
 
 Efficiently render large lists by only rendering visible items.
@@ -17070,10 +17438,10 @@ To configure the PWA settings, you can modify the ngsw-config.json file in the s
 
 ##### Building PWA
 
-To build the PWA, you can run the ng build --prod command with the --configuration=production flag.
+Build normally; production is the default configuration and the CLI adds `ngsw-worker.js` and `ngsw.json` to the output when the service worker is enabled. The `--prod` flag was removed in Angular 14.
 
 ```bash
-ng build --prod --configuration=production
+ng build
 ```
 
 ##### Service Worker
@@ -17086,9 +17454,11 @@ The service worker is a script that runs in the background of the browser and ha
 
 **Push Notifications** - The service worker can receive push notifications from the server and display them to the user.
 
-**Background Sync** - The service worker can perform background sync tasks, such as sending data to the server when the network connection is available.
+**Background Sync** - Angular's service worker does not implement the Background Sync API, and it does not cache or replay POST/PUT requests. Queue writes in IndexedDB and replay them when the app is open and online (outbox pattern), or write a custom service worker if you need replay with the tab closed.
 
 **Home Screen Installation** - The service worker can prompt the user to install the application on the home screen for quick access.
+
+Handling new versions (`SwUpdate`, `VERSION_READY`, `unrecoverable`), offline-first data, and push notifications with `SwPush` are covered in [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
 
 [Back to top⤴️](#table-of-contents)
 
@@ -17137,11 +17507,15 @@ Implement push server notification handlers.
 | NPM              | ng add ngx-deploy-npm           |
 | Amazon Cloud S3  | ng add @jefiozie/ngx-aws-deploy |
 
+These targets serve static builds. An SSR build with `"outputMode": "server"` needs a runtime for `dist/<app>/server/server.mjs` (Node, a serverless function via the exported `reqHandler`, or an edge runtime with `ssr.platform: "neutral"`). See [section 37.13](#3713-ssr-deployment-node-serverless-and-edge).
+
 [Back to top⤴️](#table-of-contents)
 
 #### Environment Configuration
 
 Environment configuration allows you to maintain different settings for development, testing, and production environments.
+
+`environment.ts` files are replaced at **build** time, so each environment needs its own build. If you want to promote the same tested artifact from staging to production (build once, deploy many), keep only build-time switches in `environment.ts` and move URLs and client ids into a runtime `config.json` (see [Runtime Environment Configuration](#runtime-environment-configuration) and [section 39](#39-enterprise-architecture-masterclass)).
 
 ##### Setting Up Environment Variables
 
@@ -17319,6 +17693,20 @@ export function configFactory(configService: ConfigService) {
 })
 export class AppModule {}
 ```
+
+**Modern equivalent:** `APP_INITIALIZER` has been deprecated since v19. In standalone apps, register the same work with `provideAppInitializer()`:
+
+```typescript
+// app.config.ts
+import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
+import { ConfigService } from './config.service';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideAppInitializer(() => inject(ConfigService).loadConfig())],
+};
+```
+
+An even simpler option is to `fetch('/config.json')` in `main.ts` and pass the result to `bootstrapApplication` as an `InjectionToken` value via `mergeApplicationConfig`, so every provider can read the config synchronously. Serve `config.json` with `Cache-Control: no-store`, keep it out of the service worker's asset groups, and never put secrets in it.
 
 [Back to top⤴️](#table-of-contents)
 
@@ -17737,11 +18125,11 @@ Let parent container components fetch data and pass inputs to child presenter co
 
 #### Facade Pattern
 
-Hide complex service operations behind a simple API facade interface.
+Hide complex service operations behind a simple API. Components call the facade (`orders()`, `loading()`, `release(id)`) and never see whether state lives in signals, NgRx or a `resource()`, so the state library can change without touching components. Provide a facade that holds per-screen state on the route or component, not in `root`. A full example with signals and `resource()` is in the repository and facade part of [section 39](#39-enterprise-architecture-masterclass).
 
 #### Repository Pattern
 
-Abstract data storage access routines from component consumers.
+Abstract where data lives (HTTP, IndexedDB, cache, mock) behind an abstract class used as a DI token. The repository returns domain models, maps API DTOs at the edge, and holds no UI state. The composition root picks the adapter (`{ provide: OrderRepository, useClass: HttpOrderRepository }`), and tests swap in an in-memory one. See the clean/hexagonal and repository parts of [section 39](#39-enterprise-architecture-masterclass).
 
 #### Dependency Injection Pattern
 
@@ -17812,6 +18200,8 @@ ng update @angular/core@22 --migrate-only change-detection-onpush
 ng update @angular/core@22 --migrate-only http-resource-stable
 ```
 
+`ng update` moves you between versions; it does not finish paradigm migrations (NgModules to standalone, decorator inputs to signals, Zone.js to zoneless). In large codebases run those as separate, incremental migrations with `ng g @angular/core:standalone`, `@angular/core:signals` (or the individual `signal-input-migration`, `output-migration` and `signal-queries-migration`) and a `--path` per library. The recommended order and guardrails are in the incremental migrations part of [section 39](#39-enterprise-architecture-masterclass).
+
 ---
 
 ### 20.4 Deprecations & Breaking Changes Catalog (v20 – v22)
@@ -17821,7 +18211,7 @@ ng update @angular/core@22 --migrate-only http-resource-stable
 | **v22** | `ChangeDetectionStrategy.Default` | `ChangeDetectionStrategy.Eager` or `OnPush` | `Default` is formally deprecated. Components without explicit strategy now default to **`OnPush`**. |
 | **v22** | `@angular/animations` DSL triggers | Native CSS `@keyframes` & `animate.enter` / `animate.leave` | Browser View Transitions and native CSS transitions are the primary animation engine. |
 | **v21** | Karma & Jasmine test runners | **Vitest** (`@angular/build:unit-test`) | Karma is removed from new CLI projects; Vitest is the primary runner. |
-| **v21** | `APP_INITIALIZER` injection token | `provideAppInitializer()` | Class-based multi-providers replaced with functional initializer callbacks. |
+| **v19** | `APP_INITIALIZER`, `ENVIRONMENT_INITIALIZER` and `PLATFORM_INITIALIZER` tokens | `provideAppInitializer()`, `provideEnvironmentInitializer()`, `providePlatformInitializer()` | Deprecated since v19, not v21; listed here because many apps finish this migration during the v20 to v22 upgrade. Class-based multi-providers replaced with functional initializer callbacks. |
 | **v20** | `NgModule` application bootstrapping | `bootstrapApplication(RootComponent, appConfig)` | Standalone APIs are the sole recommended architecture. |
 
 ## 21. Angular v22 Change Detection Architecture & Zoneless Traversal
@@ -17950,6 +18340,12 @@ export class TriggerComparisonComponent {
 }
 ```
 
+> [!NOTE]
+> If a single user action produces several change detection runs in the Angular DevTools profiler, look for an `effect()` that writes a signal the template reads, an `interval` updating a signal faster than the UI needs, or a library calling `ApplicationRef.tick()`. [Section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) has a diagnostic flow.
+
+> [!TIP]
+> To see this traversal in a real app, call `enableProfiling()` from `@angular/core` in development and record in the Chrome DevTools Performance panel. The Angular track shows each change detection run and the components it visited, next to the browser's own work. [Section 40](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning) covers how to read it.
+
 
 ---
 
@@ -18063,6 +18459,9 @@ export class SignalRegistrationFormComponent {
 }
 ```
 
+> [!IMPORTANT]
+> **v22 API check:** `form()` takes a `WritableSignal` of the model, not a plain object: `regForm = form(signal<UserRegistrationSchema>({ ... }))`. Calling a field returns its state, so reads are `regForm.username().value()`, `regForm.username().invalid()`, `regForm().pending()`. Bind inputs with the `FormField` directive (`imports: [FormField]`, `<input [formField]="regForm.username" />`) instead of manual `[value]`/`(input)` pairs; the directive also handles touched-on-blur, `disabled`, `required` and other state.
+
 ---
 
 ### 22.2 Field Reactive State Signals Matrix
@@ -18080,9 +18479,28 @@ Every field in a Signal Form exposes standard reactive signals:
 | `field.errors()` | `Signal<string[] \| null>` | Array of active error messages or validation tokens. |
 | `field.disabled()` | `Signal<boolean>` | `true` if the field is excluded from submission and disabled. |
 
+In v22, signals live on the field *state*: `field().value()`, `field().errors()`, and so on. `errors()` returns `ValidationError.WithFieldTree[]` (objects with `kind` and optional `message`), not `string[]`. Also available: `errorSummary()` (errors including descendants), `hidden()`, `readonly()`, `required()`, `submitting()`, and the methods `markAsTouched()`, `markAsDirty()`, `reset()`. Note that `valid()` is not the same as `!invalid()`: while an async rule is pending both are `false`.
+
 ---
 
 ### 22.3 Cross-Field Validation & Custom Validators
+
+> [!WARNING]
+> **Correction for v22:** `@angular/forms/signals` does not export `ValidatorFn` or `AsyncValidatorFn` (those are Reactive Forms types in `@angular/forms`), so the snippet below does not compile as written. Signal Forms validation is declared with schema rule functions: `validate(path, ctx => error | null)` for custom sync rules, `validateTree()` for rules that target child fields, and `validateAsync()` / `validateHttp()` for async rules (both require `onSuccess` and `onError`, accept `debounce`, and cancel stale requests automatically). Errors are objects such as `{ kind: 'invalidDomain', message: '...' }`.
+
+For a cross-field example, read the other value with `valueOf(path)` inside the rule:
+
+```typescript
+import { form, schema, validate } from '@angular/forms/signals';
+
+const signupSchema = schema<{ password: string; confirm: string }>((p) => {
+  validate(p.confirm, ({ value, valueOf }) =>
+    value() === valueOf(p.password) ? null : { kind: 'mismatch', message: 'Passwords do not match' },
+  );
+});
+```
+
+See [section 34](#34-advanced-forms-architecture) for async rules and server errors on submit. The original snippet follows for reference:
 ```typescript
 import { ValidatorFn, AsyncValidatorFn } from '@angular/forms/signals';
 
@@ -18116,10 +18534,12 @@ export function checkUsernameAvailable(apiService: any): AsyncValidatorFn<string
 
 | Reactive Forms (v2 – v21 Legacy) | Signal Forms (v22 Modern) | Refactoring Benefit |
 |---|---|---|
-| `fb.group({ email: ['', [Validators.required]] })` | `form<Schema>({ email: '' })` | **Full TypeScript inference** without string-key lookups. |
-| `form.get('email')?.value` | `form.email.value()` | Direct reactive signal read; zero runtime string indexing errors. |
-| `form.get('email')?.valueChanges.pipe(...)` | `computed(() => form.email.value())` | Pure synchronous signal derivation; zero manual unsubscribe leaks. |
-| `[formControl]="form.controls.email"` | `(input)="form.email.value.set($event)"` | Unbundled from DOM directive overhead; works with any custom primitive. |
+| `fb.group({ email: ['', [Validators.required]] })` | `form(signal<Schema>({ email: '' }), (p) => { required(p.email); })` | **Full TypeScript inference** without string-key lookups. |
+| `form.get('email')?.value` | `form.email().value()` | Direct reactive signal read; zero runtime string indexing errors. |
+| `form.get('email')?.valueChanges.pipe(...)` | `computed(() => form.email().value())` | Pure synchronous signal derivation; zero manual unsubscribe leaks. |
+| `[formControl]="form.controls.email"` | `[formField]="form.email"` | Unbundled from DOM directive overhead; works with any custom primitive. |
+
+For gradual migration, `compatForm()` from `@angular/forms/signals/compat` lets a Signal Forms model contain existing `FormControl` instances.
 
 
 ---
@@ -18140,6 +18560,8 @@ stateDiagram-v2
     Reloading --> Error : Refresh Fails
     Error --> Loading : Retry / Param Mutated
 ```
+
+The diagram leaves out two states. `idle` is entered when `params` returns `undefined` (nothing to load). `local` is entered when you call `set()` or `update()` on the resource; the local value stays until params change or `reload()` runs. A params change moves to `loading` and drops the old value, while `reload()` moves to `reloading` and keeps the old value visible. Full state machine and race handling: [section 31.8](#318-resource-internals-cancellation-races--local-overrides).
 
 ```typescript
 import { Component, signal, resource, linkedSignal } from '@angular/core';
@@ -18279,6 +18701,9 @@ export class HttpResourceDemoComponent {
 }
 ```
 
+> [!TIP]
+> Two details the example glosses over. First, return `undefined` from the request function to keep the resource `idle` instead of sending a request with an empty filter, for example `() => this.actorQuery() ? { url: '/api/audit-logs', params: { actor: this.actorQuery() } } : undefined`. Second, `value()` throws while the resource is in the `error` state, so always guard it with `hasValue()`, as the template does. For `parse`, `defaultValue`, `equal`, `chain()` and cancellation behavior, see the `httpResource()` in Depth part of [section 35](#35-http-internals-data-fetching-patterns--real-time-networking).
+
 ---
 
 ### 23.3 Specialized Response Formats & SSR TransferState Caching
@@ -18294,10 +18719,17 @@ export const financialReportPdf = httpResource.blob(() => '/api/reports/q4-finan
 // 3. ArrayBuffer Parsing (Protobuf / WebAssembly Binaries)
 export const tensorModelWeights = httpResource.arrayBuffer(() => '/models/recommendation-engine.onnx');
 
-// 4. SSR State Transfer Integration
-// In Angular v22 SSR, httpResource automatically transfers its resolved JSON payload
-// into the TransferState cache script, preventing duplicate client-side re-fetches during hydration!
+// 4. SSR transfer cache
+// The transfer cache belongs to HttpClient, not to httpResource: with provideClientHydration(),
+// responses fetched through HttpClient during the server render (httpResource included)
+// are embedded in the page and reused during hydration instead of being requested again.
+// Defaults: GET/HEAD only, no response headers, and requests with auth headers or credentials are skipped.
+// Tune with withHttpTransferCacheOptions({ filter, includeHeaders, includePostRequests, ... })
+// or per request with { transferCache: false }.
+export const liveStock = httpResource(() => ({ url: '/api/stock', transferCache: false }));
 ```
+
+For cache options, per-request `transferCache`, origin mapping and manual `TransferState`, see [section 37.10](#3710-customizing-the-http-transfer-cache).
 
 
 ---
@@ -18315,6 +18747,34 @@ graph TD
     Combobox --> CustomUI["Custom Tailored UI (Tailwind CSS / Vanilla CSS)"]
     Tabs --> CustomUI
 ```
+
+> [!IMPORTANT]
+> **Correction for v22:** `@angular/aria` does not export `AriaCombobox`, `AriaComboboxInput`, `AriaListbox` or `AriaOption`, so the example that follows is illustrative only. The listbox entry point exports `Listbox` and `Option` (`import { Listbox, Option } from '@angular/aria/listbox'`) with selectors `[ngListbox]` and `[ngOption]` (`value` is a required input on `ngOption`, and the listbox's `value` is a model of the selected values). The combobox entry point exports `Combobox`, `ComboboxPopup` and `ComboboxWidget` (`[ngCombobox]`, `ng-template[ngComboboxPopup]`, `[ngComboboxWidget]`); menus use `ngMenu`, `ngMenuItem`, `ngMenuTrigger`, `ngMenuBar`. The package was introduced in v21 as a developer preview; check the stability label in the docs for your version before using it in a shared design system. The stable CDK equivalents (`CdkListbox`, `CdkMenu`, `ActiveDescendantKeyManager`) are covered in [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
+>
+> A listbox written against the real API:
+>
+> ```typescript
+> import { Component, signal } from '@angular/core';
+> import { Listbox, Option } from '@angular/aria/listbox';
+>
+> @Component({
+>   selector: 'app-clearance-listbox',
+>   imports: [Listbox, Option],
+>   template: `
+>     <label id="clearance-label">Security clearance</label>
+>     <ul ngListbox aria-labelledby="clearance-label" [(value)]="selected">
+>       @for (role of roles; track role) {
+>         <li ngOption [value]="role" [label]="role">{{ role }}</li>
+>       }
+>     </ul>
+>     <p>Selected: {{ selected()[0] }}</p>
+>   `,
+> })
+> export class ClearanceListboxComponent {
+>   readonly roles = ['Level 1: Public Trust', 'Level 2: Confidential', 'Level 3: Secret'];
+>   readonly selected = signal<string[]>(['Level 1: Public Trust']);
+> }
+> ```
 
 ```typescript
 import { Component, signal } from '@angular/core';
@@ -18501,6 +18961,8 @@ export const serverRoutes: ServerRoute[] = [
 ];
 ```
 
+**Wiring and extra options:** the list is registered with `provideServerRendering(withRoutes(serverRoutes))` from `@angular/ssr` in `app.config.server.ts`. Each server route can also set `headers` (for example `Cache-Control`) and, except for `Prerender` routes, a `status` (for example `404` on the `'**'` route, or `301` on a route with `redirectTo`). Parameterized prerender routes accept `fallback: PrerenderFallback.Server | Client | None` for values that were not prerendered (default `Server`). `getPrerenderParams()` runs in an injection context, so it can call `inject()`.
+
 ---
 
 ### 25.2 Modern Angular Router: `withViewTransitions()`, `UrlTree` & Navigation Handlers
@@ -18539,6 +19001,11 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 ```
+
+> [!NOTE]
+> `withViewTransitions()` is still marked developer preview in Angular v22. The handler passed to `withNavigationErrorHandler()` runs in an injection context and may return a `RedirectCommand` to send the user to an error page, for example `return new RedirectCommand(inject(Router).parseUrl('/error'));`. Other router features that pair well with these are `withInMemoryScrolling()`, `withPreloading()` and `withDebugTracing()`, covered in [section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing).
+
+`from` and `to` in `onViewTransitionCreated` are the **root** `ActivatedRouteSnapshot`s, so `from.url` is usually an empty segment array; walk `firstChild` to the leaf to compare screens, or read `inject(Router).currentNavigation()` for the target URL. For skipping transitions (reduced motion, same-screen param changes, per-link opt-out via navigation `info`) and direction-aware animations, see [section 43](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop).
 
 ---
 
@@ -18613,6 +19080,32 @@ View Transitions smoothly animate layout changes between route changes:
 }
 ```
 
+**The actual `animate.enter` / `animate.leave` API** (stable since v20.2):
+
+```html
+@if (isOpen()) {
+  <!-- Static class names -->
+  <div class="modal-dialog" animate.enter="dialog-in" animate.leave="dialog-out">...</div>
+}
+
+<!-- Bound class names, e.g. to vary by direction -->
+<li [animate.enter]="enterClass()" animate.leave="row-out">...</li>
+
+<!-- Function form, for JS animation libraries: call animationComplete() when done -->
+<div (animate.leave)="slideOut($event)">...</div>
+```
+
+```typescript
+import { AnimationCallbackEvent } from '@angular/core';
+
+slideOut(event: AnimationCallbackEvent) {
+  const anim = event.target.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateY(8px)' }], 200);
+  anim.onfinish = () => event.animationComplete();   // element is removed only after this
+}
+```
+
+If `animationComplete()` is never called, Angular removes the element after a timeout configured by the `MAX_ANIMATION_TIMEOUT` token. Respect reduced motion with `@media (prefers-reduced-motion: reduce) { .dialog-in, .dialog-out { animation: none; } }`.
+
 
 ---
 
@@ -18631,7 +19124,7 @@ import { correlationIdInterceptor } from './interceptors/correlation-id.intercep
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
-      // Replaces legacy XMLHttpRequest with Fetch API
+      // Not needed in v22: FetchBackend is already the default
       withFetch(),
       withInterceptors([correlationIdInterceptor, authRefreshInterceptor])
     ),
@@ -18686,10 +19179,20 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
 };
 ```
 
+> [!NOTE]
+> Since Angular v22, `FetchBackend` is the default `HttpBackend` and `withFetch()` is deprecated, because it no longer changes anything. To go back to `XMLHttpRequest` (for example for upload progress events, which fetch cannot report), use `withXhr()`. Avoid `withXhr()` in SSR: server-side XHR is deprecated and slated for removal. See [section 35](#35-http-internals-data-fetching-patterns--real-time-networking) for the full request lifecycle and the fetch/XHR comparison.
+
+The refresh call inside `auth.rotateRefreshToken()` must not pass through this interceptor again. Send it with an `HttpContextToken` opt-out flag, or with a client built from `new HttpClient(inject(HttpBackend))`.
+
+Attach the bearer token only to your own API origins (check `req.url` against configured origins) and let specific calls opt out with an `HttpContextToken`. If several tabs share a session, make sure only one refreshes at a time (for example with `navigator.locks.request('token-refresh', ...)`), or refresh-token rotation can invalidate the token another tab just received. Architecture choices such as a Backend-for-Frontend and cross-tab logout are covered in [section 39](#39-enterprise-architecture-masterclass).
+
+> [!WARNING]
+> If your authorization server rotates refresh tokens with reuse detection, two refreshes sent with the same token (two tabs, or two queues) look like token theft and revoke the session. Serialize refreshes across tabs too (Web Locks or `BroadcastChannel`), and keep the refresh token in an `HttpOnly` cookie rather than `localStorage`. See "Token Storage and Refresh-Token Rotation" in [section 41](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain).
+
 ---
 
 ### 26.2 Advanced Dependency Injection: `provideAppInitializer()` & `runInInjectionContext`
-Angular v21 deprecated the legacy `APP_INITIALIZER` token in favor of the clean functional `provideAppInitializer()`:
+Angular v19 introduced the functional `provideAppInitializer()` and deprecated the `APP_INITIALIZER` token, together with `ENVIRONMENT_INITIALIZER` and `PLATFORM_INITIALIZER` (replaced by `provideEnvironmentInitializer()` and `providePlatformInitializer()`). In v22 `provideAppInitializer()` is the way to run async startup work:
 
 ```typescript
 import { ApplicationConfig, provideAppInitializer, inject } from '@angular/core';
@@ -18712,12 +19215,15 @@ export const appConfig: ApplicationConfig = {
 import { Injector, runInInjectionContext } from '@angular/core';
 
 export function executeDynamicTask(injector: Injector, callback: () => void) {
-  // Enables calling inject() inside plain callbacks, microtasks, or WebSocket events!
+  // Makes inject() work for the synchronous duration of the callback only.
+  // Anything after an await or inside a later setTimeout runs without the context.
   runInInjectionContext(injector, () => {
     callback();
   });
 }
 ```
+
+Several `provideAppInitializer()` functions are called in provider order, but their promises and observables are awaited **in parallel**, and an observable must complete before bootstrap continues. Call `inject()` before the first `await`. [Section 29.7](#297-initializers-in-depth-provideappinitializer-provideenvironmentinitializer-provideplatforminitializer) covers ordering, error handling and the environment and platform variants. For the full list of injection contexts, `assertInInjectionContext()` and the NG0203 error, see [section 32.1](#321-injection-context-where-inject-is-allowed) and [section 32.2](#322-runininjectioncontext-in-depth).
 
 ---
 
@@ -18775,6 +19281,8 @@ Angular supports local template variable declarations via `@let`:
 ### 26.5 Rendering Lifecycle Hooks: DOM Read/Write Separation
 `afterNextRender()` and `afterRenderEffect()` execute only in the browser (never on the server during SSR), guaranteeing SSR safety:
 
+Because these hooks never run on the server, do not put server-side work in them. Server-only logic belongs in providers registered in `app.config.server.ts` or behind `isPlatformServer()`, and async work the server must wait for should be wrapped in `PendingTasks.run()`. See [section 37.4](#374-server-only-and-browser-only-code) and [section 37.5](#375-afternextrender-and-the-server-what-runs-where).
+
 ```typescript
 import { Component, ElementRef, viewChild, afterNextRender, afterRenderEffect } from '@angular/core';
 
@@ -18819,6 +19327,9 @@ export class CanvasTelemetryComponent {
 
 ### 27.1 Vitest as Primary Test Runner in Angular
 Angular adopted **Vitest** as the official, high-speed test runner. Vitest executes unit tests natively via ESM and Vite transforms, reducing test suite execution times by 5x to 10x compared to legacy Karma/Webpack:
+
+> [!NOTE]
+> **v22 note:** in an Angular CLI workspace you don't need `@analogjs/vite-plugin-angular` or a hand-written `vitest.config.ts`. The `test` target uses the `@angular/build:unit-test` builder, whose default runner is Vitest. Configure it in `angular.json` (`coverageThresholds`, `coverageExclude`, `providersFile`, `setupFiles`, `browsers`, `include`, `filter`); for extra Vitest options set `"runnerConfig": true` and add a `vitest-base.config.ts`. The Analog plugin setup below is still valid for Vite-based projects outside the CLI. See "The v22 Test Stack" in [section 38](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond).
 
 ```typescript
 // vitest.config.ts (Angular Production Test Configuration)
@@ -18911,10 +19422,16 @@ Secondary entrypoints prevent consumers from pulling heavy dependencies unless e
 }
 ```
 
+Each entry point gets its own key in the package's `exports` map, so only those paths can be imported. Extra `exports` you add in the source `package.json` (for example a Sass `"./theming": { "sass": "./theming/_index.scss" }` entry) are merged into the generated one. Validate the built package with `npm pack --dry-run`, `npx publint` and `npx @arethetypeswrong/cli --pack .` from `dist/`.
+
+Production library builds use `"compilationMode": "partial"`, declare Angular as a `peerDependency`, and are published from `dist/`, never from `projects/`. [Section 29.11](#2911-library-development-and-publishing) covers the APF output layout, the linker, versioning and the release workflow.
+
 ---
 
 ### 27.3 Angular Compiler Architecture & Extended Diagnostics
 The Angular Compiler transforms HTML templates into concise JavaScript instructions (Ivy runtime calls like `ɵɵelementStart`, `ɵɵtext`, `ɵɵadvance`). Extended diagnostics catch common developer bugs at build time:
+
+[Section 29.1](#291-compiler-internals-the-ngtsc-pipeline) to [section 29.5](#295-runtime-data-structures-tview-lview-and-tnode) walk through the full `ngtsc` pipeline, type-check blocks, a real compiled `ɵcmp` with its creation and update blocks, and the runtime `TView` / `LView` / `TNode` structures.
 
 ```json
 // tsconfig.json
@@ -18931,6 +19448,10 @@ The Angular Compiler transforms HTML templates into concise JavaScript instructi
   }
 }
 ```
+
+The v22 compiler has eighteen extended diagnostics, and `extendedDiagnostics.defaultCategory` sets the category for every check you don't list. `typeCheckHostBindings` (since v20) extends type checking to `host` metadata. [Section 30.11](#3011-template-type-checking--extended-diagnostics) lists every check and the individual `strictTemplates` flags.
+
+In v22, `strictTemplates` defaults to `true` in the compiler, and TypeScript 6 (required by Angular 22) enables `strict` by default, so a strict `ng new` workspace does not list either flag; the non-strict template sets them to `false` explicitly. A step-by-step recipe for enabling strict templates in an older app is in [section 42](#42-developer-ecosystem--tooling-masterclass-schematics-compiler-config-linting-packaging-releases).
 
 ---
 
@@ -18972,6 +19493,8 @@ export class WorkerRunnerService {
   }
 }
 ```
+
+Two caveats with this minimal version. First, `postMessage(numbers, [numbers.buffer])` detaches the caller's buffer, so `numbers.length` is `0` afterwards. Second, `new Worker(...)` runs in the service constructor, which throws during SSR where `Worker` is undefined. Guard it with `isPlatformBrowser(inject(PLATFORM_ID))`. [Section 31.14](#3114-signals-with-web-workers-correlation-cancellation--ssr-safety) builds a version with request ids, cancellation through `AbortSignal`, and a `resource()` front end.
 
 
 ---
@@ -19020,6 +19543,9 @@ bootstrapApplication(AppComponent, {
   ],
 });
 ```
+
+> [!NOTE]
+> With SSR, you do not need the `window.__CSP_NONCE__` global or a `CSP_NONCE` provider. Put a placeholder in `<app-root ngCspNonce="__CSP_NONCE__">`, let the CLI copy it to the emitted tags, and replace it with a fresh random value per response in `server.ts` while setting the matching header. The nonce must be different on every response, so do not use a `<meta>` tag with a fixed value or cache nonce-bearing HTML in a shared cache.
 
 ---
 
@@ -19072,6 +19598,7 @@ export const OrganizationStore = signalStore(
         patchState(store, { members, isLoading: false });
       } catch (err) {
         patchState(store, { isLoading: false });
+        console.error('Failed to load members', err); // or store an error field in state
       }
     },
     setFilter(query: string) {
@@ -19116,6 +19643,8 @@ src/
     ├── ui/ (Design Tokens, CVA variants)
     └── api/ (tracedFetch, httpResource wrappers)
 ```
+
+The layers only help if imports go strictly downward (`app > pages > widgets > features > entities > shared`), sibling slices on the same layer never import each other, and every slice is imported through its `index.ts`. Enforce this with a lint rule; [section 39](#39-enterprise-architecture-masterclass) shows an `eslint-plugin-boundaries` config, the `@x` cross-import convention for entities, and where Angular pieces (facades, repositories, routed components) go.
 
 ---
 
@@ -19176,6 +19705,9 @@ export class AiWorkspaceComponent {
   });
 }
 ```
+
+> [!WARNING]
+> WebMCP and `declareExperimentalWebMcpTool` are experimental. A tool exposed to an agent runs with the user's session, so treat each tool like a public API endpoint: validate input against the schema, enforce the same permission on the server that the UI enforces, ask the human to confirm destructive or privileged actions (such as a role promotion), and write an audit entry for every call. Keep the handler thin and have it call the same application service the UI uses, so the integration can be replaced without touching business logic. [Section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) lists the requirements, trade-offs and failure modes for this blueprint.
 
 ---
 
@@ -19276,6 +19808,9 @@ export class MultiStepFormComponent {
 }
 ```
 
+> [!TIP]
+> Before building a long stepper, decide where a draft lives. Persisting each completed step to the server under a draft ID (kept in the URL) lets users close the tab and resume, and lets the server reject a step early instead of at the final submit. Map server validation errors back onto fields as described in [section 34](#34-advanced-forms-architecture). See [section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) for the full design table.
+
 ---
 
 ### 28.6 Flagship Blueprint 3: Real-Time High-Throughput Trading Orderbook (Web Worker + Signals)
@@ -19349,6 +19884,9 @@ export class TradingOrderbookComponent implements OnInit, OnDestroy {
   }
 }
 ```
+
+> [!NOTE]
+> 10,000 messages per second does not mean 10,000 renders. The worker applies every delta, but posts at most one snapshot per animation frame, so the UI always shows the latest book rather than every tick. Two things the example leaves out and production needs: a sequence-number check that requests a fresh snapshot when a gap appears, and a computed "data age" signal that marks the book as stale when no update arrived for a few hundred milliseconds. Alert on data age, not on message rate. [Section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) walks through this design.
 
 ## 29. Platform & Architecture Masterclass: Compiler, Ivy Runtime, Bootstrap, Injectors, Elements, Builders & Monorepos
 
@@ -39529,7 +40067,13 @@ The server is the only enforcement point; the UI hides what the user cannot do s
 #### Scenario-based Questions
 
 1. **How to fix memory leaks?**
-   Use `DestroyRef.register()` or `takeUntil` operators to clean up active subscriptions.
+   Use `takeUntilDestroyed()`, `DestroyRef.onDestroy()` or `takeUntil` operators to clean up active subscriptions.
+2. **A dashboard goes blank when one API is down. How do you fix the design?**
+   Give each widget its own `httpResource()` with its own loading and error states, load below-the-fold widgets with `@defer (on viewport)`, and remove page-level spinners. One failing request should only affect its widget.
+3. **Users with tabs open for days get errors after every deploy. Why, and what do you do?**
+   Their old bundle requests lazy chunks that the new deploy removed. Keep previous hashed assets on the CDN for a while, keep API changes backward compatible, reload once on chunk-load errors in `withNavigationErrorHandler()`, and with the service worker offer a reload on `VERSION_READY`.
+4. **How do you know whether a release made the app worse for users?**
+   Real-user monitoring tagged with the release: crash-free sessions, LCP and INP at p75, journey success. Compare against SLOs and alert on error-budget burn rate, so a bad release pages someone within the hour.
 
 ## Example Projects
 
@@ -39549,17 +40093,25 @@ A project configuring login/logout routes and functional route guards.
 
 A multi-view dashboard using charting tools and lazy-loaded features.
 
+For a full design walkthrough (rendering choice, per-widget resources, visibility-aware polling, failure modes), see the operations dashboard walkthrough in [section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production).
+
 ### E-commerce
 
 A multi-page project including product catalogs, shopping carts, and checkouts.
+
+For a full design walkthrough (prerender, SSR and client routes in one app, CDN caching without leaking personalized HTML, idempotent cart updates, server-side re-pricing), see the storefront walkthrough in [section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production).
 
 ### Chat App
 
 A web socket application supporting real-time chat updates.
 
+For a full design walkthrough (WebSocket plus REST gap filling, server sequence numbers, client IDs for exactly-once display, an offline outbox, reconnect with backoff), see the real-time chat walkthrough in [section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production).
+
 ### Admin Panel
 
 An administrative platform configuring tables and settings menus.
+
+For a full design walkthrough (permission strings from `/api/me`, `canMatch` on lazy features, refresh on 403, server-side paging with URL filters, bulk jobs that survive a closed tab), see the admin console walkthrough in [section 44](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production).
 
 ### File Upload
 
@@ -39738,6 +40290,14 @@ Generate environments
 ng generate environments
 ```
 
+Lint
+
+```bash
+ng lint
+```
+
+`ng lint` needs a linter to be added first: `ng add angular-eslint` installs ESLint with the Angular plugins, adds the `lint` target and writes a flat `eslint.config.js`.
+
 ### Signals Cheat Sheet
 
 | API            | Example                             | Description              |
@@ -39753,6 +40313,17 @@ ng generate environments
 | `map`       | Transformation | Transforms emitted values      |
 | `filter`    | Filtering      | Emits values passing predicate |
 | `switchMap` | Flattening     | Switches to new observable     |
+| `mergeMap`     | Flattening     | Runs inner observables in parallel           |
+| `concatMap`    | Flattening     | Queues inner observables in order            |
+| `exhaustMap`   | Flattening     | Ignores new values while inner is running    |
+| `debounceTime` | Rate limiting  | Emits after a pause in emissions             |
+| `throttleTime` | Rate limiting  | Emits first value, then ignores for a period |
+| `auditTime`    | Rate limiting  | Emits latest value at the end of a window    |
+| `sampleTime`   | Rate limiting  | Emits latest value on a fixed interval       |
+| `catchError`   | Error handling | Replaces an errored stream with a fallback   |
+| `retry`        | Error handling | Re-subscribes on error (`{ count, delay }`)  |
+| `finalize`     | Utility        | Runs on complete, error or unsubscribe       |
+| `shareReplay`  | Multicasting   | Shares and replays the latest values         |
 
 ### Lifecycle Hooks Cheat Sheet
 
