@@ -19925,7 +19925,7 @@ flowchart LR
 | Mode | Output | Used for |
 | :--- | :--- | :--- |
 | `full` (default) | Final `ɵɵdefineComponent(...)` calls with template functions. Tied to the exact Angular version that compiled it. | Applications. |
-| `partial` | `ɵɵngDeclareComponent(...)` calls that keep the template as a string plus metadata. A **linker** inside the consuming app's build finishes the job. | Libraries published to npm (see 29.11). |
+| `partial` | `ɵɵngDeclareComponent(...)` calls that keep the template as a string plus metadata. A **linker** inside the consuming app's build finishes the job. | Libraries published to npm (see [29.11](#2911-library-development-and-publishing)). |
 | `local` | Compiles each file without looking at other files. | Specialised build systems. Not something a normal CLI workspace should switch on. |
 
 #### Seeing the compiler's output yourself
@@ -20816,7 +20816,7 @@ Deployment steps (`ng deploy` uses a `deploy` target), code generation that runs
 
 ### 29.11 Library Development and Publishing
 
-The library basics (generation, `public-api.ts`, secondary entry points) are covered in section 27.2. This part covers what happens after `ng build my-lib`.
+The library basics (generation, `public-api.ts`, secondary entry points) are covered in section [27.2](#272-angular-package--library-development-ng-packagr--apf). This part covers what happens after `ng build my-lib`.
 
 #### Partial compilation and the linker
 
@@ -21916,7 +21916,7 @@ export class TabGroupComponent implements TabGroupApi {
 }
 ```
 
-Note that the `@if` inside `TabComponent` only controls the panel's own DOM. The components the *parent* projects into each tab are still created up front (see 30.8); use a template-based body if inactive tabs are expensive.
+Note that the `@if` inside `TabComponent` only controls the panel's own DOM. The components the *parent* projects into each tab are still created up front (see [30.8](#308-content-projection-edge-cases)); use a template-based body if inactive tabs are expensive.
 
 #### Slot templates (render props)
 
@@ -22167,7 +22167,7 @@ Extended diagnostics are pattern checks for code that type-checks but is almost 
 
 ### 30.12 Template Performance
 
-With signals and `OnPush`, Angular checks far fewer views than before (see chapter 21). The views it does check still evaluate **every binding expression in them**. Template performance is about two numbers: how often a view is checked, and how much each check costs.
+With signals and `OnPush`, Angular checks far fewer views than before (see chapter [21](#21-angular-v22-change-detection-architecture--zoneless-traversal)). The views it does check still evaluate **every binding expression in them**. Template performance is about two numbers: how often a view is checked, and how much each check costs.
 
 ```mermaid
 graph TD
@@ -22809,7 +22809,7 @@ effect(() => {
 
 ### 31.8 Resource Internals: Cancellation, Races & Local Overrides
 
-Stage 3 and section 23 show how to read a resource. This part explains what happens between requests. In v22 `resource()` is stable, and the options are `params` and `loader` (or `stream`). The older `request` option name from v19 was renamed to `params` in v20.
+Stage 3 and section [23](#23-resource-api--httpresource-deep-dive) show how to read a resource. This part explains what happens between requests. In v22 `resource()` is stable, and the options are `params` and `loader` (or `stream`). The older `request` option name from v19 was renamed to `params` in v20.
 
 #### The six statuses
 
@@ -23389,7 +23389,7 @@ Practical guidance:
 
 ### 31.14 Signals with Web Workers: Correlation, Cancellation & SSR Safety
 
-Section 27.4 shows a single worker writing to a signal. Real usage has more problems: many requests in flight, results arriving out of order, abandoned requests, and server rendering where `Worker` does not exist.
+Section [27.4](#274-web-workers-with-signals--transferable-objects) shows a single worker writing to a signal. Real usage has more problems: many requests in flight, results arriving out of order, abandoned requests, and server rendering where `Worker` does not exist.
 
 ```mermaid
 sequenceDiagram
@@ -23642,7 +23642,7 @@ Code runs in an injection context when it executes **synchronously** inside one 
 | Functional router hooks: guards, resolvers, `redirectTo` functions, `loadChildren` / `loadComponent` callbacks | `canActivate: [() => inject(Auth).isLoggedIn()]` |
 | Functional HTTP interceptors | `(req, next) => { inject(TokenStore); ... }` |
 | `provideAppInitializer()` and `provideEnvironmentInitializer()` callbacks | `provideAppInitializer(() => inject(Config).load())` |
-| Anything wrapped in `runInInjectionContext(injector, fn)` | see 32.2 |
+| Anything wrapped in `runInInjectionContext(injector, fn)` | see [32.2](#322-runininjectioncontext-in-depth) |
 
 Lifecycle hooks (`ngOnInit`, `ngOnChanges` ...), event handlers, `setTimeout` callbacks, RxJS operators and code after an `await` are **not** injection contexts.
 
@@ -24260,7 +24260,7 @@ When the same token is provided at several levels, the **closest** provider foun
 | `@Directive({ providers })` | The directive's element and that element's descendants |
 | `Route.providers` | Components activated by that route and its children, plus their guards/resolvers |
 | `app.config.ts` / `providedIn: 'root'` | Everyone, unless something closer overrides it |
-| `providedIn: 'platform'` | Every application on the page (see 32.9) |
+| `providedIn: 'platform'` | Every application on the page (see [32.9](#329-providedin-platform-and-providedin-any-legacy)) |
 
 #### `providers` vs `viewProviders`
 
@@ -24715,7 +24715,7 @@ constructor() {
 
 #### Leak 3: injectors you created and never destroyed
 
-Each `createEnvironmentInjector()` call holds its service instances until `destroy()`. A widget system that creates one per widget and never destroys them grows with every open/close. See 32.3 for the owner pattern.
+Each `createEnvironmentInjector()` call holds its service instances until `destroy()`. A widget system that creates one per widget and never destroys them grows with every open/close. See [32.3](#323-creating-injectors-yourself-createenvironmentinjector-injectorcreate-and-destroy) for the owner pattern.
 
 #### Leak 4: route injectors holding feature state
 
@@ -25041,7 +25041,7 @@ provideRouter(routes, withRouterConfig({ canceledNavigationResolution: 'computed
 
 ### 33.3 Router Feature Functions: Scrolling, Preloading, Error Handling and Tracing
 
-Section 25.2 covers `withComponentInputBinding()`, `withViewTransitions()` and the basic shape of `withNavigationErrorHandler()`. This section adds the features that were missing and shows how they fit together.
+Section [25.2](#252-modern-angular-router-withviewtransitions-urltree--navigation-handlers) covers `withComponentInputBinding()`, `withViewTransitions()` and the basic shape of `withNavigationErrorHandler()`. This section adds the features that were missing and shows how they fit together.
 
 ```typescript
 // app.config.ts
@@ -25880,7 +25880,7 @@ Secondary outlets are written in parentheses after the primary path, for example
 
 ## 34. Advanced Forms Architecture
 
-The Stage 5 forms chapters cover the building blocks: `FormGroup`, typed forms, a first `ControlValueAccessor`, sync and async validators, and config-driven dynamic forms. Chapter 22 introduces Signal Forms. This chapter covers what happens when those pieces meet a large production app: when validation actually runs, how state moves up and down the control tree, how to cancel stale async checks, how to build controls and sub-forms that other teams can reuse, and how to get clean data out of a form and server errors back into it.
+The Stage 5 forms chapters cover the building blocks: `FormGroup`, typed forms, a first `ControlValueAccessor`, sync and async validators, and config-driven dynamic forms. Chapter [22](#22-signal-forms-complete-masterclass) introduces Signal Forms. This chapter covers what happens when those pieces meet a large production app: when validation actually runs, how state moves up and down the control tree, how to cancel stale async checks, how to build controls and sub-forms that other teams can reuse, and how to get clean data out of a form and server errors back into it.
 
 All APIs here were checked against `@angular/forms` 22.2. Reactive Forms are stable. Signal Forms (`@angular/forms/signals`) are marked `@publicApi 22.0` in the v22 typings, so they are stable in v22; the only experimental piece is the `experimentalWebMcpTool` form option, which this chapter does not use.
 
@@ -26217,7 +26217,7 @@ To restore the pre-v15 behaviour app-wide (only call it for `true`), configure t
 Two related rules:
 
 - Do not put `[disabled]="..."` on an element that also has `formControlName`. Angular warns, and the attribute fights with the model. Call `control.disable()` / `enable()` instead.
-- Disabling from code (`control.disable()`) removes the value from `form.value` (see 34.10). Disabling only in the DOM does not.
+- Disabling from code (`control.disable()`) removes the value from `form.value` (see [34.10](#3410-serialization-getting-data-out-and-back-in)). Disabling only in the DOM does not.
 
 #### 2. Inject `NgControl` instead of providing `NG_VALUE_ACCESSOR`
 
@@ -27019,7 +27019,7 @@ One keystroke runs every validator on the path to the root, and the array-level 
 
 ### 34.13 Signal Forms: Advanced Validation and Server Errors
 
-Chapter 22 introduces `form()` and state signals. This section covers rule composition and getting server errors back onto fields. Everything below is from `@angular/forms/signals` and is stable (`@publicApi 22.0`) in v22.
+Chapter [22](#22-signal-forms-complete-masterclass) introduces `form()` and state signals. This section covers rule composition and getting server errors back onto fields. Everything below is from `@angular/forms/signals` and is stable (`@publicApi 22.0`) in v22.
 
 #### The validation building blocks
 
@@ -27233,7 +27233,7 @@ Wrap the save in `submit(form, { action })`. The action returns `undefined` on s
 
 ## 35. HTTP Internals, Data Fetching Patterns & Real-Time Networking
 
-The HTTP chapters earlier in this guide cover the everyday API: `provideHttpClient()`, `get`/`post`, interceptors, `observe` and `responseType`, upload progress and cancellation. Chapter 23 introduces `httpResource()` and chapter 26.1 shows `withFetch()` and a token-refresh interceptor. This chapter goes one level down and one level out. Down: what actually happens between `http.get()` and the network, and how to test it. Out: the patterns real apps build on top of `HttpClient` (deduplication, optimistic updates, pagination), the transports that are not plain request/response (WebSockets, Server-Sent Events), and how to keep the client in sync with the API contract (GraphQL, OpenAPI, runtime validation).
+The HTTP chapters earlier in this guide cover the everyday API: `provideHttpClient()`, `get`/`post`, interceptors, `observe` and `responseType`, upload progress and cancellation. Chapter [23](#23-resource-api--httpresource-deep-dive) introduces `httpResource()` and chapter [26.1](#261-modern-http-engine-withfetch-streaming--resilient-token-refresh) shows `withFetch()` and a token-refresh interceptor. This chapter goes one level down and one level out. Down: what actually happens between `http.get()` and the network, and how to test it. Out: the patterns real apps build on top of `HttpClient` (deduplication, optimistic updates, pagination), the transports that are not plain request/response (WebSockets, Server-Sent Events), and how to keep the client in sync with the API contract (GraphQL, OpenAPI, runtime validation).
 
 All APIs here were checked against `@angular/common` 22.2. Two v22 facts change older advice, so they come first:
 
@@ -27311,7 +27311,7 @@ export const appConfig: ApplicationConfig = {
 
 #### Other lifecycle facts worth knowing
 
-- **Each subscription sends a separate request.** Two `async` pipes on one `http.get()` observable mean two requests. See 35.6 for deduplication.
+- **Each subscription sends a separate request.** Two `async` pipes on one `http.get()` observable mean two requests. See [35.6](#356-request-deduplication-and-short-lived-caching) for deduplication.
 - **Interceptors run outside the signal graph.** The chain runs inside `untracked()`, so reading a signal in an interceptor never makes a `computed` or `effect` depend on it.
 - **Requests keep the app "unstable".** Every in-flight request registers a `PendingTasks` entry. SSR waits for these before it serializes the page, and `ApplicationRef.whenStable()` waits for them in tests.
 - **Unsubscribing aborts the request.** The fetch backend calls `AbortController.abort()` and the XHR backend calls `xhr.abort()`, so the server sees the connection close.
@@ -27588,7 +27588,7 @@ it('refetches when the id changes', async () => {
 
 ### 35.4 `httpResource()` in Depth: Parsing, Defaults, Equality and Cancellation
 
-Section 23.2 showed the basic shape. The second argument, `HttpResourceOptions`, has the options that matter in production:
+Section [23.2](#232-httpresource-stable-in-angular-v22) showed the basic shape. The second argument, `HttpResourceOptions`, has the options that matter in production:
 
 | Option | What it does |
 |---|---|
@@ -27709,7 +27709,7 @@ The rules to remember:
 **When to use it, and when not**
 
 - Use `httpResource` for **reads** that follow reactive state: route params, filters, the selected tab.
-- Do **not** use it for mutations (`POST`/`PUT`/`DELETE` that change data). Auto-cancellation and re-running on dependency changes are exactly wrong for writes. Call `HttpClient` from an event handler, then `reload()` or `set()` the resource (see 35.7). `POST` is fine for read-style endpoints such as search or GraphQL queries.
+- Do **not** use it for mutations (`POST`/`PUT`/`DELETE` that change data). Auto-cancellation and re-running on dependency changes are exactly wrong for writes. Call `HttpClient` from an event handler, then `reload()` or `set()` the resource (see [35.7](#357-optimistic-updates-with-rollback)). `POST` is fine for read-style endpoints such as search or GraphQL queries.
 
 ---
 
@@ -28999,7 +28999,7 @@ export class ProductPageStore {
 - **`switchMap` for writes.** Cancelling an HTTP request only stops the browser from waiting for it. The server may already have processed the `POST`. Use `concatMap` or `exhaustMap` for anything that changes data.
 - **Unbounded `mergeMap`.** `from(thousandIds).pipe(mergeMap(del))` opens a thousand requests at once. Pass the second argument (`concurrent`).
 - **Nested `subscribe()`.** Subscribing inside a `subscribe` callback is a hand-written `mergeMap` without cancellation or teardown. Flatten instead.
-- **An inner error kills the outer stream.** See 36.6 for where to catch it.
+- **An inner error kills the outer stream.** See [36.6](#366-error-handling-catcherror-placement-and-retry-instead-of-retrywhen) for where to catch it.
 - **`concatMap` queues are invisible.** If producers outpace the inner work, the queue grows without limit. Watch for that with fast sources such as `valueChanges`.
 
 ---
@@ -29748,7 +29748,7 @@ Reproduce it: open and close the route several times, force garbage collection, 
 
 ## 37. Advanced SSR & Deployment
 
-Stage 6 introduces SSR, `provideClientHydration()`, event replay and incremental hydration. Chapter 25.1 shows a first `app.routes.server.ts`. This chapter picks up where those stop: how a request actually flows through `@angular/ssr`, how to split code between server and browser, how to read cookies and set status codes, how redirects and errors behave on the server, why server memory leaks happen, how to tune the HTTP transfer cache, how to debug hydration mismatches, and how to deploy the result to Node, serverless and edge runtimes.
+Stage 6 introduces SSR, `provideClientHydration()`, event replay and incremental hydration. Chapter [25.1](#251-server-routing--route-level-rendering-rendermode) shows a first `app.routes.server.ts`. This chapter picks up where those stop: how a request actually flows through `@angular/ssr`, how to split code between server and browser, how to read cookies and set status codes, how redirects and errors behave on the server, why server memory leaks happen, how to tune the HTTP transfer cache, how to debug hydration mismatches, and how to deploy the result to Node, serverless and edge runtimes.
 
 Everything here was checked against `@angular/core` 22.2, `@angular/ssr` 22.2 and `@angular/build` 22.2. Two v22 changes matter throughout:
 
@@ -29826,7 +29826,7 @@ export default bootstrap;
 
 ### 37.2 Server Routes in Depth: Status, Headers and Fallbacks
 
-Chapter 25.1 shows the three render modes. A `ServerRoute` can also carry a `status` and `headers`, and parameterized prerender routes take a `fallback`. The typings enforce some rules: `status` is not allowed on `Prerender` routes (a static file has no per-request status), and `fallback` is only allowed together with `getPrerenderParams`.
+Chapter [25.1](#251-server-routing--route-level-rendering-rendermode) shows the three render modes. A `ServerRoute` can also carry a `status` and `headers`, and parameterized prerender routes take a `fallback`. The typings enforce some rules: `status` is not allowed on `Prerender` routes (a static file has no per-request status), and `fallback` is only allowed together with `getPrerenderParams`.
 
 ```typescript
 // src/app/app.routes.server.ts
@@ -30888,7 +30888,7 @@ Build with `ssr.platform: 'neutral'` so the bundle avoids Node built-ins, use `A
 
 ## 38. Testing Masterclass: Modern Angular Testing with Vitest, Zoneless TestBed and Beyond
 
-The Testing chapter introduces `TestBed`, and section 27.1 shows a first Vitest setup. This chapter goes further. It covers how tests run in a v22 workspace, how `ComponentFixture` behaves when there is no Zone.js, how to control time, and how to test the pieces modern apps are built from: functional guards and interceptors, signals and effects, SignalStore, component harnesses. It then moves outward to integration, accessibility, visual, contract and end-to-end tests, and finishes with coverage gates and CI speed.
+The Testing chapter introduces `TestBed`, and section [27.1](#271-vitest-as-primary-test-runner-in-angular) shows a first Vitest setup. This chapter goes further. It covers how tests run in a v22 workspace, how `ComponentFixture` behaves when there is no Zone.js, how to control time, and how to test the pieces modern apps are built from: functional guards and interceptors, signals and effects, SignalStore, component harnesses. It then moves outward to integration, accessibility, visual, contract and end-to-end tests, and finishes with coverage gates and CI speed.
 
 All Angular APIs here were checked against the v22.2 typings of `@angular/core`, `@angular/common`, `@angular/router`, `@angular/cdk` and `@angular/build`, plus `@ngrx/signals` 22.0. Third-party tools (Vitest 5, Playwright, axe-core, Pact) are named with the version they were checked against where it matters.
 
@@ -30896,7 +30896,7 @@ All Angular APIs here were checked against the v22.2 typings of `@angular/core`,
 
 ### 38.1 The v22 Test Stack: `ng test` and the Built-in Vitest Runner
 
-Section 27.1 wires Vitest up by hand with a third-party Vite plugin. In a v22 CLI workspace you don't need that. The `@angular/build:unit-test` builder runs your specs, and its default runner is **Vitest**. The builder compiles specs with the same esbuild pipeline as `ng build`, generates the `TestBed` bootstrap for you, and then hands the bundles to Vitest. Karma is still available as `"runner": "karma"` for teams that haven't migrated.
+Section [27.1](#271-vitest-as-primary-test-runner-in-angular) wires Vitest up by hand with a third-party Vite plugin. In a v22 CLI workspace you don't need that. The `@angular/build:unit-test` builder runs your specs, and its default runner is **Vitest**. The builder compiles specs with the same esbuild pipeline as `ng build`, generates the `TestBed` bootstrap for you, and then hands the bundles to Vitest. Karma is still available as `"runner": "karma"` for teams that haven't migrated.
 
 ```mermaid
 flowchart LR
@@ -32040,7 +32040,7 @@ This assumes `OrderApi` prefixes its URLs with an injected `API_BASE_URL`, which
 
 #### Coverage gates
 
-With the CLI builder, thresholds live in `angular.json` (see 38.1), and `ng test --coverage` fails with a non-zero exit code when they're not met. That's the gate:
+With the CLI builder, thresholds live in `angular.json` (see [38.1](#381-the-v22-test-stack-ng-test-and-the-built-in-vitest-runner)), and `ng test --coverage` fails with a non-zero exit code when they're not met. That's the gate:
 
 ```bash
 ng test --watch=false --coverage
@@ -32780,7 +32780,7 @@ Practical rules:
 1. Keep one Angular major across all remotes. Run framework upgrades as a coordinated release, ideally with all remotes in one monorepo so `nx affected` rebuilds them together.
 2. Share framework and design-system packages; do not share business libraries between remotes (that recreates the coupling you split to avoid).
 3. Communicate through the URL, a small typed event contract (`CustomEvent` on `window`) or a shared service from a tiny shared library, never through a remote reaching into another remote's internals.
-4. Version the manifest per environment, not per build (see 39.13), so promoting a remote is a config change.
+4. Version the manifest per environment, not per build (see [39.13](#3913-multi-environment-config-build-once-deploy-many)), so promoting a remote is a config change.
 
 **When not to use micro frontends:** one team, one release cadence, or a goal of "faster builds". Nx affected builds and lazy routes solve build speed with far less runtime cost. Micro frontends pay off when separate teams must deploy separately and the organisation accepts the operational cost (versioning, integration testing, shared design system releases).
 
@@ -33335,7 +33335,7 @@ CMD ["/bin/sh", "-c", "envsubst < /etc/app/config.template.json > /usr/share/ngi
 
 ### 39.14 Migrating Large Codebases Incrementally
 
-Section 20 covers `ng update` from one version to the next. A large app also carries **paradigm** migrations that `ng update` does not finish for you: NgModules to standalone, decorators to signals, Zone.js to zoneless. In a big codebase these are done with a **strangler** approach: new code uses the new style, old code is converted area by area, and both run side by side until the old style is gone.
+Section [20](#20-angular-v20--v21--v22-platform-updates--migration-masterclass) covers `ng update` from one version to the next. A large app also carries **paradigm** migrations that `ng update` does not finish for you: NgModules to standalone, decorators to signals, Zone.js to zoneless. In a big codebase these are done with a **strangler** approach: new code uses the new style, old code is converted area by area, and both run side by side until the old style is gone.
 
 ```mermaid
 flowchart LR
@@ -33528,7 +33528,7 @@ Add the replacement in a minor release and mark the old input `@deprecated` with
 
 ## 40. Advanced Performance Engineering: Web Vitals, Profiling, Budgets & Runtime Tuning
 
-The Performance chapter earlier in this guide lists the main techniques: `OnPush`, `track`, lazy routes, preloading, virtual scrolling and Web Workers. The Angular DevTools section explains the component explorer and the profiler tab, and chapter 21 explains how change detection decides what to check. This chapter is about the engineering around those techniques: how to measure what users actually experience, how to find the cause in a profile, how to stop regressions from shipping, and how to tune the pieces (images, fonts, CSS, lists, workers, memory) that most often decide whether a page feels fast.
+The Performance chapter earlier in this guide lists the main techniques: `OnPush`, `track`, lazy routes, preloading, virtual scrolling and Web Workers. The Angular DevTools section explains the component explorer and the profiler tab, and chapter [21](#21-angular-v22-change-detection-architecture--zoneless-traversal) explains how change detection decides what to check. This chapter is about the engineering around those techniques: how to measure what users actually experience, how to find the cause in a profile, how to stop regressions from shipping, and how to tune the pieces (images, fonts, CSS, lists, workers, memory) that most often decide whether a page feels fast.
 
 Everything here was checked against Angular 22.2 (`@angular/core`, `@angular/common`, `@angular/router`, `@angular/build`) and `@angular/cdk` 22.2. Three related topics live in other chapters and are only cross-referenced here: custom preloading strategies (Advanced Routing chapter, [section 33](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing)), subscription leaks (RxJS chapter, [section 36](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing)) and injector-lifetime leaks (DI chapter, [section 32](#32-dependency-injection-masterclass-injection-context-environment-injectors-provider-scopes--memory)).
 
@@ -33580,7 +33580,7 @@ flowchart LR
     C --> D["Element render delay<br/>blocking CSS/JS, hydration,<br/>client-side rendering"]
 ```
 
-- Long **TTFB**: cache SSR output, prerender static routes (route-level render modes, chapter 25), use a CDN.
+- Long **TTFB**: cache SSR output, prerender static routes (route-level render modes, chapter [25](#25-route-level-rendering-modern-router-view-transitions--native-css-animations)), use a CDN.
 - Long **load delay**: the image URL is not in the initial HTML, or it is lazy-loaded. Use SSR and `NgOptimizedImage` with `priority` (40.8).
 - Long **load duration**: the image is too large. Use responsive `srcset` and modern formats through an image CDN loader.
 - Long **render delay**: the image arrived but the page could not paint yet. Reduce render-blocking CSS (40.7), fonts, and the initial bundle (40.5, 40.6).
@@ -33714,7 +33714,7 @@ app-reviews {
 Further sources to check:
 
 - **Server/client differences.** If SSR renders one thing and the client renders another (for example a "logged in" header that only appears in the browser, or `@if (isBrowser)` blocks), the swap shifts layout. Render a fixed-size placeholder on both sides, or use `@defer` with a sized placeholder, rather than branching on platform.
-- **Web fonts.** A fallback font with different metrics reflows text when the web font arrives. See 40.7 for `size-adjust`.
+- **Web fonts.** A fallback font with different metrics reflows text when the web font arrives. See [40.7](#407-critical-css-and-font-optimization) for `size-adjust`.
 - **Animations of `top`, `height` or `margin`.** These count as layout shifts. Animate `transform` and `opacity` instead, which CLS ignores.
 - **Shifts right after input are excluded.** The browser marks shifts within 500 ms of a tap or key press with `hadRecentInput`, and CLS ignores them. An accordion that opens on click is fine. A list that jumps when data arrives two seconds later is not.
 
@@ -33883,7 +33883,7 @@ bootstrapApplication(App, appConfig).then((appRef: ApplicationRef) => {
 
 ### 40.4 Change-Detection Profiling: From "It Is Slow" to a Specific Binding
 
-Chapter 21 explains *how* Angular v22 decides what to check (zoneless scheduling, `OnPush` by default, signal-driven subtree skipping). The Advanced Components chapter ([section 30](#30-advanced-component-architecture-views-dynamic-rendering--template-performance)) covers *template cost* (method calls, pure pipes, `computed()`, `@let`). This subsection is the diagnostic procedure that connects the two.
+Chapter [21](#21-angular-v22-change-detection-architecture--zoneless-traversal) explains *how* Angular v22 decides what to check (zoneless scheduling, `OnPush` by default, signal-driven subtree skipping). The Advanced Components chapter ([section 30](#30-advanced-component-architecture-views-dynamic-rendering--template-performance)) covers *template cost* (method calls, pure pipes, `computed()`, `@let`). This subsection is the diagnostic procedure that connects the two.
 
 ```mermaid
 flowchart TD
@@ -34396,7 +34396,7 @@ By default the viewport is its own scroll container with a fixed height. To virt
 
 ### 40.10 Web Workers: When Offloading Pays Off
 
-Section 27.4 shows a worker with transferable objects. The Signals chapter ([section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture), Signals with Web Workers) builds a typed RPC client with request correlation, cancellation and an SSR guard. This subsection answers the performance questions: *when* is a worker worth it, and how do you keep its overhead low?
+Section [27.4](#274-web-workers-with-signals--transferable-objects) shows a worker with transferable objects. The Signals chapter ([section 31](#31-signals--reactivity-masterclass-graph-internals-resources-interop--state-architecture), Signals with Web Workers) builds a typed RPC client with request correlation, cancellation and an SSR guard. This subsection answers the performance questions: *when* is a worker worth it, and how do you keep its overhead low?
 
 ```mermaid
 sequenceDiagram
@@ -34635,7 +34635,7 @@ flowchart TD
 
 #### Micro-benchmarks
 
-Use them for code with no DOM and no Angular: a selector, a reducer, a parser. Vitest (the guide's default runner since chapter 27) has a `bench` API. It is marked experimental in Vitest, so expect its options to change.
+Use them for code with no DOM and no Angular: a selector, a reducer, a parser. Vitest (the guide's default runner since chapter [27](#27-vitest-testing-library-development-compiler-internals--web-workers)) has a `bench` API. It is marked experimental in Vitest, so expect its options to change.
 
 ```typescript
 // src/app/orders/group-orders.bench.ts
@@ -34799,7 +34799,7 @@ Separate micro from macro. Pure functions go in a micro-benchmark (Vitest `bench
 
 ## 41. Application Security in Depth: DOM XSS, CSP, Authentication Flows & Supply Chain
 
-The Security chapter earlier in this guide explains Angular's built-in XSS model: values bound in templates are treated as untrusted, sanitized per security context (HTML, style, URL, resource URL), and `DomSanitizer.bypassSecurityTrust*` exists as an escape hatch. It also covers `HttpClient`'s XSRF support, and section 28.1 shows a nonce-based CSP with `CSP_NONCE`. This chapter picks up where those stop:
+The Security chapter earlier in this guide explains Angular's built-in XSS model: values bound in templates are treated as untrusted, sanitized per security context (HTML, style, URL, resource URL), and `DomSanitizer.bypassSecurityTrust*` exists as an escape hatch. It also covers `HttpClient`'s XSRF support, and section [28.1](#281-advanced-security-dynamic-csp-nonces-trusted-types--sri) shows a nonce-based CSP with `CSP_NONCE`. This chapter picks up where those stop:
 
 - the places where Angular's sanitizer **never runs**, and how DOM XSS sneaks in through them;
 - how to make the rare bypass reviewable instead of scattered;
@@ -35200,7 +35200,7 @@ Notes on this setup:
 - **A new nonce per response.** A nonce that is reused (cached HTML, a CDN in front of SSR, prerendered pages) is just a static password in your page source. Prerendered (SSG) routes either need an edge function that rewrites the placeholder per request, or a hash-based policy instead.
 - **Do not cache HTML** that contains a nonce at a shared cache. Cache the hashed JS/CSS files instead.
 - **No `CSP_NONCE` provider is needed** in this setup. The attribute on `app-root` is already in the rendered HTML, and hydration reads it on the client. Provide `CSP_NONCE` only when the nonce reaches the client some other way (for example a client-only app served by a server that injects a `<meta>` tag you read in `main.ts`).
-- Section 28.1 reads the nonce from a `window.__CSP_NONCE__` global. That works, but any script on the page can read it. The `ngCspNonce` attribute is no better at hiding it from script, but it avoids an extra inline script that itself needs a nonce.
+- Section [28.1](#281-advanced-security-dynamic-csp-nonces-trusted-types--sri) reads the nonce from a `window.__CSP_NONCE__` global. That works, but any script on the page can read it. The `ngCspNonce` attribute is no better at hiding it from script, but it avoids an extra inline script that itself needs a nonce.
 
 #### `autoCsp`: a hash-based CSP generated at build time (experimental)
 
@@ -35401,7 +35401,7 @@ Use a maintained, certified OIDC client library (for example `angular-auth-oidc-
 
 ### 41.7 Token Storage and Refresh-Token Rotation
 
-Section 26.1 shows an interceptor that queues requests while a token refresh runs. That handles the *mechanics*. This section covers the *security* of refresh tokens: where they live and what happens when one is stolen.
+Section [26.1](#261-modern-http-engine-withfetch-streaming--resilient-token-refresh) shows an interceptor that queues requests while a token refresh runs. That handles the *mechanics*. This section covers the *security* of refresh tokens: where they live and what happens when one is stolen.
 
 #### Where tokens can live
 
@@ -35410,7 +35410,7 @@ Section 26.1 shows an interceptor that queues requests while a token refresh run
 | `localStorage` | Yes | No | Yes | Avoid for refresh tokens; any XSS steals a long-lived credential |
 | `sessionStorage` | Yes | No | Yes (same tab) | Same XSS exposure, shorter lifetime |
 | In-memory (a signal in a service) | Only while the page runs | No | No | Good for short-lived access tokens |
-| `HttpOnly; Secure; SameSite` cookie | No | Yes (needs CSRF defense) | Yes | Best for refresh tokens or session IDs (see 41.8) |
+| `HttpOnly; Secure; SameSite` cookie | No | Yes (needs CSRF defense) | Yes | Best for refresh tokens or session IDs (see [41.8](#418-sessions-cookies-vs-tokens-and-the-backend-for-frontend-pattern)) |
 
 An attacker who has XSS on your page can make authenticated requests regardless of where the token lives. What storage changes is whether they can **take the token away** and keep using it after the user closes the tab. That is why the long-lived credential belongs where script cannot read it.
 
@@ -35835,7 +35835,7 @@ Upload progress events need the XHR backend. Since v22 makes fetch the default, 
 
 ### 41.12 Dependency Scanning and Supply-Chain Security
 
-A typical Angular app ships code from hundreds of packages and runs even more at build time. Section 28.1 mentions Subresource Integrity; this section covers the rest of the chain, from `npm install` to what the browser executes.
+A typical Angular app ships code from hundreds of packages and runs even more at build time. Section [28.1](#281-advanced-security-dynamic-csp-nonces-trusted-types--sri) mentions Subresource Integrity; this section covers the rest of the chain, from `npm install` to what the browser executes.
 
 ```mermaid
 flowchart LR
@@ -36158,7 +36158,7 @@ function registerRoute(routesPath: string, name: string): Rule {
 }
 ```
 
-Build it with `tsc` (CommonJS output, see 42.4), then run it from the workspace:
+Build it with `tsc` (CommonJS output, see [42.4](#424-ng-update-migrations-for-your-own-library)), then run it from the workspace:
 
 ```bash
 npm i -D ./tools/schematics
@@ -36466,7 +36466,7 @@ A useful rule: if the result should be committed to git, write a schematic. If t
 
 ### 42.7 `tsconfig` and Compiler Options in a v22 Workspace
 
-Section [Configuration](#configuration) lists where `tsconfig.json` lives, and section 27.3 shows one snippet. Here is what a v22 workspace actually contains and why.
+Section [Configuration](#configuration) lists where `tsconfig.json` lives, and section [27.3](#273-angular-compiler-architecture--extended-diagnostics) shows one snippet. Here is what a v22 workspace actually contains and why.
 
 ```mermaid
 flowchart TD
@@ -36908,7 +36908,7 @@ Align with Angular's cadence: Angular ships a major roughly every six months. A 
 
 ### 42.12 APF Packaging in Practice: Entry Points, Exports and Validation
 
-Section 27.2 creates a library and a secondary entry point; the Platform & Architecture Masterclass ([section 29](#29-platform--architecture-masterclass-compiler-ivy-runtime-bootstrap-injectors-elements-builders--monorepos)) shows what ng-packagr writes to `dist/`. Three practical topics remain.
+Section [27.2](#272-angular-package--library-development-ng-packagr--apf) creates a library and a secondary entry point; the Platform & Architecture Masterclass ([section 29](#29-platform--architecture-masterclass-compiler-ivy-runtime-bootstrap-injectors-elements-builders--monorepos)) shows what ng-packagr writes to `dist/`. Three practical topics remain.
 
 **Secondary entry points and the `exports` map.** Each folder with an `ng-package.json` becomes its own entry point with its own flat ES module and its own key in `exports`. Consumers can only import paths listed in `exports`; deep imports like `@acme/ui/lib/button/button` stop working, which is what you want.
 
@@ -37719,7 +37719,7 @@ To float the suggestion list instead of rendering it inline, put the `<ul>` in a
 
 #### Where `@angular/aria` fits
 
-`@angular/aria` (section 24.1) is a newer, signal-based set of headless directives (`ngListbox`/`ngOption`, `ngCombobox`, `ngMenu`, `ngTabs`, `ngTree`, `ngGrid`, `ngToolbar`, `ngAccordion`). It was introduced in v21 as a developer preview; check the stability label in the docs for your version before standardising a design system on it. The CDK primitives above are long-standing and stable. A practical rule: new design-system components can be prototyped on `@angular/aria`; production components that must not churn stay on the CDK until the package is marked stable.
+`@angular/aria` (section [24.1](#241-angular-aria-angulararia-headless-primitives)) is a newer, signal-based set of headless directives (`ngListbox`/`ngOption`, `ngCombobox`, `ngMenu`, `ngTabs`, `ngTree`, `ngGrid`, `ngToolbar`, `ngAccordion`). It was introduced in v21 as a developer preview; check the stability label in the docs for your version before standardising a design system on it. The CDK primitives above are long-standing and stable. A practical rule: new design-system components can be prototyped on `@angular/aria`; production components that must not churn stay on the CDK until the package is marked stable.
 
 **Pitfalls**
 
@@ -37826,7 +37826,7 @@ Direction-neutral CSS:
 
 ### 43.4 View Transitions: Controlling and Skipping Them
 
-Section 25.2 turns on `withViewTransitions()` and 25.3 shows `view-transition-name`. In real apps you also need to decide **when not to animate** and to vary the animation by direction. `withViewTransitions` and its options are still marked **developer preview** in v22.
+Section [25.2](#252-modern-angular-router-withviewtransitions-urltree--navigation-handlers) turns on `withViewTransitions()` and [25.3](#253-native-css-morphing-transitions-view-transition-name) shows `view-transition-name`. In real apps you also need to decide **when not to animate** and to vary the animation by direction. `withViewTransitions` and its options are still marked **developer preview** in v22.
 
 ```mermaid
 sequenceDiagram
@@ -39977,7 +39977,7 @@ Because the job ID can live in the URL (`/admin/jobs/:id`), a user who closes th
 
 ### 44.14 The Flagship Blueprints as System Designs
 
-Sections 28.4 to 28.6 show code. Here is the design reasoning each one needs before it goes to production.
+Sections [28.4](#284-flagship-blueprint-1-ai-agent-enabled-angular-webmcp-workspace) to [28.6](#286-flagship-blueprint-3-real-time-high-throughput-trading-orderbook-web-worker--signals) show code. Here is the design reasoning each one needs before it goes to production.
 
 | | 28.4 WebMCP workspace | 28.5 Signal Forms stepper | 28.6 Trading orderbook |
 |---|---|---|---|
