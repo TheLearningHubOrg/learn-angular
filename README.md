@@ -20346,11 +20346,11 @@ export class WarmupService {
 
 ```typescript
 import { createApplication } from '@angular/platform-browser';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { HeaderWidget } from './header-widget';
 import { CartWidget } from './cart-widget';
 
-const appRef = await createApplication({ providers: [provideHttpClient(withFetch())] });
+const appRef = await createApplication({ providers: [provideHttpClient()] });
 
 // Both widgets share one root injector, so they share HttpClient and every root service.
 appRef.bootstrap(HeaderWidget, { hostElement: '#site-header' });
@@ -20384,7 +20384,7 @@ All three run their function in an **injection context**, so `inject()` works in
 
 ```typescript
 import { ApplicationConfig, inject, provideAppInitializer, provideEnvironmentInitializer } from '@angular/core';
-import { provideHttpClient, withFetch, HttpClient } from '@angular/common/http';
+import { provideHttpClient, HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ConfigStore } from './config-store';
 import { I18nStore } from './i18n-store';
@@ -20392,7 +20392,7 @@ import { IconRegistry } from './icon-registry';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withFetch()),
+    provideHttpClient(),
 
     // Runs synchronously while the root injector is set up: before any app initializer.
     provideEnvironmentInitializer(() => inject(IconRegistry).registerDefaults()),
@@ -23876,7 +23876,7 @@ import {
   ApplicationRef, ComponentRef, DestroyRef, EnvironmentInjector, Injectable, InjectionToken,
   Injector, Type, createComponent, createEnvironmentInjector, inject,
 } from '@angular/core';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 export const WIDGET_CONFIG = new InjectionToken<{ id: string; title: string }>('WIDGET_CONFIG');
 
@@ -23899,7 +23899,7 @@ export class WidgetHost {
   mount(id: string, title: string, component: Type<unknown>, hostElement: Element) {
     // 1. Environment scope: each widget gets its own HttpClient and services
     const env = createEnvironmentInjector(
-      [provideHttpClient(withFetch())],
+      [provideHttpClient()],
       this.rootEnv,
       `Widget ${id}`, // shows up in DevTools and error messages
     );
@@ -23962,7 +23962,7 @@ Plugin systems, dashboards of independently configured widgets, micro-frontend s
 
 ### 32.4 `makeEnvironmentProviders()`: Building Your Own `provideX()` API
 
-Modern Angular configuration is a list of function calls: `provideRouter(routes, withViewTransitions())`, `provideHttpClient(withFetch())`. You can ship the same style for your own libraries and features with `makeEnvironmentProviders()`.
+Modern Angular configuration is a list of function calls: `provideRouter(routes, withViewTransitions())`, `provideHttpClient(withInterceptors([...]))`. You can ship the same style for your own libraries and features with `makeEnvironmentProviders()`.
 
 It wraps an array of providers in an opaque `EnvironmentProviders` object. TypeScript then only allows it in environment positions: `bootstrapApplication` / `ApplicationConfig.providers`, `Route.providers`, `createEnvironmentInjector()`. Putting it in `@Component.providers` is a compile error, which stops a consumer from accidentally creating a second instance of an app-wide service per component.
 
@@ -30231,11 +30231,11 @@ export const forwardCookieInterceptor: HttpInterceptorFn = (req, next) => {
 
 ```typescript
 // app.config.server.ts
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 providers: [
   provideServerRendering(withRoutes(serverRoutes)),
-  provideHttpClient(withFetch(), withInterceptors([forwardCookieInterceptor])),
+  provideHttpClient(withInterceptors([forwardCookieInterceptor])),
 ],
 ```
 
