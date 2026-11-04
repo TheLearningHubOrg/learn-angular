@@ -563,12 +563,13 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [33.4 canMatch: Choosing Between Routes for the Same URL](#334-canmatch-choosing-between-routes-for-the-same-url)
   - [33.5 Custom Preloading Strategies](#335-custom-preloading-strategies)
   - [33.6 Named Outlets and Auxiliary Routes](#336-named-outlets-and-auxiliary-routes)
-  - [33.7 Custom URL Matchers (UrlMatcher)](#337-custom-url-matchers-urlmatcher)
-  - [33.8 Route-Level Providers and Route Injectors](#338-route-level-providers-and-route-injectors)
-  - [33.9 Title Strategy](#339-title-strategy)
-  - [33.10 Route Reuse Strategy](#3310-route-reuse-strategy)
-  - [33.11 Testing Routes with RouterTestingHarness](#3311-testing-routes-with-routertestingharness)
-  - [33.12 Interview Questions: Advanced Routing](#3312-interview-questions-advanced-routing)
+  - [33.7 Custom URL Matchers (`UrlMatcher`)](#337-custom-url-matchers-urlmatcher)
+  - [33.8 Custom `UrlSerializer`: Lowercase Normalization, Trailing-Slash Trimming & Matrix Parameters](#338-custom-urlserializer-lowercase-normalization-trailing-slash-trimming--matrix-parameters)
+  - [33.9 Route-Level Providers and Route Injectors](#339-route-level-providers-and-route-injectors)
+  - [33.10 Title Strategy](#3310-title-strategy)
+  - [33.11 Route Reuse Strategy](#3311-route-reuse-strategy)
+  - [33.12 Testing Routes with `RouterTestingHarness`](#3312-testing-routes-with-routertestingharness)
+  - [33.13 Interview Questions: Advanced Routing](#3313-interview-questions-advanced-routing)
 - [34. Advanced Forms Architecture](#34-advanced-forms-architecture)
   - [34.1 The Validation Lifecycle: What updateValueAndValidity() Really Does](#341-the-validation-lifecycle-what-updatevalueandvalidity-really-does)
   - [34.2 Status and State: FormControlStatus, Propagation and Unified events](#342-status-and-state-formcontrolstatus-propagation-and-unified-events)
@@ -610,7 +611,8 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [36.9 Debugging Subscription Memory Leaks](#369-debugging-subscription-memory-leaks)
   - [36.10 Marble Testing with TestScheduler](#3610-marble-testing-with-testscheduler)
   - [36.11 Signals Interop in Depth: toSignal, toObservable and Friends](#3611-signals-interop-in-depth-tosignal-toobservable-and-friends)
-  - [36.12 Interview Questions: RxJS](#3612-interview-questions-rxjs)
+  - [36.12 Custom RxJS Operators & Pure RxJS State Management Patterns](#3612-custom-rxjs-operators--pure-rxjs-state-management-patterns)
+  - [36.13 Interview Questions: RxJS](#3613-interview-questions-rxjs)
 - [37. Advanced SSR & Deployment](#37-advanced-ssr--deployment)
   - [37.1 The v22 SSR Request Pipeline](#371-the-v22-ssr-request-pipeline)
   - [37.2 Server Routes in Depth: Status, Headers and Fallbacks](#372-server-routes-in-depth-status-headers-and-fallbacks)
@@ -690,7 +692,8 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [41.11 Secure File Uploads](#4111-secure-file-uploads)
   - [41.12 Dependency Scanning and Supply-Chain Security](#4112-dependency-scanning-and-supply-chain-security)
   - [41.13 Security Checklist](#4113-security-checklist)
-  - [41.14 Interview Questions: Security](#4114-interview-questions-security)
+  - [41.14 The OWASP Top 10 for Angular Developers: Vulnerabilities, Attack Vectors & Defenses](#4114-the-owasp-top-10-for-angular-developers-vulnerabilities-attack-vectors--defenses)
+  - [41.15 Interview Questions: Security](#4115-interview-questions-security)
 - [42. Developer Ecosystem & Tooling Masterclass: Schematics, Compiler Config, Linting, Packaging, Releases](#42-developer-ecosystem--tooling-masterclass-schematics-compiler-config-linting-packaging-releases)
   - [42.1 How the Schematics Engine Works](#421-how-the-schematics-engine-works)
   - [42.2 A Production ng generate Schematic](#422-a-production-ng-generate-schematic)
@@ -729,7 +732,10 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
   - [43.10 Browser Storage and IndexedDB](#4310-browser-storage-and-indexeddb)
   - [43.11 Consuming Web Components in Angular](#4311-consuming-web-components-in-angular)
   - [43.12 Integrating Third-Party JavaScript Libraries](#4312-integrating-third-party-javascript-libraries)
-  - [43.13 Interview Questions: Web Platform Integration](#4313-interview-questions-web-platform-integration)
+  - [43.13 Desktop Applications with Electron and Angular](#4313-desktop-applications-with-electron-and-angular)
+  - [43.14 Mobile Applications with Capacitor and Angular](#4314-mobile-applications-with-capacitor-and-angular)
+  - [43.15 WebAssembly (Wasm) Integration with Angular](#4315-webassembly-wasm-integration-with-angular)
+  - [43.16 Interview Questions: Web Platform Integration](#4316-interview-questions-web-platform-integration)
 - [44. Practical System Design: Designing Large Angular Apps from Requirements to Production](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production)
   - [44.1 A Repeatable Method for Frontend System Design](#441-a-repeatable-method-for-frontend-system-design)
   - [44.2 Turning Requirements into Budgets](#442-turning-requirements-into-budgets)
@@ -23872,6 +23878,78 @@ Use it at framework seams: reusing functional guards, bridging non-Angular callb
 
 ---
 
+#### Custom Decorators with DI: Stage 3 TypeScript Decorators & Injection Context
+
+Standard TypeScript 5.x+ Stage 3 decorators are officially supported and standard ECMAScript. Unlike legacy experimental decorators (`experimentalDecorators: true`), Stage 3 decorators run at class definition time rather than during runtime instantiation. Because Angular's Dependency Injection context is active only during synchronous class instantiation (constructors and field initializers), a decorator cannot directly invoke `inject()` when the class definition is evaluated.
+
+To bridge Stage 3 decorators with Angular DI, the decorator wraps methods or accessors to capture or resolve the instance's `EnvironmentInjector` dynamically, or executes the wrapped function within `runInInjectionContext`:
+
+```typescript
+// decorators/auto-retry.decorator.ts
+import { EnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
+
+/**
+ * Stage 3 Method Decorator that automatically retries an async operation
+ * using dependencies resolved from the instance's Angular injector.
+ */
+export function AutoRetry(maxAttempts = 3, delayMs = 500) {
+  return function (targetMethod: Function, context: ClassMethodDecoratorContext) {
+    return async function (this: any, ...args: any[]) {
+      // 1. Retrieve the instance's captured injector (stored on the instance or class)
+      const injector: EnvironmentInjector = this.injector ?? this['__injector__'];
+
+      if (!injector) {
+        throw new Error(
+          `@AutoRetry on ${String(context.name)} requires the class to hold an injector ` +
+          `(e.g., 'protected injector = inject(EnvironmentInjector);')`
+        );
+      }
+
+      let attempt = 0;
+      while (attempt < maxAttempts) {
+        try {
+          // 2. Execute the method inside the instance's injection context
+          return await runInInjectionContext(injector, () => targetMethod.apply(this, args));
+        } catch (err) {
+          attempt++;
+          if (attempt >= maxAttempts) throw err;
+          await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
+        }
+      }
+    };
+  };
+}
+```
+
+```typescript
+// user-profile.component.ts
+import { Component, EnvironmentInjector, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AutoRetry } from './decorators/auto-retry.decorator';
+
+@Component({
+  selector: 'app-user-profile',
+  template: `<button (click)="syncData()">Sync Profile</button>`,
+})
+export class UserProfileComponent {
+  // Capture injector during synchronous construction:
+  protected injector = inject(EnvironmentInjector);
+  private http = inject(HttpClient);
+
+  @AutoRetry(3, 1000)
+  async syncData() {
+    return await this.http.post('/api/user/sync', {}).toPromise();
+  }
+}
+```
+
+**Architectural Comparison: Decorators vs Composable Functions**
+While Stage 3 decorators provide clean annotations for cross-cutting method behaviors (logging, caching, metrics, retry), Angular v22 strongly favors **composable injection functions** (such as `injectLogger()` or `injectPageVisible()`) for component logic. Composable functions require zero wrapper boilerplate, retain 100% type inference without runtime overhead, and are completely tree-shakeable.
+
+[Back to top⤴️](#table-of-contents)
+
+---
+
 ### 32.3 Creating Injectors Yourself: `createEnvironmentInjector()`, `Injector.create()` and `destroy()`
 
 Angular gives you two factory functions. They are not competitors; they build different kinds of injectors.
@@ -25551,7 +25629,98 @@ export class Profile {
 
 [Back to top⤴️](#table-of-contents)
 
-### 33.8 Route-Level Providers and Route Injectors
+### 33.8 Custom `UrlSerializer`: Lowercase Normalization, Trailing-Slash Trimming & Matrix Parameters
+
+Angular's `DefaultUrlSerializer` parses URL strings into `UrlTree` structures and serializes `UrlTree` instances back into canonical URL strings. By default, routing paths are **strictly case-sensitive** and retain trailing slashes or matrix parameters (`/users;sort=desc`). 
+
+Real-world enterprise applications frequently require:
+1. **Case-Insensitive Routing**: Allowing `/Products/Shoes` and `/products/shoes` to resolve identically without 404s.
+2. **Trailing-Slash Normalization**: Stripping trailing slashes (`/dashboard/` → `/dashboard`) to prevent duplicate canonical URLs in SEO.
+3. **Query Parameter Preservation**: Converting only path segments to lowercase while strictly preserving query string case (e.g., `?code=ABCdef` must never be lowercased).
+
+```mermaid
+flowchart TD
+    URL["Raw Browser URL: /Products/Electronics/?tab=Specs#desc"] --> S["CustomUrlSerializer.parse()"]
+    S --> P["Normalize Path Segments to lowercase: /products/electronics"]
+    S --> T["Trim trailing slash: /products/electronics"]
+    S --> Q["Preserve Query & Hash exactly: ?tab=Specs#desc"]
+    Q --> TREE["Clean UrlTree -> Router Pipeline"]
+    TREE --> SER["CustomUrlSerializer.serialize(tree)"]
+    SER --> CAN["Canonical URL in Browser Address Bar"]
+```
+
+#### Production-grade `CustomUrlSerializer` implementation
+
+```typescript
+// custom-url-serializer.ts
+import { Injectable } from '@angular/core';
+import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
+
+@Injectable()
+export class CustomUrlSerializer extends DefaultUrlSerializer implements UrlSerializer {
+  override parse(url: string): UrlTree {
+    // 1. Separate path from query string (?) and fragment (#)
+    const [pathAndQuery, fragment] = url.split('#');
+    const [path, queryString] = pathAndQuery.split('?');
+
+    // 2. Normalize path: lowercase path segments and trim trailing slash
+    let normalizedPath = path.toLowerCase();
+    if (normalizedPath.length > 1 && normalizedPath.endsWith('/')) {
+      normalizedPath = normalizedPath.slice(0, -1);
+    }
+
+    // 3. Reconstruct the clean URL string
+    let cleanUrl = normalizedPath;
+    if (queryString !== undefined) {
+      cleanUrl += `?${queryString}`;
+    }
+    if (fragment !== undefined) {
+      cleanUrl += `#${fragment}`;
+    }
+
+    // 4. Delegate to DefaultUrlSerializer to build the UrlTree
+    return super.parse(cleanUrl);
+  }
+
+  override serialize(tree: UrlTree): string {
+    // Retain canonical serialization from default serializer
+    return super.serialize(tree);
+  }
+}
+```
+
+#### Registering the Custom Serializer in Application Config
+
+Register the custom serializer using `UrlSerializer` provider token in `provideRouter` or `appConfig`:
+
+```typescript
+// app.config.ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter, UrlSerializer, withComponentInputBinding } from '@angular/router';
+import { routes } from './app.routes';
+import { CustomUrlSerializer } from './custom-url-serializer';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes, withComponentInputBinding()),
+    {
+      provide: UrlSerializer,
+      useClass: CustomUrlSerializer,
+    },
+  ],
+};
+```
+
+**Pitfalls & Edge Cases**
+- **Do NOT lowercase query parameters or fragments**: Doing so corrupts base64 tokens, cryptographic hashes, OAuth exchange codes, and case-sensitive search queries.
+- **Matrix parameters**: If your application relies on matrix parameters (e.g., `/items;id=42`), `DefaultUrlSerializer` attaches them to `UrlSegment.parameters`. Ensure your custom normalization does not accidentally truncate or corrupt semicolon-separated values.
+- **SSR Hydration Consistency**: Ensure the same `CustomUrlSerializer` is provided in both browser and server configurations (`app.config.server.ts`), otherwise server-rendered HTML and client-side hydration will experience route mismatch errors.
+
+[Back to top⤴️](#table-of-contents)
+
+---
+
+### 33.9 Route-Level Providers and Route Injectors
 
 A route can declare `providers`. The router then creates an `EnvironmentInjector` for that route the first time it matches. The route's component, its children and their guards and resolvers all resolve dependencies from it before falling back to the root injector. With `loadChildren`, the providers come in the lazy chunk, so the service code is not in the main bundle.
 
@@ -25623,7 +25792,7 @@ provideRouter(routes, withAutoCleanupInjectors());
 
 [Back to top⤴️](#table-of-contents)
 
-### 33.9 Title Strategy
+### 33.10 Title Strategy
 
 Routes can set `title` as a string, a `ResolveFn<string>`, or a resolver class. The default `TitleStrategy` copies the deepest route's title to `document.title` after each successful navigation. A custom strategy is the single place to add an app suffix, translate titles or announce page changes to screen readers.
 
@@ -25668,7 +25837,7 @@ Title resolvers run with the other resolvers, so a slow title delays the navigat
 
 [Back to top⤴️](#table-of-contents)
 
-### 33.10 Route Reuse Strategy
+### 33.11 Route Reuse Strategy
 
 When the router moves between two URLs that match the same route config (for example `/users/1` to `/users/2`), it keeps the component and only updates params. When the route config changes, it destroys the old component. A `RouteReuseStrategy` changes both rules, and can also detach a component tree, keep it in memory, and reattach it later. Typical use: keep a long, filtered list alive while the user opens a detail page and comes back.
 
@@ -25766,7 +25935,7 @@ A reattached component does not run its constructor or `ngOnInit` again. To refr
 
 [Back to top⤴️](#table-of-contents)
 
-### 33.11 Testing Routes with `RouterTestingHarness`
+### 33.12 Testing Routes with `RouterTestingHarness`
 
 `RouterTestingModule` is legacy. For standalone apps, configure the real router with `provideRouter()` in `TestBed` and drive it with `RouterTestingHarness` from `@angular/router/testing`. The harness creates a root component with a `<router-outlet>`, performs real navigations (guards, resolvers, redirects, input binding) and waits for them to finish.
 
@@ -25876,7 +26045,7 @@ it('authGuard returns a RedirectCommand when logged out', () => {
 
 [Back to top⤴️](#table-of-contents)
 
-### 33.12 Interview Questions: Advanced Routing
+### 33.13 Interview Questions: Advanced Routing
 
 #### Q: What is the order of router events for a navigation to a lazy route with a guard and a resolver?
 
@@ -29745,7 +29914,165 @@ This round trip is the standard pattern when you need what signals do not have: 
 
 ---
 
-### 36.12 Interview Questions: RxJS
+### 36.12 Custom RxJS Operators & Pure RxJS State Management Patterns
+
+While RxJS provides dozens of built-in operators, enterprise codebases routinely encapsulate repetitive asynchronous workflows, domain-specific filtering, and resilient retry logic into reusable **custom operators**. Furthermore, when teams require lightweight global or feature state without third-party dependencies (like NgRx or Akita), a **pure RxJS reactive store pattern** provides predictable unidirectional data flow.
+
+#### 1. Authoring Custom RxJS Operators
+
+A custom operator is a higher-order function returning `MonoTypeOperatorFunction<T>` (same input and output type) or `OperatorFunction<T, R>` (transforms type `T` to `R`).
+
+```typescript
+// rxjs/operators.ts
+import { Observable, MonoTypeOperatorFunction, OperatorFunction, throwError, timer } from 'rxjs';
+import { filter, mergeMap, retry, tap } from 'rxjs/operators';
+
+/**
+ * Custom operator: Filters out null and undefined values with full TypeScript type narrowing.
+ */
+export function filterNil<T>(): OperatorFunction<T | null | undefined, NonNullable<T>> {
+  return (source$: Observable<T | null | undefined>) =>
+    source$.pipe(filter((value): value is NonNullable<T> => value !== null && value !== undefined));
+}
+
+/**
+ * Custom operator: Exponential backoff retry with jitter for resilient network requests.
+ */
+export function retryWithBackoff<T>(options: {
+  maxRetries?: number;
+  initialDelayMs?: number;
+  backoffFactor?: number;
+} = {}): MonoTypeOperatorFunction<T> {
+  const { maxRetries = 3, initialDelayMs = 500, backoffFactor = 2 } = options;
+
+  return (source$: Observable<T>) =>
+    source$.pipe(
+      retry({
+        count: maxRetries,
+        delay: (error, retryCount) => {
+          const delayTime = initialDelayMs * Math.pow(backoffFactor, retryCount - 1);
+          const jitter = Math.floor(Math.random() * 100);
+          console.warn(`[Retry #${retryCount}] Retrying after ${delayTime + jitter}ms due to:`, error);
+          return timer(delayTime + jitter);
+        },
+      })
+    );
+}
+
+/**
+ * Custom operator: Debug logger that logs emissions during development and no-ops in production.
+ */
+export function debugTap<T>(tag: string): MonoTypeOperatorFunction<T> {
+  return (source$: Observable<T>) =>
+    source$.pipe(
+      tap({
+        next: (val) => console.log(`[${tag}] Next:`, val),
+        error: (err) => console.error(`[${tag}] Error:`, err),
+        complete: () => console.log(`[${tag}] Completed`),
+      })
+    );
+}
+```
+
+#### 2. Pure RxJS State Management Pattern
+
+A production-grade, zero-dependency store built exclusively with `BehaviorSubject`, immutable state reducers, and memoized selectors via `distinctUntilChanged()`:
+
+```mermaid
+flowchart LR
+    ACTION["Action / Method Call"] --> STATE["BehaviorSubject<State> (Private)"]
+    STATE --> SELECT["Selectors: distinctUntilChanged()"]
+    SELECT --> COMP["Components / Signals via toSignal()"]
+```
+
+```typescript
+// state/rxjs-store.ts
+import { BehaviorSubject, Observable, map, distinctUntilChanged } from 'rxjs';
+
+export abstract class RxStore<T extends object> {
+  private readonly stateSubject$: BehaviorSubject<T>;
+  readonly state$: Observable<T>;
+
+  protected constructor(initialState: T) {
+    this.stateSubject$ = new BehaviorSubject<T>(Object.freeze({ ...initialState }));
+    this.state$ = this.stateSubject$.asObservable();
+  }
+
+  /** Read synchronous snapshot of state */
+  get snapshot(): T {
+    return this.stateSubject$.getValue();
+  }
+
+  /** Select a sub-slice of state with automatic change deduction */
+  protected select<K>(selector: (state: T) => K): Observable<K> {
+    return this.state$.pipe(
+      map(selector),
+      distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+    );
+  }
+
+  /** Update state immutably using a reducer updater function */
+  protected setState(updater: (state: T) => Partial<T> | T): void {
+    const currentState = this.snapshot;
+    const newState = { ...currentState, ...updater(currentState) };
+    this.stateSubject$.next(Object.freeze(newState));
+  }
+}
+```
+
+```typescript
+// state/cart.store.ts
+import { Injectable } from '@angular/core';
+import { RxStore } from './rxjs-store';
+
+export interface CartItem { id: string; name: string; price: number; quantity: number }
+export interface CartState { items: CartItem[]; coupon: string | null }
+
+@Injectable({ providedIn: 'root' })
+export class CartStore extends RxStore<CartState> {
+  constructor() {
+    super({ items: [], coupon: null });
+  }
+
+  readonly items$ = this.select((s) => s.items);
+  readonly count$ = this.select((s) => s.items.reduce((acc, item) => acc + item.quantity, 0));
+  readonly total$ = this.select((s) => s.items.reduce((acc, item) => acc + item.price * item.quantity, 0));
+
+  addItem(item: CartItem): void {
+    this.setState((state) => {
+      const existing = state.items.find((i) => i.id === item.id);
+      if (existing) {
+        return {
+          items: state.items.map((i) => i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i),
+        };
+      }
+      return { items: [...state.items, item] };
+    });
+  }
+
+  removeItem(id: string): void {
+    this.setState((state) => ({ items: state.items.filter((i) => i.id !== id) }));
+  }
+}
+```
+
+#### 3. RxJS vs Signals: Architectural Decision Framework
+
+| Criterion | Use Angular Signals | Use RxJS Observables |
+| :--- | :--- | :--- |
+| **Primary Domain** | Synchronous reactive state, view bindings, derived calculations | Asynchronous coordination, event streams, networking |
+| **Change Propagation** | Push-pull (glitch-free dependency graph) | Push-based stream emissions |
+| **Cancellation & Teardown** | Automatic cleanup via injection context | Explicit teardown (`takeUntilDestroyed`, `unsubscribe`) |
+| **Debouncing & Rate Limiting** | Not built-in (requires timer or interop) | Native operators (`debounceTime`, `throttleTime`, `audit`) |
+| **Concurrency & Flattening** | Single synchronous value at any time | Complex flattening (`switchMap`, `exhaustMap`, `mergeMap`) |
+| **Template Syntax** | `{{ count() }}` (direct function invocation) | `{{ count$ | async }}` (requires async pipe or `toSignal()`) |
+| **Recommendation** | **Default for UI components, local state, inputs, outputs** | **Default for HTTP, WebSockets, complex event pipelines, retry logic** |
+
+[Back to top⤴️](#table-of-contents)
+
+---
+
+### 36.13 Interview Questions: RxJS
 
 #### Q: Why does code placed right after `subscribe()` sometimes run before the first value and sometimes after it?
 
@@ -35957,7 +36284,43 @@ If your organization publishes Angular libraries, publish from CI with **provena
 
 ---
 
-### 41.14 Interview Questions: Security
+### 41.14 The OWASP Top 10 for Angular Developers: Vulnerabilities, Attack Vectors & Defenses
+
+Enterprise single-page applications run in hostile browser environments. While Angular's design provides built-in defenses against classic web attacks (such as contextual HTML sanitization), developers must address vulnerabilities across the entire **OWASP Top 10** attack surface:
+
+```mermaid
+flowchart TD
+    subgraph OWASP["OWASP Top 10 Angular Threat Surface"]
+        A1["A01: Broken Access Control<br/>Guards != Authorization"]
+        A2["A02: Cryptographic Failures<br/>localStorage token leakage"]
+        A3["A03: Injection & DOM XSS<br/>bypassSecurityTrust / innerHTML"]
+        A5["A05: Security Misconfiguration<br/>Permissive CSP / CORS *"]
+        A6["A06: Vulnerable Components<br/>Outdated npm supply chain"]
+        A7["A07: Identification / Auth<br/>Missing PKCE / Token replay"]
+        A8["A08: Integrity Failures<br/>Missing SRI on CDN bundles"]
+        A9["A09: Logging & Monitoring<br/>Silent client-side errors"]
+        A10["A10: SSR SSRF<br/>Host header injection in Node"]
+    end
+```
+
+| OWASP Threat | Attack Vector in Angular Applications | Defensive Architecture & Countermeasures |
+| :--- | :--- | :--- |
+| **A01: Broken Access Control** | Relying solely on client-side route guards (`canActivate`, `canMatch`) to enforce security. Attackers modify JavaScript state in DevTools to bypass client guards. | **Never trust client routing for authorization.** Route guards provide user experience (UX) redirection only. Every protected REST API or GraphQL endpoint must independently validate JWT signatures and permissions on every incoming HTTP request. Use RBAC directives (`*appHasRole`) purely for UI visibility. |
+| **A02: Cryptographic Failures** | Storing JWTs or sensitive credentials in `localStorage` or `sessionStorage` where any script execution or third-party SDK can exfiltrate them. | Store session tokens in `HttpOnly`, `Secure`, `SameSite=Strict` cookies inaccessible to JavaScript. If tokens must reside in memory, maintain them inside a private closure/service and perform token refreshes using OAuth 2.0 PKCE. |
+| **A03: Injection & DOM XSS** | Bypassing Angular's sanitizer with `bypassSecurityTrustHtml()`, assigning untrusted input to `ElementRef.nativeElement.innerHTML`, or improper template expressions. | Rely on Angular's default contextual sanitization. Enforce **Trusted Types** (`trustedTypes.createPolicy`) so arbitrary string assignments to DOM sinks throw runtime errors. Review and lint all `bypassSecurityTrust*` calls with strict ESLint rules (`@angular-eslint/no-bypass-security-trust`). |
+| **A04: Insecure Design** | Performing business calculations (discounts, tax, checkout totals) solely on the frontend. | Enforce zero-trust architecture. Treat the Angular client as completely untrusted. Calculate all financial, privilege, and state-machine transitions exclusively on the backend. |
+| **A05: Security Misconfiguration** | Permissive CSP policies (`unsafe-inline`, `unsafe-eval`), missing HTTP security headers, leaving Angular source maps publicly accessible in production builds. | Configure strict Content Security Policy (CSP) with cryptographic nonces (`ngCspNonce`) and disable `eval()`. Configure `build` options with `"sourceMap": false` in production `angular.json`. Enforce `X-Content-Type-Options: nosniff` and `Strict-Transport-Security`. |
+| **A06: Vulnerable Dependencies** | Compromised or outdated npm dependencies in `package-lock.json` introducing malicious transitive packages. | Enforce automated vulnerability scanning in CI/CD using `npm audit --audit-level=high` and Dependabot / Renovate. Pin dependencies with lockfiles and generate Software Bill of Materials (SBOM) using CycloneDX. |
+| **A07: Identification & Auth Failures** | Insecure authentication flows, persistent sessions without timeout, missing token rotation. | Implement OAuth 2.0 with PKCE (Proof Key for Code Exchange). Implement automated inactivity timeouts via `DestroyRef` and window activity listeners. Rotate refresh tokens on every single use. |
+| **A08: Software & Data Integrity Failures** | Loading external scripts, fonts, or analytics libraries from CDNs without integrity validation. | Enable Subresource Integrity (SRI) in Angular builds using `subresourceIntegrity: true` in `angular.json`. Verify that third-party scripts include `integrity="sha384-..."` and `crossorigin="anonymous"`. |
+| **A09: Logging & Security Monitoring Failures** | Client-side security exceptions (CSP violations, sanitization drops, auth failures) fail silently without alerting the security team. | Deploy frontend observability (OpenTelemetry, Sentry, Datadog) to capture client exceptions and CSP violation reports (`Reporting-Endpoints` / `report-to`). Scrub Personal Identifiable Information (PII) before transmission. |
+| **A10: SSR Server-Side Request Forgery (SSRF)** | Angular Server-Side Rendering (SSR) engine fetching internal microservices or metadata endpoints (`http://169.254.169.254`) based on untrusted user headers (`Host`, `X-Forwarded-For`). | Validate and allowlist all URLs requested by `HttpClient` inside the SSR Node.js server. Isolate SSR containers within a DMZ network boundary without access to cloud instance metadata services. |
+
+[Back to top⤴️](#table-of-contents)
+
+---
+
+### 41.15 Interview Questions: Security
 
 #### Q: Does `Renderer2` protect you from XSS?
 
@@ -38949,7 +39312,231 @@ export class ScriptLoader {
 
 ---
 
-### 43.13 Interview Questions: Web Platform Integration
+### 43.13 Desktop Applications with Electron and Angular
+
+Building desktop applications with Electron and Angular combines Angular's component architecture with native desktop operating system access (filesystem, native menus, system tray, notifications). 
+
+```mermaid
+flowchart TD
+    subgraph ElectronMain["Electron Main Process (Node.js)"]
+        MP["main.ts / BrowserWindow"] --> OS["Native OS APIs: Filesystem, Menus, Tray"]
+    end
+    subgraph Preload["Preload Bridge (Isolated Context)"]
+        PL["preload.ts: contextBridge.exposeInMainWorld('electronAPI', ...)"]
+    end
+    subgraph AngularRenderer["Angular Renderer Process (Chromium)"]
+        APP["Angular Standalone App"] --> SRV["ElectronIpcService (injectable)"]
+    end
+    MP <-->|"ipcRenderer / ipcMain"| PL <-->|"window.electronAPI"| SRV
+```
+
+#### 1. Security Architecture: Context Isolation & Preload
+
+Never enable `nodeIntegration: true` in the renderer process. Doing so exposes full OS-level Node.js APIs to DOM injection. Instead, use `contextIsolation: true` and expose a strict, typed API via `preload.ts`:
+
+```typescript
+// electron/preload.ts
+import { contextBridge, ipcRenderer } from 'electron';
+
+export interface ElectronBridge {
+  readFile: (path: string) => Promise<string>;
+  saveFile: (path: string, content: string) => Promise<boolean>;
+  onMenuTrigger: (callback: (action: string) => void) => () => void;
+}
+
+const electronAPI: ElectronBridge = {
+  readFile: (path: string) => ipcRenderer.invoke('fs:read-file', path),
+  saveFile: (path: string, content: string) => ipcRenderer.invoke('fs:save-file', path, content),
+  onMenuTrigger: (callback) => {
+    const handler = (_event: any, action: string) => callback(action);
+    ipcRenderer.on('menu:trigger', handler);
+    return () => ipcRenderer.removeListener('menu:trigger', handler);
+  },
+};
+
+contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+```
+
+#### 2. Angular Electron Service Wrapper
+
+Wrap the window bridge inside an Angular service using Signals and `DestroyRef` for memory safety:
+
+```typescript
+// services/electron-ipc.service.ts
+import { Injectable, DestroyRef, inject, signal } from '@angular/core';
+import type { ElectronBridge } from '../../electron/preload';
+
+declare global {
+  interface Window {
+    electronAPI?: ElectronBridge;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class ElectronService {
+  private readonly destroyRef = inject(DestroyRef);
+  readonly isDesktop = signal(typeof window !== 'undefined' && !!window.electronAPI);
+
+  async readFile(filePath: string): Promise<string> {
+    if (!window.electronAPI) throw new Error('Not running inside Electron desktop shell');
+    return await window.electronAPI.readFile(filePath);
+  }
+
+  async saveFile(filePath: string, content: string): Promise<boolean> {
+    if (!window.electronAPI) throw new Error('Not running inside Electron desktop shell');
+    return await window.electronAPI.saveFile(filePath, content);
+  }
+
+  listenMenuActions(onAction: (action: string) => void): void {
+    if (!window.electronAPI) return;
+    const cleanup = window.electronAPI.onMenuTrigger(onAction);
+    this.destroyRef.onDestroy(cleanup);
+  }
+}
+```
+
+#### 3. Build & Routing Configuration
+Configure `"baseHref": "./"` in `angular.json` for production desktop builds, and use `withHashLocation()` in `provideRouter()` because Electron serves files from the `file://` protocol.
+
+---
+
+### 43.14 Mobile Applications with Capacitor and Angular
+
+Capacitor delivers native iOS and Android applications using standard Angular web code inside a secure WKWebView / Android WebView, offering direct bridge access to device hardware (Camera, GPS, Biometrics, Push Notifications).
+
+```mermaid
+flowchart LR
+    ANGULAR["Angular App (Signals, Standalone)"] --> BRG["Capacitor Bridge (@capacitor/core)"]
+    BRG --> IOS["iOS Native Shell (Swift / WKWebView)"]
+    BRG --> AND["Android Native Shell (Kotlin / WebView)"]
+    IOS --> HW["Native Hardware: Camera, Biometrics, SQLite, Push"]
+    AND --> HW
+```
+
+#### 1. Initializing Capacitor in an Angular Project
+
+```bash
+# 1. Install Capacitor core and CLI
+npm install @capacitor/core
+npm install -D @capacitor/cli
+
+# 2. Initialize Capacitor configuration
+npx cap init "My Angular App" "com.company.angularapp" --web-dir "dist/my-angular-app/browser"
+
+# 3. Add native platforms
+npm install @capacitor/ios @capacitor/android
+npx cap add ios
+npx cap add android
+```
+
+#### 2. Bridging Native Device APIs with Angular Signals
+
+```typescript
+// services/device-camera.service.ts
+import { Injectable, signal } from '@angular/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
+
+@Injectable({ providedIn: 'root' })
+export class DeviceCameraService {
+  readonly isNative = signal(Capacitor.isNativePlatform());
+  readonly capturedPhoto = signal<string | null>(null);
+
+  async takePhoto(): Promise<string | null> {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera,
+      });
+
+      if (image.webPath) {
+        this.capturedPhoto.set(image.webPath);
+        return image.webPath;
+      }
+      return null;
+    } catch (err) {
+      console.warn('Camera capture cancelled or failed:', err);
+      return null;
+    }
+  }
+}
+```
+
+#### 3. Mobile Layout Guidelines
+- **Safe Area Insets**: Handle notches and home indicators using CSS environment variables:
+  ```css
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  ```
+- **Viewport Config**: Set `<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">` in `index.html`.
+
+---
+
+### 43.15 WebAssembly (Wasm) Integration with Angular
+
+For computationally intensive workloads (cryptographic hashing, audio/video encoding, CAD rendering, client-side ML inference), WebAssembly runs binary bytecode in browser runtimes at near-native speed.
+
+```mermaid
+flowchart LR
+    C["C / Rust / Go Source"] --> COMP["Emscripten / rustc --target wasm32"]
+    COMP --> WASM["assets/compute.wasm"]
+    WASM --> STREAM["WebAssembly.instantiateStreaming()"]
+    STREAM --> ANG["Angular Service (Offload Heavy Math)"]
+    ANG --> SIG["Signals UI Update"]
+```
+
+#### High-Performance Wasm Service in Angular
+
+```typescript
+// services/wasm-compute.service.ts
+import { Injectable, signal } from '@angular/core';
+
+interface WasmExports {
+  fibonacci: (n: number) => number;
+  processImageData: (ptr: number, length: number) => void;
+  memory: WebAssembly.Memory;
+}
+
+@Injectable({ providedIn: 'root' })
+export class WasmComputeService {
+  readonly isLoaded = signal(false);
+  private wasmInstance: WasmExports | null = null;
+
+  async loadWasm(wasmUrl = 'assets/wasm/compute.wasm'): Promise<void> {
+    if (this.wasmInstance) return;
+
+    try {
+      const response = await fetch(wasmUrl);
+      const { instance } = await WebAssembly.instantiateStreaming(response, {
+        env: {
+          abort: () => console.error('Wasm abort called'),
+        },
+      });
+
+      this.wasmInstance = instance.exports as unknown as WasmExports;
+      this.isLoaded.set(true);
+    } catch (err) {
+      console.error('Failed to load WebAssembly module:', err);
+      throw err;
+    }
+  }
+
+  computeFast(n: number): number {
+    if (!this.wasmInstance) throw new Error('Wasm not initialized');
+    return this.wasmInstance.fibonacci(n);
+  }
+}
+```
+
+[Back to top⤴️](#table-of-contents)
+
+---
+
+### 43.16 Interview Questions: Web Platform Integration
 
 #### Q: Why does a CDK overlay need its direction passed explicitly, and what else breaks because it lives under `<body>`?
 
