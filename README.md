@@ -45,7 +45,7 @@ flowchart LR
 | [**Stage 4**](#4-stage-4-hierarchical-dependency-injection--routing) | **Hierarchical DI & Routing** | Tree-shakeable providers, `inject()`, `EnvironmentInjector`, functional guards (`CanActivateFn`) and resolvers, lazy loading. | [4.1 Dependency Injection Architecture](#41-dependency-injection-architecture)<br/>[4.2 Functional APIs](#42-functional-apis)<br/>[4.3 Routing](#43-routing) | [25. Route-Level Rendering, Modern Router, View Transitions & Native CSS Animations](#25-route-level-rendering-modern-router-view-transitions--native-css-animations)<br/>[32. Dependency Injection Masterclass](#32-dependency-injection-masterclass-injection-context-environment-injectors-provider-scopes--memory)<br/>[33. Advanced Routing](#33-advanced-routing-navigation-lifecycle-cancellation-matchers-strategies--router-testing) |
 | [**Stage 5**](#5-stage-5-enterprise-reactive-forms--http-client) | **Reactive Forms & HTTP Engine** | Strongly-typed `FormGroup`, Signal Forms, async validators, `HttpClient` with functional interceptors (`HttpInterceptorFn`), RxJS operators. | [5.1 Reactive Forms Architecture](#51-reactive-forms-architecture)<br/>[5.2 HTTP](#52-http)<br/>[5.3 RxJS](#53-rxjs) | [22. Signal Forms Complete Masterclass](#22-signal-forms-complete-masterclass)<br/>[26. Modern HTTP Engine, Advanced DI, SSR Hydration & @defer Deep Dive](#26-modern-http-engine-advanced-di-ssr-hydration--defer-deep-dive)<br/>[34. Advanced Forms Architecture](#34-advanced-forms-architecture)<br/>[35. HTTP Internals, Data Fetching Patterns & Real-Time Networking](#35-http-internals-data-fetching-patterns--real-time-networking)<br/>[36. RxJS Masterclass](#36-rxjs-masterclass-execution-model-multicasting-flattening-errors-rate-limiting-leaks--marble-testing) |
 | [**Stage 6**](#6-stage-6-server-side-rendering-ssr-deferrable-views--performance) | **SSR, @defer & Enterprise Performance** | Hydration and event replay, `@defer` triggers, rendering, animations, i18n, security, performance, testing, Material/CDK, PWA, deployment, best practices and design patterns. | [6.1 Server-Side Rendering & Hydration](#61-server-side-rendering--hydration)<br/>[6.2 Rendering](#62-rendering)<br/>[6.3 Animations](#63-animations)<br/>[6.4 Internationalization (i18n)](#64-internationalization-i18n)<br/>[6.5 Security](#65-security)<br/>[6.6 Performance](#66-performance)<br/>[6.7 Testing](#67-testing)<br/>[6.8 Angular Material](#68-angular-material)<br/>[6.9 Angular CDK](#69-angular-cdk)<br/>[6.10 Progressive Web Apps (PWA)](#610-progressive-web-apps-pwa)<br/>[6.11 Deployment](#611-deployment)<br/>[6.12 Best Practices](#612-best-practices)<br/>[6.13 Design Patterns](#613-design-patterns) | [27. Vitest Testing, Library Development, Compiler Internals & Web Workers](#27-vitest-testing-library-development-compiler-internals--web-workers)<br/>[28. Advanced Security, Accessibility, Enterprise State & Flagship Blueprints](#28-advanced-security-accessibility-enterprise-state--flagship-blueprints)<br/>[37. Advanced SSR & Deployment](#37-advanced-ssr--deployment)<br/>[38. Testing Masterclass](#38-testing-masterclass-modern-angular-testing-with-vitest-zoneless-testbed-and-beyond)<br/>[40. Advanced Performance Engineering](#40-advanced-performance-engineering-web-vitals-profiling-budgets--runtime-tuning)<br/>[41. Application Security in Depth](#41-application-security-in-depth-dom-xss-csp-authentication-flows--supply-chain)<br/>[43. Web Platform Integration](#43-web-platform-integration-cdk-i18n-pwa-storage-and-interop) |
-| [**Stage 7**](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet) | **Staff Architect Interview Handbook** | Staff-level interview Q&As, scenario questions and architecture trade-offs; read after the masterclasses that deepen Stages 1 to 6. | [7.1 Core Staff Architect Technical Interview Q&As](#71-core-staff-architect-technical-interview-qas)<br/>[7.2 Interview Questions by Chapter](#72-interview-questions-by-chapter) | [39. Enterprise Architecture Masterclass](#39-enterprise-architecture-masterclass)<br/>[44. Practical System Design](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) |
+| [**Stage 7**](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet) | **Staff Architect Interview Handbook** | Staff-level interview Q&As, scenario questions and architecture trade-offs; read after the masterclasses that deepen Stages 1 to 6. | [7.1 Freshers Q&As](#71-angular-interview-questions-for-freshers)<br/>[7.2 Experienced Q&As](#72-angular-interview-questions-for-experienced)<br/>[7.3 Scenario Questions](#73-angular-scenario-based-interview-questions)<br/>[7.4 Staff Architect Q&As](#74-core-staff-architect-technical-interview-qas)<br/>[7.5 Questions by Chapter](#75-interview-questions-by-chapter) | [39. Enterprise Architecture Masterclass](#39-enterprise-architecture-masterclass)<br/>[44. Practical System Design](#44-practical-system-design-designing-large-angular-apps-from-requirements-to-production) |
 
 The numbered sections from 20 to 44 form the **advanced masterclass track**. They sit after Stage 6 and before the Stage 7 interview handbook, and each one deepens the stage listed in the table above. Work through a stage first, then read its deep dives, or come back to them once all six stages are done.
 
@@ -750,12 +750,11 @@ The numbered sections from 20 to 44 form the **advanced masterclass track**. The
 **Part III: Interview handbook (Stage 7)**
 
 - [7. Stage 7: Staff Angular Architect Interview Handbook & Cheatsheet](#7-stage-7-staff-angular-architect-interview-handbook--cheatsheet)
-  - [7.1 Core Staff Architect Technical Interview Q&As](#71-core-staff-architect-technical-interview-qas)
-    - Angular Interview Questions
-    - Signals Interview Questions
-    - RxJS Interview Questions
-    - Scenario-based Questions
-  - [7.2 Interview Questions by Chapter](#72-interview-questions-by-chapter)
+  - [7.1 Angular Interview Questions for Freshers](#71-angular-interview-questions-for-freshers)
+  - [7.2 Angular Interview Questions for Experienced](#72-angular-interview-questions-for-experienced)
+  - [7.3 Angular Scenario Based Interview Questions](#73-angular-scenario-based-interview-questions)
+  - [7.4 Core Staff Architect Technical Interview Q&As](#74-core-staff-architect-technical-interview-qas)
+  - [7.5 Interview Questions by Chapter](#75-interview-questions-by-chapter)
 
 **Appendices**
 
@@ -40107,7 +40106,1184 @@ The server is the only enforcement point; the UI hides what the user cannot do s
 
 ## 7. Stage 7: Staff Angular Architect Interview Handbook & Cheatsheet
 
-### 7.1 Core Staff Architect Technical Interview Q&As
+### 7.1 Angular Interview Questions for Freshers
+
+#### 1. Why were client-side frameworks like Angular introduced?
+
+**Answer:**  
+Earlier, dynamic websites relied on VanillaJS and jQuery, which became difficult to maintain as application logic expanded. jQuery lacked built-in mechanisms for cross-view data synchronization and separation of concerns. Client-side frameworks like Angular address this by modularizing applications into reusable components, enforcing separation of concerns, and enabling faster development of Single Page Applications (SPAs).
+
+**Code Example:**
+```typescript
+// Angular divides logic, template, and styles into separate files/components:
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-hello',
+  template: `<h1>Hello {{ name }}</h1>`
+})
+export class HelloComponent {
+  name: string = 'Angular';
+}
+```
+
+---
+
+#### 2. How does an Angular application work?
+
+**Answer:**  
+The build process starts with `angular.json`, which points to the entry point (`src/main.ts`). The `main.ts` file creates the browser execution context and invokes `bootstrapModule(AppModule)` (or `bootstrapApplication(AppComponent)` in modern standalone apps) to bootstrap the root module or component. The browser loads `index.html`, which contains the root component selector (`<app-root></app-root>`), rendering the root view.
+
+**Code Example:**
+```typescript
+// main.ts
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+```
+
+---
+
+#### 3. What are some of the advantages of Angular over other frameworks?
+
+**Answer:**  
+- **Comprehensive Out-of-the-Box Features:** Includes routing, forms validation, RxJS reactive programming, HTTP client, and state handling without mandatory third-party tools.
+- **Declarative UI:** Uses standard HTML syntax enriched with Angular template directives, bindings, and modern control flow.
+- **Long-term Support:** Maintained with dedicated backing and predictable long-term release commitments by Google.
+
+**Code Example:**
+```typescript
+// Out-of-the-box HttpClient usage without third-party libraries:
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class DataService {
+  constructor(private http: HttpClient) {}
+  fetchData() {
+    return this.http.get('https://api.example.com/items');
+  }
+}
+```
+
+---
+
+#### 4. What are the advantages of Angular over React?
+
+**Answer:**  
+- Angular supports bidirectional (two-way) data binding out of the box, whereas React relies strictly on unidirectional data flow.
+- Angular features built-in hierarchical Dependency Injection, while React relies on third-party patterns or manual context/prop passing.
+- Angular is an all-inclusive framework providing full architectural conventions; React is primarily a UI library requiring external modules for routing and state.
+- Angular uses TypeScript natively; React typically uses JavaScript with JSX (though TypeScript is optional).
+
+**Code Example:**
+```typescript
+// Two-way binding out of the box in Angular:
+// In template: <input [(ngModel)]="username" />
+// In component:
+export class UserComponent {
+  username: string = 'John';
+}
+```
+
+---
+
+#### 5. List out differences between AngularJS and Angular?
+
+**Answer:**  
+- **Architecture:** AngularJS relies on MVC (Model-View-Controller). Angular uses a Component-based architecture.
+- **Language:** AngularJS is written in JavaScript (dynamically typed); Angular uses TypeScript (statically typed).
+- **Mobile Support:** AngularJS does not natively target mobile browsers; Angular provides mobile browser and platform support.
+- **Syntax:** AngularJS requires specific directives like `ng-bind`, `ng-click`; Angular uses standardized brackets: `[]` for property binding and `()` for event binding.
+
+**Code Example:**
+```html
+<!-- AngularJS Syntax -->
+<!-- <button ng-click="saveUser()">Save</button> -->
+
+<!-- Angular Syntax -->
+<button (click)="saveUser()">Save</button>
+<input [value]="currentUser" />
+```
+
+---
+
+#### 6. How are Angular expressions different from JavaScript expressions?
+
+**Answer:**  
+- **Execution Context:** Angular expressions evaluate against a component instance's local scope, not the global `window` object.
+- **Null/Undefined Resilience:** Angular expressions handle `null` and `undefined` gracefully without displaying raw values or throwing reference errors in views.
+- **Control Flow:** Angular expressions do not allow control flow statements (`for`, `while`, `if`, `try/catch`).
+- **Pipes:** Angular expressions support pipe transformations (e.g., `{{ value | uppercase }}`) to format view output.
+
+**Code Example:**
+```typescript
+// Template expression evaluated against component's local scope:
+// <h4>{{ message | lowercase }}</h4>
+
+export class NewComponent {
+  message: string = "HELLO WORLD"; // Displays: "hello world"
+}
+```
+
+---
+
+#### 7. What are Single Page Applications (SPA)?
+
+**Answer:**  
+SPAs are web applications that load a single HTML document once. As the user navigates, JavaScript dynamically rewrites the DOM instead of requesting full HTML pages from the server, resulting in smoother navigation and lower network overhead.
+
+**Code Example:**
+```html
+<!-- index.html loads once; inner views swap inside router-outlet -->
+<!doctype html>
+<html>
+<body>
+  <app-root>
+    <!-- Dynamic SPA content loads here via client routing -->
+  </app-root>
+</body>
+</html>
+```
+
+---
+
+#### 8. What are templates in Angular?
+
+**Answer:**  
+An Angular template is an HTML snippet that tells Angular how to render a component's view. Templates can be defined as:
+- **Inline Template:** Defined directly inside the `@Component` decorator using the `template` property.
+- **Linked Template:** Defined in an external HTML file referenced via the `templateUrl` property.
+
+**Code Example:**
+```typescript
+// Linked Template
+@Component({
+  selector: 'app-linked',
+  templateUrl: './linked.component.html'
+})
+export class LinkedComponent {}
+
+// Inline Template
+@Component({
+  selector: 'app-inline',
+  template: `<div><h1>Inline Template</h1></div>`
+})
+export class InlineComponent {}
+```
+
+---
+
+#### 9. What are directives in Angular?
+
+**Answer:**  
+Directives are classes declared with the `@Directive` decorator that add behavior to elements in the DOM. The three types are:
+1. **Component Directives:** Directives with an attached HTML template (declared via `@Component`).
+2. **Structural Directives:** Manipulate DOM layout by adding, removing, or replacing elements, denoted with an asterisk `*` (e.g., `*ngIf`, `*ngFor`).
+3. **Attribute Directives:** Modify the appearance or behavior of existing elements.
+
+**Code Example:**
+```typescript
+// Custom Attribute Directive
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  constructor(el: ElementRef) {
+    el.nativeElement.style.backgroundColor = 'yellow';
+  }
+}
+// Usage: <p appHighlight>Highlighted text</p>
+```
+
+---
+
+#### 10. Explain Components, Modules and Services in Angular.
+
+**Answer:**  
+- **Components:** The fundamental UI building blocks. Each component consists of a TypeScript class (business logic), an HTML template (view), and a stylesheet.
+- **Modules:** Containers (`@NgModule`) that group related components, directives, pipes, and imported modules together (in modern Angular, standalone components can be used without NgModules).
+- **Services:** Singleton classes decorated with `@Injectable` used to encapsulate business logic, API communication, and state sharing across components.
+
+**Code Example:**
+```typescript
+// 1. Service
+import { Injectable } from '@angular/core';
+@Injectable({ providedIn: 'root' })
+export class GreetService {
+  getGreeting() { return "Hello Angular"; }
+}
+
+// 2. Component
+import { Component } from '@angular/core';
+@Component({
+  selector: 'app-greet',
+  template: `<p>{{ msg }}</p>`
+})
+export class GreetComponent {
+  msg: string;
+  constructor(private service: GreetService) {
+    this.msg = this.service.getGreeting();
+  }
+}
+```
+
+---
+
+#### 11. What is the scope?
+
+**Answer:**  
+In Angular, scope represents the data execution context for expressions. It binds the component class instance to the HTML template, enabling properties and methods declared in the class to be referenced and executed within its template.
+
+**Code Example:**
+```typescript
+@Component({
+  selector: 'app-scope',
+  template: `<button (click)="increment()">Count: {{ count }}</button>`
+})
+export class ScopeComponent {
+  // 'count' and 'increment' are part of this template's local scope context
+  count: number = 0;
+  increment() { this.count++; }
+}
+```
+
+---
+
+#### 12. What is data binding in Angular?
+
+**Answer:**  
+Data binding coordinates communication between the TypeScript component (business logic) and the HTML template (view).  
+The four forms are:
+- **String Interpolation:** `{{ property }}` (one-way, component to view).
+- **Property Binding:** `[property]="value"` (one-way, component to view).
+- **Event Binding:** `(event)="handler()"` (one-way, view to component).
+- **Two-way Data Binding:** `[(ngModel)]="property"` (bidirectional synchronization).
+
+**Code Example:**
+```typescript
+// In template:
+// <input [value]="title" (input)="updateTitle($event)" />
+// <p>{{ title }}</p>
+
+export class BindingComponent {
+  title: string = 'Initial Text';
+  updateTitle(e: any) {
+    this.title = e.target.value;
+  }
+}
+```
+
+---
+
+#### 13. What is two way data binding in Angular?
+
+**Answer:**  
+Two-way data binding ensures that changes in the component's TypeScript model automatically update the HTML template, and changes made by the user in the template (such as an input field) immediately update the component model. It combines property binding `[ ]` and event binding `( )` via the `[(ngModel)]` "banana in a box" syntax.
+
+**Code Example:**
+```typescript
+// Requires FormsModule in AppModule imports (or standalone imports)
+// In template:
+// <input [(ngModel)]="username" type="text" />
+// <p>Current: {{ username }}</p>
+
+export class UserFormComponent {
+  username: string = 'Alex';
+}
+```
+
+---
+
+#### 14. What are Decorators and their types in Angular?
+
+**Answer:**  
+Decorators are functions prefixed with `@` that attach configuration metadata to classes, methods, accessors, properties, or parameters.  
+Types of Decorators:
+- **Class Decorators:** Configure class behavior (e.g., `@Component`, `@NgModule`, `@Directive`, `@Pipe`).
+- **Property Decorators:** Modify class properties (e.g., `@Input()`, `@Output()`, `@ViewChild()`).
+- **Method Decorators:** Add handlers to methods (e.g., `@HostListener()`).
+- **Parameter Decorators:** Modify constructor parameters (e.g., `@Inject()`).
+
+**Code Example:**
+```typescript
+import { Component, Input, HostListener } from '@angular/core';
+
+@Component({ // Class Decorator
+  selector: 'app-btn',
+  template: `<button>{{ label }}</button>`
+})
+export class ButtonComponent {
+  @Input() label: string = 'Click'; // Property Decorator
+
+  @HostListener('click') // Method Decorator
+  handleClick() {
+    console.log('Button clicked');
+  }
+}
+```
+
+---
+
+#### 15. What are annotations in Angular?
+
+**Answer:**  
+Annotations are hard-coded metadata markers applied to a class to create an annotation array for reflection. While TypeScript officially uses the Decorator standard (invoked functions that receive target instances), the term annotation refers to the metadata structure attached to classes to instruct compilation behavior.
+
+**Code Example:**
+```typescript
+// Angular decorators serve the metadata role:
+@Component({
+  selector: 'app-note',
+  template: `<p>Metadata annotation demonstration</p>`
+})
+export class NoteComponent {}
+```
+
+---
+
+#### 16. What are pure Pipes?
+
+**Answer:**  
+A pure pipe executes only when Angular detects a pure change in its input values. A pure change is either a change in a primitive value (String, Number, Boolean, Symbol) or a new object reference (Date, Array, Object). Mutating an existing object or array internally does not re-trigger a pure pipe.
+
+**Code Example:**
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'double',
+  pure: true // Default setting
+})
+export class DoublePipe implements PipeTransform {
+  transform(value: number): number {
+    return value * 2;
+  }
+}
+// Usage: {{ 10 | double }} -> displays 20
+```
+
+---
+
+#### 17. What are impure pipes?
+
+**Answer:**  
+An impure pipe is invoked by Angular during every change detection cycle, regardless of whether the input argument reference has changed. This enables the pipe to detect internal mutations inside objects or arrays, but incurs higher performance costs.
+
+**Code Example:**
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'impureFilter',
+  pure: false // Triggers on every change detection run
+})
+export class ImpureFilterPipe implements PipeTransform {
+  transform(items: any[]): any[] {
+    return items.filter(item => item.active);
+  }
+}
+```
+
+---
+
+#### 18. What is Pipe transform Interface in Angular?
+
+**Answer:**  
+`PipeTransform` is a TypeScript interface provided by `@angular/core` that requires implementing a `transform()` method. Angular calls this method with the source binding value as the first parameter, followed by any optional pipe arguments.
+
+**Code Example:**
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'prefixText' })
+export class PrefixTextPipe implements PipeTransform {
+  transform(value: string, prefix: string = 'Note:'): string {
+    return `${prefix} ${value}`;
+  }
+}
+// Usage: {{ 'Meeting at 3' | prefixText:'Alert:' }}
+```
+
+---
+
+#### 19. Write a code where you have to share data from the Parent to Child Component?
+
+**Answer:**  
+Data is passed from a parent to a child component by configuring a property binding on the child selector in the parent template, and capturing that property using the `@Input()` decorator (or modern `input()` signal) inside the child component class.
+
+**Code Example:**
+```typescript
+// Child Component
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `<p>Received: {{ childMessage }}</p>`
+})
+export class ChildComponent {
+  @Input() childMessage: string = '';
+}
+
+// Parent Component
+@Component({
+  selector: 'app-parent',
+  template: `<app-child [childMessage]="parentData"></app-child>`
+})
+export class ParentComponent {
+  parentData: string = "Data sent from Parent Component";
+}
+```
+
+---
+
+#### 20. Create a TypeScript class with a constructor and a function.
+
+**Answer:**  
+A TypeScript class defines properties, initializes them via a constructor upon instantiation, and declares member functions.
+
+**Code Example:**
+```typescript
+class Employee {
+  name: string;
+  role: string;
+
+  constructor(name: string, role: string) {
+    this.name = name;
+    this.role = role;
+  }
+
+  getDetails(): string {
+    return `${this.name} works as a ${this.role}.`;
+  }
+}
+
+const emp = new Employee("Alice", "Frontend Engineer");
+console.log(emp.getDetails()); // Output: "Alice works as a Frontend Engineer."
+```
+
+---
+
+### 7.2 Angular Interview Questions for Experienced
+
+#### 21. Angular by default, uses client-side rendering for its applications. Can one make an angular application to render on the server-side?
+
+**Answer:**  
+Yes, using Angular SSR (formerly Angular Universal). Server-Side Rendering executes the Angular application on a Node.js server to generate static HTML pages sent directly to the client browser.  
+Benefits:
+- Faster initial render and First Contentful Paint (FCP).
+- Optimized web crawlers and Search Engine Optimization (SEO).
+- Reliable preview cards for social media platforms.
+
+**Code Example:**
+```typescript
+// Angular Universal / SSR server setup snippet (server.ts):
+// import { ngExpressEngine } from '@nguniversal/express-engine';
+// server.engine('html', ngExpressEngine({ bootstrap: AppServerModule }));
+```
+
+---
+
+#### 22. What is Eager and Lazy loading?
+
+**Answer:**  
+- **Eager Loading:** The default loading strategy where feature modules/components are fetched and compiled upfront in the initial bundle before the application starts. Suitable for small apps.
+- **Lazy Loading:** Postpones loading feature routes and chunks until the user navigates to their specific route. Reduces initial bundle size and shortens load times for large apps.
+
+**Code Example:**
+```typescript
+// AppRoutingModule: Lazy loading configured via loadChildren / loadComponent
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: 'orders',
+    loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule)
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+```
+
+---
+
+#### 23. What is view encapsulation in Angular?
+
+**Answer:**  
+View encapsulation controls whether a component's CSS styles leak out to the rest of the application or whether external styles penetrate inward.  
+Modes in ViewEncapsulation:
+- **Emulated (Default):** Simulates scoped CSS by adding unique host attributes (e.g., `_ngcontent-c1`) to elements.
+- **None:** Component styles are added globally to the DOM head, applying across the whole application.
+- **ShadowDom (formerly Native):** Uses the browser's native Shadow DOM root to encapsulate styles strictly inside the component boundary.
+
+**Code Example:**
+```typescript
+import { Component, ViewEncapsulation } from '@angular/core';
+
+@Component({
+  selector: 'app-encapsulated',
+  template: `<h2>Isolated Styles</h2>`,
+  styles: [`h2 { color: purple; }`],
+  encapsulation: ViewEncapsulation.Emulated // Default
+})
+export class EncapsulatedComponent {}
+```
+
+---
+
+#### 24. What are RxJs in Angular?
+
+**Answer:**  
+RxJS (Reactive Extensions for JavaScript) is a library for reactive programming using Observables to compose asynchronous operations and stream-based pipelines. In Angular, it is utilized across the HttpClient, EventEmitter, and Router modules.
+
+**Code Example:**
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { of } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-rxjs',
+  template: `<p>Active Count: {{ activeCount }}</p>`
+})
+export class RxjsComponent implements OnInit {
+  activeCount: number = 0;
+
+  ngOnInit() {
+    const numbersStream = of(1, 2, 3, 4, 5, 6);
+    numbersStream.pipe(
+      filter(n => n % 2 === 0),
+      map(n => n * 10)
+    ).subscribe(result => {
+      console.log(result); // Logs: 20, 40, 60
+    });
+  }
+}
+```
+
+---
+
+#### 25. Explain string interpolation and property binding in Angular.
+
+**Answer:**  
+Both mechanisms achieve one-way data binding from component to view:
+- **String Interpolation (`{{ expr }}`):** Evaluates expressions and converts output to a string embedded in template markup.
+- **Property Binding (`[property]="expr"`):** Binds an expression directly to a DOM element property, supporting non-string primitive and object types (such as booleans on `disabled` or `hidden` properties).
+
+**Code Example:**
+```typescript
+export class DataDisplayComponent {
+  imageUrl: string = 'https://example.com/logo.png';
+  isButtonDisabled: boolean = true;
+}
+```
+```html
+<!-- Template -->
+<img [src]="imageUrl" alt="Logo" />
+<button [disabled]="isButtonDisabled">Submit</button>
+```
+
+---
+
+#### 26. How are observables different from promises?
+
+**Answer:**  
+- **Emission:** Promises resolve a single value; Observables can emit zero, one, or multiple values over time.
+- **Execution:** Promises are eager (execute immediately when created); Observables are lazy (do not execute until `.subscribe()` is invoked).
+- **Cancellation:** Promises cannot be canceled once initiated; Observables can be canceled via `.unsubscribe()`.
+- **Transformations:** Observables provide transformation and filtering operators (`map`, `filter`, `debounceTime`, `mergeMap`).
+
+**Code Example:**
+```typescript
+import { Observable } from 'rxjs';
+
+// Lazy and cancelable
+const myObservable = new Observable(observer => {
+  observer.next('Value 1');
+  observer.next('Value 2');
+  observer.complete();
+});
+
+const subscription = myObservable.subscribe(val => console.log(val));
+subscription.unsubscribe(); // Cancels active stream
+```
+
+---
+
+#### 27. Explain the concept of Dependency Injection?
+
+**Answer:**  
+Dependency Injection (DI) is a design pattern where an external container (the Injector) provides required dependencies (like services) to a dependent class (like a component) rather than having the class instantiate them directly.  
+Decorating a service with `@Injectable({ providedIn: 'root' })` registers it as an application-level singleton.
+
+**Code Example:**
+```typescript
+// Service
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class LogService {
+  log(msg: string) { console.log(`[LOG]: ${msg}`); }
+}
+
+// Injected into component constructor (or via inject(LogService))
+@Component({
+  selector: 'app-logger',
+  template: `<button (click)="sendLog()">Log</button>`
+})
+export class LoggerComponent {
+  constructor(private logger: LogService) {}
+
+  sendLog() {
+    this.logger.log('Action performed');
+  }
+}
+```
+
+---
+
+#### 28. What are pipes in Angular explain with an example?
+
+**Answer:**  
+Pipes are simple functions used in template expressions to accept input data, transform it, and return a formatted output string or representation for display without modifying the underlying component state.
+
+**Code Example:**
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-pipe-demo',
+  template: `
+    <p>Default: {{ today }}</p>
+    <p>Formatted: {{ today | date:'fullDate' }}</p>
+    <p>Uppercase: {{ 'hello angular' | uppercase }}</p>
+  `
+})
+export class PipeDemoComponent {
+  today: Date = new Date();
+}
+```
+
+---
+
+#### 29. What exactly is a parameterized pipe?
+
+**Answer:**  
+A parameterized pipe accepts one or more arguments to customize its transformation output. Parameters are passed following the pipe name using colons (`:`), separated by additional colons for multiple parameters.
+
+**Code Example:**
+```typescript
+@Component({
+  selector: 'app-param-pipe',
+  template: `
+    <!-- Date format string parameter -->
+    <p>{{ launchDate | date:'MM/dd/yyyy' }}</p>
+    <!-- Slice pipe with start and end index parameters -->
+    <p>{{ 'AngularDeveloper' | slice:0:7 }}</p> <!-- Displays: Angular -->
+  `
+})
+export class ParamPipeComponent {
+  launchDate: Date = new Date(2025, 0, 15);
+}
+```
+
+---
+
+#### 30. What are class decorators?
+
+**Answer:**  
+Class decorators are placed immediately above a class definition. They indicate to Angular whether the class functions as a Component (`@Component`), a Module (`@NgModule`), a Directive (`@Directive`), or an Injectable Service (`@Injectable`), attaching corresponding metadata.
+
+**Code Example:**
+```typescript
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@NgModule({ // Class Decorator
+  imports: [CommonModule],
+  declarations: []
+})
+export class CustomFeatureModule {}
+```
+
+---
+
+#### 31. What are Method decorators?
+
+**Answer:**  
+Method decorators attach metadata or register event listeners to specific methods inside a class. For example, `@HostListener` listens for DOM events on the component's host element and calls the decorated method in response.
+
+**Code Example:**
+```typescript
+import { Directive, HostListener } from '@angular/core';
+
+@Directive({ selector: '[appClickTrack]' })
+export class ClickTrackDirective {
+  @HostListener('click', ['$event'])
+  onClick(event: MouseEvent) {
+    console.log('Host element clicked:', event.clientX);
+  }
+}
+```
+
+---
+
+#### 32. What are property decorators?
+
+**Answer:**  
+Property decorators modify or bind specific properties within an Angular class. Examples include `@Input()` (receive data from parent), `@Output()` (emit events outward), `@ViewChild()` (access child elements/components), and `@HostBinding()` (bind to host element properties).
+
+**Code Example:**
+```typescript
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-custom-card',
+  template: `<button (click)="notify.emit()">{{ title }}</button>`
+})
+export class CustomCardComponent {
+  @Input() title: string = '';
+  @Output() notify = new EventEmitter<void>();
+}
+```
+
+---
+
+#### 33. What is the Component Decorator in Angular?
+
+**Answer:**  
+The `@Component` decorator is a class decorator that marks a TypeScript class as an Angular component and supplies metadata configuring its CSS selector, HTML template, linked styles, change detection strategy, and providers.
+
+**Code Example:**
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
+})
+export class ProfileComponent {
+  userName: string = "Sarah";
+}
+```
+
+---
+
+#### 34. What are lifecycle hooks in Angular? Explain a few lifecycle hooks.
+
+**Answer:**  
+Lifecycle hooks are callback methods triggered during distinct stages of a component or directive lifecycle from instantiation to destruction:
+- `ngOnChanges()`: Fires before `ngOnInit` and when input data-bound properties change.
+- `ngOnInit()`: Initializes component state and runs after initial `ngOnChanges`.
+- `ngDoCheck()`: Used for custom change detection algorithms.
+- `ngAfterContentInit()`: Runs after projected content (`<ng-content>`) is initialized.
+- `ngAfterContentChecked()`: Runs after projected content has been verified.
+- `ngAfterViewInit()`: Runs after the component and child views are rendered.
+- `ngAfterViewChecked()`: Runs after view verification runs.
+- `ngOnDestroy()`: Runs right before component removal; used to clean up subscriptions and detached listeners.
+
+**Code Example:**
+```typescript
+import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-lifecycle',
+  template: `<p>{{ title }}</p>`
+})
+export class LifecycleComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() title: string = '';
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('Inputs changed:', changes);
+  }
+
+  ngOnInit() {
+    console.log('Component initialized');
+  }
+
+  ngOnDestroy() {
+    console.log('Component cleaned up');
+  }
+}
+```
+
+---
+
+#### 35. What are router links?
+
+**Answer:**  
+`RouterLink` is an attribute directive applied to anchor elements to bind navigation actions to configured routes in the Router module instead of reloading the full web page.
+
+**Code Example:**
+```html
+<!-- Template navigation -->
+<nav>
+  <a routerLink="/dashboard">Dashboard</a>
+  <a [routerLink]="['/user', userId]">Profile</a>
+</nav>
+<router-outlet></router-outlet>
+```
+
+---
+
+#### 36. What exactly is the router state?
+
+**Answer:**  
+`RouterState` is a tree representing the current routing configuration and URL state in the application. Every node in the tree is an `ActivatedRoute`, which allows developers to retrieve URL segments, path parameters, query parameters, and route data.
+
+**Code Example:**
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-detail',
+  template: `<p>Viewing item: {{ itemId }}</p>`
+})
+export class DetailComponent implements OnInit {
+  itemId: string | null = '';
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.itemId = this.route.snapshot.paramMap.get('id');
+  }
+}
+```
+
+---
+
+#### 37. What does Angular Material means?
+
+**Answer:**  
+Angular Material is an official UI component library built for Angular based on Google's Material Design system. It provides accessible, responsive, and pre-styled UI components (e.g., buttons, dialogs, navbars, tables).
+
+**Code Example:**
+```typescript
+// In template (after importing MatButtonModule in module or standalone):
+// <button mat-raised-button color="primary">Material Action</button>
+
+import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+
+@NgModule({
+  imports: [MatButtonModule]
+})
+export class MaterialDemoModule {}
+```
+
+---
+
+#### 38. What is ngOnInit?
+
+**Answer:**  
+`ngOnInit` is a lifecycle hook method declared by implementing the `OnInit` interface. It executes once after Angular completes component creation and initializes all input data-bound properties. Heavy initialization logic and API calls belong in `ngOnInit` rather than the constructor.
+
+**Code Example:**
+```typescript
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-init-demo',
+  template: `<p>{{ data }}</p>`
+})
+export class InitDemoComponent implements OnInit {
+  data: string = '';
+
+  constructor() {} // Keep constructor lightweight for basic DI
+
+  ngOnInit(): void {
+    this.data = 'Loaded in ngOnInit';
+  }
+}
+```
+
+---
+
+#### 39. What is transpiling in Angular?
+
+**Answer:**  
+Transpiling converts source code written in one programming language into an equivalent version in another language. In Angular, the TypeScript compiler (`tsc`) transpiles TypeScript (`.ts`) files into standard JavaScript (`.js`) that web browsers can understand.
+
+**Code Example:**
+```typescript
+// TypeScript (before transpilation):
+class Calculator {
+  add(a: number, b: number): number {
+    return a + b;
+  }
+}
+
+// Transpiled JavaScript equivalent:
+// function Calculator() {}
+// Calculator.prototype.add = function (a, b) { return a + b; };
+```
+
+---
+
+#### 40. What are HTTP interceptors?
+
+**Answer:**  
+HTTP Interceptors inspect and transform outgoing HTTP requests and incoming HTTP responses globally before they reach their final destination. They are commonly used for adding auth tokens, logging, global error handling, and header manipulation.
+
+**Code Example:**
+```typescript
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const authReq = req.clone({
+      setHeaders: { Authorization: `Bearer my-token-123` }
+    });
+    return next.handle(authReq);
+  }
+}
+```
+
+---
+
+#### 41. What is AOT compilation? What are the advantages of AOT?
+
+**Answer:**  
+AOT (Ahead-of-Time) compilation compiles Angular HTML templates and TypeScript code into executable JavaScript during build time, before the browser downloads the bundle (unlike JIT, which compiles in-browser at runtime).  
+Advantages:
+- Faster initial page load and rendering.
+- Fewer HTTP requests (HTML/CSS inlined directly into JS bundles).
+- Template errors detected early during compilation builds.
+- Improved security (prevents runtime evaluation of malicious templates).
+
+**Code Example (CLI Command):**
+```bash
+# Building with AOT enabled (default in modern Angular CLI production builds):
+ng build --configuration production
+```
+
+---
+
+#### 42. What is Change Detection, and how does the Change Detection Mechanism work?
+
+**Answer:**  
+Change Detection is Angular's synchronization engine that updates the HTML view when component model data changes.  
+Mechanism:
+- Triggered by Zone.js intercepting asynchronous events (user inputs, HTTP responses, setTimeout) or via signals in modern zoneless Angular.
+- Operates via a unidirectional top-down pass starting from the root component through child leaves.
+- Uses `ChangeDetectionStrategy.Default` (checks full tree) or `ChangeDetectionStrategy.OnPush` (checks only when `@Input` references change, signals notify, or observables emit).
+
+**Code Example:**
+```typescript
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-optimized',
+  template: `<div>{{ user.name }}</div>`,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class OptimizedComponent {
+  @Input() user!: { name: string };
+}
+```
+
+---
+
+#### 43. What is a bootstrapping module?
+
+**Answer:**  
+The bootstrapping module is the root module (typically named `AppModule`) that Angular loads into memory to launch the application. It contains the root component passed to the `bootstrap` array inside its `@NgModule` decorator.
+
+**Code Example:**
+```typescript
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  bootstrap: [AppComponent] // Root component bootstrapped
+})
+export class AppModule {}
+```
+
+---
+
+#### 44. Explain MVVM architecture.
+
+**Answer:**  
+Angular follows the MVVM (Model-View-ViewModel) architectural pattern:
+- **Model:** Manages data entities and schema (TypeScript interfaces and classes).
+- **View:** Renders visual UI (HTML template).
+- **ViewModel:** Intermediary containing logic, event handlers, and presentation state (TypeScript component class). Connected via data binding.
+
+**Code Example:**
+```typescript
+// 1. Model
+interface Task { title: string; completed: boolean; }
+
+// 2. ViewModel (Component)
+@Component({
+  selector: 'app-task',
+  template: `<input [(ngModel)]="task.title" /><p>{{ task.title }}</p>` // 3. View
+})
+export class TaskComponent {
+  task: Task = { title: 'Study Angular', completed: false };
+}
+```
+
+---
+
+### 7.3 Angular Scenario Based Interview Questions
+
+#### 45. How do you choose an element from a component template?
+
+**Answer:**  
+Add a template reference variable (`#elementRef`) to the HTML element, and query it within the TypeScript component class using the `@ViewChild()` decorator. The native element is accessed inside the `ngAfterViewInit` lifecycle hook via `.nativeElement`.
+
+**Code Example:**
+```typescript
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-dom-select',
+  template: `<input #nameInput type="text" value="Angular User" />`
+})
+export class DomSelectComponent implements AfterViewInit {
+  @ViewChild('nameInput') inputField!: ElementRef;
+
+  ngAfterViewInit() {
+    console.log(this.inputField.nativeElement.value); // Logs input value
+    this.inputField.nativeElement.focus();
+  }
+}
+```
+
+---
+
+#### 46. How does one share data between components in Angular?
+
+**Answer:**  
+- **Parent to Child:** Pass values using `@Input()` property binding (or `input()` signal).
+- **Child to Parent (Event):** Emit data using `@Output()` combined with `EventEmitter` (or `output()`).
+- **Child to Parent (Reference):** Reference the child instance using `@ViewChild()`.
+- **Unrelated Components:** Share data using a shared singleton Service backed by an RxJS `Subject`, `BehaviorSubject`, or an Angular Signal.
+
+**Code Example (Parent to Child & Child to Parent):**
+```typescript
+// Child Component
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-item',
+  template: `<button (click)="sendUpdate()">{{ itemTitle }}</button>`
+})
+export class ItemComponent {
+  @Input() itemTitle: string = '';
+  @Output() itemChanged = new EventEmitter<string>();
+
+  sendUpdate() {
+    this.itemChanged.emit("Updated by Child");
+  }
+}
+
+// Parent Component Template:
+// <app-item [itemTitle]="title" (itemChanged)="onChildUpdate($event)"></app-item>
+```
+
+---
+
+#### 47. How do you deal with errors in observables?
+
+**Answer:**  
+Errors in RxJS observable streams should be handled using the `catchError` operator in the `.pipe()` chain, or through the `error` callback function inside the `.subscribe()` observer object.
+
+**Code Example:**
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-err',
+  template: `<p>{{ statusMessage }}</p>`
+})
+export class ErrComponent implements OnInit {
+  statusMessage: string = '';
+
+  ngOnInit() {
+    throwError(() => new Error('Network failure'))
+      .pipe(
+        catchError(err => {
+          console.error('Caught via catchError:', err.message);
+          return of('Fallback default response');
+        })
+      )
+      .subscribe({
+        next: val => this.statusMessage = val,
+        error: err => console.error('Subscription error callback:', err)
+      });
+  }
+}
+```
+
+---
+
+#### 48. How can I include SASS into an Angular project?
+
+**Answer:**  
+- When creating a new project via Angular CLI, specify the style flag:  
+  `ng new my-app --style=sass` (or `--style=scss`)
+- For existing projects, update the schematic configurations in `angular.json`:  
+  `"schematics": { "@schematics/angular:component": { "style": "scss" } }`
+
+**Code Example:**
+```scss
+/* In style.scss */
+$primary-color: #1976d2;
+
+.container {
+  background-color: $primary-color;
+  h1 {
+    color: white;
+  }
+}
+```
+
+---
+
+#### 49. What happens when you use the script tag within a template?
+
+**Answer:**  
+Angular considers raw `<script>` tags inside templates unsafe and automatically sanitizes the markup by stripping out the `<script>` element while retaining safe text content. This protects the application against Cross-Site Scripting (XSS) vulnerabilities. A security warning is logged to the browser console.
+
+**Code Example:**
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-script-test',
+  template: `<div [innerHTML]="maliciousHtml"></div>`
+})
+export class ScriptTestComponent {
+  // Angular sanitizes this string and strips the executable <script> tags
+  maliciousHtml: string = 'Safe text <script>alert("XSS vulnerability attack!")</script>';
+}
+```
+
+---
+
+### 7.4 Core Staff Architect Technical Interview Q&As
 
 #### Angular Interview Questions
 
@@ -40137,7 +41313,7 @@ The server is the only enforcement point; the UI hides what the user cannot do s
 4. **How do you know whether a release made the app worse for users?**
    Real-user monitoring tagged with the release: crash-free sessions, LCP and INP at p75, journey success. Compare against SLOs and alert on error-budget burn rate, so a bad release pages someone within the hour.
 
-### 7.2 Interview Questions by Chapter
+### 7.5 Interview Questions by Chapter
 
 Chapters 29 to 44 each end with eight longer interview questions that go past the one-line answers above. They are grouped here by topic so you can revise one area at a time.
 
